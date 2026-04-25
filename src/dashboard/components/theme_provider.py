@@ -686,9 +686,9 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE AGGRESSIVE INHERITANCE FIX ── */
+/* ── THE OPTICAL FILTER FIX ── */
 
-/* 1. Strip away constant background boxes and borders */
+/* 1. Ensure the parent button containers are clean and visible */
 [data-testid="stSidebarHeader"] button,
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {{
@@ -699,41 +699,30 @@ section[data-testid="stMain"] > div:first-child {{
     visibility: visible !important;
 }}
 
-/* 2. Force 'currentColor' inheritance on ALL nested children */
-[data-testid="stSidebarHeader"] button *,
-[data-testid="stSidebarCollapseButton"] *,
-[data-testid="collapsedControl"] * {{
-    color: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    -webkit-text-fill-color: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    stroke: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}}
-
-/* 3. Deep target SVGs specifically for redundant protection */
+/* 2. The Optical Override: Force pixels using post-processing filters */
 [data-testid="stSidebarHeader"] button svg,
-[data-testid="stSidebarHeader"] button svg path,
 [data-testid="stSidebarCollapseButton"] svg,
-[data-testid="stSidebarCollapseButton"] svg path,
-[data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] svg path {{
-    fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    stroke: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    color: {"%2300E6F0" if is_dark else "%23000000"} !important;
+[data-testid="collapsedControl"] svg {{
+    /* brightness(0) forces black in light mode; brightness(2) forces a glow in dark mode */
+    filter: {("brightness(1.5) contrast(1.5) drop-shadow(0px 0px 5px %2300E6F0)" if is_dark else "brightness(0) drop-shadow(0px 0px 1px black)")} !important;
+    
+    /* Force absolute visibility */
     opacity: 1 !important;
     visibility: visible !important;
+    
+    /* Scale slightly for clarity */
+    transform: scale(1.1) !important;
 }}
 
-/* 4. Smooth hover effect */
+/* 3. Smooth hover effect */
 [data-testid="stSidebarHeader"] button:hover svg,
 [data-testid="stSidebarCollapseButton"]:hover svg,
 [data-testid="collapsedControl"]:hover svg {{
-    transform: scale(1.15) !important;
-    transition: transform 0.2s ease !important;
+    transform: scale(1.25) !important;
+    transition: transform 0.2s ease-in-out !important;
 }}
 
-/* Ensure the hidden character from previous attempts stays gone */
+/* Ensure the hidden characters from previous attempts stay gone */
 [data-testid="stSidebarCollapseControl"] button::before,
 [data-testid="collapsedControl"] button::before {{
     display: none !important;
