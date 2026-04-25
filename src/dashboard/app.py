@@ -70,6 +70,21 @@ def load_data():
 from src.dashboard.components.theme_provider import inject_global_theme
 inject_global_theme()
 
+# --- FORCE SIDEBAR ICON VISIBILITY ---
+st.markdown("""
+<style>
+/* Force arrow visible in BOTH themes - overrides Streamlit Light Mode ghosting */
+[data-testid="stSidebarCollapseControl"] button::before,
+[data-testid="collapsedControl"] button::before {
+    color: #1E293B !important;
+    -webkit-text-fill-color: #1E293B !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: invert(0) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ─── Particle background ─────────────────────────────────────────────
 from src.dashboard.components.particles import inject_particle_background
 inject_particle_background()
