@@ -765,8 +765,22 @@ div[role="listbox"] li:hover {{
 }}
 
 /* ═══════════════════════════════════════════════════════════════
-   SCROLLBAR & DIVIDER
+   DIALOG CONTENT VISIBILITY FIX
    ═══════════════════════════════════════════════════════════════ */
+[data-testid="stDialog"] h1, 
+[data-testid="stDialog"] h2, 
+[data-testid="stDialog"] h3, 
+[data-testid="stDialog"] p, 
+[data-testid="stDialog"] span, 
+[data-testid="stDialog"] div,
+[data-testid="stDialog"] [data-testid="stMetricValue"],
+[data-testid="stDialog"] [data-testid="stMetricLabel"],
+[data-testid="stDialog"] [data-testid="stMetricDelta"] {{
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}}
+
+/* Scrollbar & Divider */
 ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
 ::-webkit-scrollbar-track {{ background: transparent; }}
 ::-webkit-scrollbar-thumb {{ background: var(--border-hover); border-radius: 6px; }}
