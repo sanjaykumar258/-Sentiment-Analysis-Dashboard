@@ -686,14 +686,15 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* Force arrow color based on active theme */
-{"" if is_dark else """
-[data-testid="stSidebarCollapseControl"] button::before,
-[data-testid="collapsedControl"] button::before {
-    color: #1e40af !important;
-    -webkit-text-fill-color: #1e40af !important;
-}
-"""}
+/* ── Arrow color based on active Python theme ── */
+[data-testid="stSidebarCollapseControl"] button::before {{
+  color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
+  -webkit-text-fill-color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
+}}
+[data-testid="collapsedControl"] button::before {{
+  color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
+  -webkit-text-fill-color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
+}}
 </style>
 """, unsafe_allow_html=True)
 

@@ -17,24 +17,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# --- NUCLEAR DEBUG TEST ---
-st.markdown("""
-<style>
-/* if you see a red box, the button exists */
-[data-testid="collapsedControl"] {
-    background: red !important;
-    width: 50px !important;
-    height: 50px !important;
-    z-index: 1000000 !important;
-}
-[data-testid="collapsedControl"] button {
-    background: blue !important;
-    width: 50px !important;
-    height: 50px !important;
-    z-index: 1000001 !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ─── Theme initialisation ─────────────────────────────────────────────
 if "theme" not in st.session_state:
@@ -69,51 +51,6 @@ def load_data():
 # ─── GLOBAL CSS — Dual theme design system ────────────────────────────
 from src.dashboard.components.theme_provider import inject_global_theme
 inject_global_theme()
-
-# --- FORCE SIDEBAR ICON VISIBILITY ---
-st.markdown("""
-<style>
-/* Default - dark mode */
-[data-testid="stSidebarCollapseControl"] button::before,
-[data-testid="collapsedControl"] button::before {
-    content: "«" !important;
-    color: #7dd3fc !important;
-    -webkit-text-fill-color: #7dd3fc !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    font-size: 22px !important;
-    font-weight: 800 !important;
-    font-family: Arial, sans-serif !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    text-shadow: none !important;
-}
-
-[data-testid="collapsedControl"] button::before {
-    content: "»" !important;
-}
-
-/* Light mode - Target Streamlit theme attributes and emotion cache classes */
-[data-theme="light"] [data-testid="stSidebarCollapseControl"] button::before,
-[data-theme="light"] [data-testid="collapsedControl"] button::before,
-.st-emotion-cache-light [data-testid="stSidebarCollapseControl"] button::before,
-.st-emotion-cache-light [data-testid="collapsedControl"] button::before {
-    color: #1e40af !important;
-    -webkit-text-fill-color: #1e40af !important;
-}
-
-/* Fallback for OS Light Mode */
-@media (prefers-color-scheme: light) {
-    [data-testid="stSidebarCollapseControl"] button::before,
-    [data-testid="collapsedControl"] button::before {
-        color: #1e40af !important;
-        -webkit-text-fill-color: #1e40af !important;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ─── Particle background ─────────────────────────────────────────────
 from src.dashboard.components.particles import inject_particle_background
