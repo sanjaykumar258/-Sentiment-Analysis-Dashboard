@@ -581,69 +581,6 @@ div[role="listbox"] li:hover {{
   color: var(--text-primary) !important;
 }}
 
-/* ── MODALS / DIALOGS — Force theme awareness ── */
-/* Only apply backdrop filter to the active dialog container */
-div[role="dialog"] {{
-  backdrop-filter: blur(12px) saturate(180%) !important;
-  background-color: rgba(0,0,0,0.4) !important;
-  z-index: 9999 !important;
-}}
-
-[data-testid="stDialog"] > div:first-child > div:first-child {{
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
-  border-radius: 28px !important;
-  padding: 2rem !important;
-  max-width: 550px !important;
-  margin: 0 auto !important;
-  animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-}}
-
-[data-testid="stDialog"] > div:first-child > div:first-child {{
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
-  border-radius: 28px !important;
-  padding: 2rem !important;
-  max-width: 550px !important;
-  margin: 0 auto !important;
-  animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-}}
-
-@keyframes modalPop {{
-  from {{ transform: scale(0.9) translateY(20px); opacity: 0; }}
-  to   {{ transform: scale(1) translateY(0); opacity: 1; }}
-}}
-
-[data-testid="stDialog"] * {{
-  color: var(--text-primary) !important;
-}}
-
-/* ── CODE & KBD — Force readability in Light Mode ── */
-code, kbd, tt, pre {{
-  background-color: {"rgba(255,255,255,0.15)" if is_dark else "#F3F4F6"} !important;
-  color: {"#00E6F0" if is_dark else "#111827"} !important;
-  padding: 2px 8px !important;
-  border-radius: 6px !important;
-  font-family: 'Source Code Pro', monospace !important;
-  border: 1px solid {"rgba(255,255,255,0.1)" if is_dark else "#E5E7EB"} !important;
-  font-weight: 600 !important;
-}}
-
-/* Force dark text for metrics inside modals in Light Mode */
-{"" if is_dark else """
-[data-testid="stDialog"] [data-testid="metric-container"] *,
-[data-testid="stDialog"] [data-testid="stMarkdownContainer"] *,
-[data-testid="stDialog"] button p,
-[data-testid="stDialog"] code,
-[data-testid="stDialog"] kbd {
-    color: #111827 !important;
-}
-"""}
-
 /* ═══════════════════════════════════════════════════════════════
    SIDEBAR NAV
    ═══════════════════════════════════════════════════════════════ */
@@ -696,46 +633,6 @@ hr {{ border-color: var(--border) !important; }}
   background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
   background-size: 200% 100%; animation: shimmer 1.8s ease-in-out infinite;
 }}
-
-/* ═══════════════════════════════════════════════════════════════
-   MODALS / DIALOGS — Force theme awareness
-   ═══════════════════════════════════════════════════════════════ */
-[data-testid="stDialog"],
-[data-testid="stModal"],
-[role="dialog"],
-.st-emotion-cache-12w0436 {{
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-soft) !important;
-}}
-
-[data-testid="stDialog"] *,
-[data-testid="stModal"] * {{
-  color: var(--text-primary) !important;
-}}
-
-/* ── CODE & KBD — Force readability in Light Mode ── */
-code, kbd, tt, pre {{
-  background-color: {"rgba(255,255,255,0.1)" if is_dark else "rgba(0,0,0,0.05)"} !important;
-  color: {"#00E6F0" if is_dark else "#111827"} !important;
-  padding: 2px 6px !important;
-  border-radius: 4px !important;
-  font-family: 'Source Code Pro', monospace !important;
-  border: 1px solid {"rgba(255,255,255,0.1)" if is_dark else "rgba(0,0,0,0.1)"} !important;
-}}
-
-/* Force dark text for metrics inside modals in Light Mode */
-{"" if is_dark else """
-[data-testid="stDialog"] [data-testid="metric-container"] *,
-[data-testid="stDialog"] [data-testid="stMarkdownContainer"] *,
-[data-testid="stDialog"] button p,
-[data-testid="stDialog"] code,
-[data-testid="stDialog"] kbd {
-    color: #111827 !important;
-    background-color: #F3F4F6 !important;
-}
-"""}
 
 /* ═══════════════════════════════════════════════════════════════
    ANIMATIONS

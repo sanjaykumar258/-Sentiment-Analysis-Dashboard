@@ -221,80 +221,100 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
 </div>
     """, unsafe_allow_html=True)
 
-    # ─── FILE UPLOADER ───────────────────────────────────────────────
+    # ─── FILE UPLOADER & CUSTOM POPUP ───────────────────────────
     col1, col2, col3 = st.columns([1.2, 2, 1.2])
     with col2:
-        @st.dialog("⚙️ Processing Dataset")
-        def process_dataset(file):
-            import time, numpy as np, pandas as pd
-            st.markdown(f"**File:** `{file.name}`")
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-
-            try:
-                # ── Step 1: Read CSV ──
-                status_text.caption("Reading file...")
-                df = pd.read_csv(file)
-                time.sleep(0.5)
-                progress_bar.progress(25)
-
-                # ── Step 2: Validation ──
-                status_text.caption("Validating structure...")
-                required_cols = ['Review', 'Sentiment']
-                
-                # Check for columns (case-insensitive)
-                found_cols = {col.lower(): col for col in df.columns}
-                valid = True
-                for req in required_cols:
-                    if req.lower() not in found_cols:
-                        st.error(f"Missing required column: **{req}**")
-                        valid = False
-                
-                if not valid:
-                    st.info("Dataset must have 'Review' and 'Sentiment' columns.")
-                    return
-
-                time.sleep(0.5)
-                progress_bar.progress(50)
-
-                # ── Step 3: Analytics ──
-                status_text.caption("Generating initial analytics...")
-                st.session_state["raw_data"] = df
-                st.session_state["processed"] = True
-                
-                # Force cache update
-                from src.utils.data_loader import process_uploaded_dataset
-                process_uploaded_dataset(df)
-                
-                time.sleep(0.5)
-                progress_bar.progress(75)
-
-                # ── Step 4: Completion ──
-                status_text.caption("Finalizing...")
-                progress_bar.progress(100)
-                time.sleep(0.5)
-                
-                st.success("✅ Dataset ready for analysis!")
-                time.sleep(1)
-                st.rerun()
-
-            except Exception as e:
-                st.error(f"Processing error: {str(e)}")
-                if st.button("Close"):
-                    st.rerun()
-
-        uploaded_file = st.file_uploader(
-            "",
-            type=['csv'],
-            help="Upload your dataset for analysis",
-            label_visibility="collapsed"
-        )
+        uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
         
         if uploaded_file is not None:
-            # Check if this is a new file
-            if "last_uploaded" not in st.session_state or st.session_state["last_uploaded"] != uploaded_file.name:
-                st.session_state["last_uploaded"] = uploaded_file.name
-                process_dataset(uploaded_file)
+            if st.session_state.get("processed_file") != uploaded_file.name:
+                # ── RENDER CUSTOM POPUP OVERLAY ──
+                modal_placeholder = st.empty()
+                with modal_placeholder.container():
+                    st.markdown("""
+                        <style>
+                        .custom-modal-backdrop {
+                            position: fixed !important;
+                            top: 0 !important; left: 0 !important;
+                            width: 100vw !important; height: 100vh !important;
+                            background: rgba(0,0,0,0.4) !important;
+                            backdrop-filter: blur(12px) saturate(160%) !important;
+                            z-index: 9999999 !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                        }
+                        .custom-modal-container {
+                            width: 100% !important;
+                            max-width: 500px !important;
+                            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+                        }
+                        @keyframes modalPop {
+                            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+                            to   { transform: scale(1) translateY(0); opacity: 1; }
+                        }
+                        </style>
+                        <div class="custom-modal-backdrop">
+                            <div class="custom-modal-container">
+                                <div class="glass-card" style="padding:2.5rem; width:100%; border-color:var(--brand-primary); box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
+                                    <h2 style="margin:0 0 1rem; font-family:var(--font-sans); color:var(--text-primary); text-align:center;">⚙️ Processing Dataset</h2>
+                    """, unsafe_allow_html=True)
+                    
+                    import time, numpy as np
+                    st.markdown(f"<p style='text-align:center; color:var(--text-muted);'>File: <code>{uploaded_file.name}</code></p>", unsafe_allow_html=True)
+                    
+                    progress_bar = st.progress(0)
+                    status_text = st.empty()
+
+                    try:
+                        # ── Step 1: Read CSV ──
+                        status_text.caption("Reading file...")
+                        progress_bar.progress(10)
+                        time.sleep(0.4)
+                        uploaded_file.seek(0)
+                        new_df = pd.read_csv(uploaded_file)
+
+                        # ── Step 2: Detect col ──
+                        status_text.caption("Validating structure...")
+                        progress_bar.progress(40)
+                        col_lower_map = {c.lower().strip(): c for c in new_df.columns}
+                        sentiment_col = None
+                        for alias in ["sentiment", "label", "class", "target"]:
+                            if alias in col_lower_map:
+                                sentiment_col = col_lower_map[alias]
+                                break
+
+                        if sentiment_col:
+                            if sentiment_col != "Sentiment":
+                                new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
+                            new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip().apply(lambda x: x.title())
+                            
+                            # ── Step 3: Save ──
+                            status_text.caption("Saving to backend...")
+                            progress_bar.progress(80)
+                            import os
+                            save_dir = "data/processed"
+                            os.makedirs(save_dir, exist_ok=True)
+                            new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
+                            
+                            progress_bar.progress(100)
+                            status_text.caption("✅ Processing complete!")
+                            st.success("Dataset successfully prepared.")
+                            
+                            if st.button("🚀 Load Dashboard", type="primary", use_container_width=True):
+                                st.session_state["processed_file"] = uploaded_file.name
+                                st.cache_data.clear()
+                                st.rerun()
+                        else:
+                            st.error("❌ Sentiment column not found.")
+                            if st.button("Cancel"): modal_placeholder.empty()
+                    except Exception as e:
+                        st.error(f"❌ Error: {e}")
+                        if st.button("Close"): modal_placeholder.empty()
+                    
+                    # Close HTML tags
+                    st.markdown("</div></div></div>", unsafe_allow_html=True)
+
 
     # ─── METRICS GRID ────────────────────────────────────────────────
     st.markdown(f"""
