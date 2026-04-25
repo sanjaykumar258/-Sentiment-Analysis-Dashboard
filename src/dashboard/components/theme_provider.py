@@ -167,6 +167,9 @@ html, body, [class*="css"] {{
   overflow: hidden !important;
   background: transparent !important;
   border: 1px solid var(--border) !important;
+  font-size: 0 !important; /* Kills the 'keyboard_double' text instantly */
+  color: transparent !important;
+  text-indent: -9999px !important; /* Final insurance against text leak */
 }}
 
 /* Hide EVERY POSSIBLE ELEMENT inside the button to prevent raw text from leaking */
@@ -184,24 +187,31 @@ html, body, [class*="css"] {{
 [data-testid="stSidebarCollapseControl"]::after {{
   content: "«" !important;
   font-family: Arial, sans-serif !important;
-  font-size: 22px !important;
-  font-weight: 800 !important;
-  color: var(--brand-primary) !important;
-  line-height: 1 !important;
-}}
-
-/* Show » when sidebar is CLOSED */
-[data-testid="collapsedControl"]::after {{
-  content: "»" !important;
-  font-family: Arial, sans-serif !important;
-  font-size: 22px !important;
-  font-weight: 800 !important;
+  content: "\e5cb" !important; /* chevron_left code */
+  font-family: 'Material Icons' !important;
+  font-size: 24px !important;
   color: var(--brand-primary) !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   line-height: 1 !important;
+  text-indent: 0 !important;
+  visibility: visible !important;
+}}
+
+[data-testid="collapsedControl"]::after {{
+  content: "\e5cc" !important; /* chevron_right code */
+  font-family: 'Material Icons' !important;
+  font-size: 24px !important;
+  color: var(--brand-primary) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  line-height: 1 !important;
+  text-indent: 0 !important;
+  visibility: visible !important;
   pointer-events: none !important;
 }}
 
