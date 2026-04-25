@@ -70,7 +70,7 @@ with st.container():
                 st.session_state["ex_length"]    = int(row.get("Content_Length", 300) if pd.notna(row.get("Content_Length")) else 300)
                 st.session_state["ex_eng"]       = float(row["Engagement_Rate"])
                 st.session_state["ex_label"]     = row["Sentiment"]
-                st.session_state["ex_text"]      = row.get("Text_Content", "")
+                st.session_state["live_post_text"] = row.get("Text_Content", row.get("Content", ""))
             else:
                 # Mock fallback if no data is loaded
                 import random
@@ -90,10 +90,10 @@ with st.container():
                 st.session_state["ex_hashtags"]  = random.randint(1, 15)
                 st.session_state["ex_length"]    = random.randint(50, 1000)
                 st.session_state["ex_eng"]       = round(random.uniform(0.5, 15.0), 2)
-                st.session_state["ex_text"]      = random.choice(mock_posts)
+                st.session_state["live_post_text"] = random.choice(mock_posts)
             st.rerun()
 
-    post_text = st.text_area("Post content", value=st.session_state.get("ex_text", ""), placeholder="e.g. Amazing results on this new tech post!", height=100)
+    post_text = st.text_area("Post content", key="live_post_text", placeholder="e.g. Amazing results on this new tech post!", height=100)
 
     platforms_list = list(df_raw["Platform"].unique()) if not df_raw.empty else ["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"]
     categories_list = list(df_raw["Category"].unique()) if not df_raw.empty else ["Tech", "Fashion", "Finance", "Gaming", "Education"]
