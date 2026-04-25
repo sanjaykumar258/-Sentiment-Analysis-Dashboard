@@ -233,14 +233,162 @@ h1, h2, h3, h4, h5, h6, p, span, label, li, strong, b {{
 
 /* Explicitly target Light Mode backgrounds to ensure dark text */
 {"" if is_dark else """
-[data-testid="stHeader"], 
-[data-testid="stSidebar"], 
-[data-testid="stAppViewContainer"], 
-[data-testid="stVerticalBlock"] span,
-[data-testid="stMarkdownContainer"] p,
-[data-testid="stWidgetLabel"] label {
-    color: #111827 !important;
-}
+    /* ═══════════════════════════════════════════════════════════════
+       LIGHT MODE — Comprehensive text visibility fixes
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Global catch-all for any remaining dark text */
+    [data-testid="stHeader"],
+    [data-testid="stSidebar"],
+    [data-testid="stAppViewContainer"],
+    [data-testid="stVerticalBlock"] span,
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stWidgetLabel"] label,
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] span {
+        color: #111827 !important;
+    }
+
+    /* Metric labels & values */
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricDelta"] {
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+    }
+
+    /* Caption / small text */
+    [data-testid="stCaptionContainer"] p,
+    [data-testid="stCaptionContainer"] span,
+    .stCaption, small {
+        color: #4B5563 !important;
+        -webkit-text-fill-color: #4B5563 !important;
+    }
+
+    /* Tab labels */
+    [data-baseweb="tab"] {
+        color: #4B5563 !important;
+    }
+    [aria-selected="true"][data-baseweb="tab"] {
+        color: #111827 !important;
+    }
+
+    /* Expander header */
+    [data-testid="stExpander"] summary p,
+    [data-testid="stExpander"] summary span {
+        color: #111827 !important;
+    }
+
+    /* Selectbox / multiselect dropdown text */
+    [data-baseweb="select"] span,
+    [data-baseweb="select"] div,
+    [data-baseweb="select"] input,
+    [data-baseweb="select"] [data-baseweb="tag"] span {
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+    }
+
+    /* Popover / dropdown list items */
+    [data-baseweb="popover"] li,
+    [data-baseweb="popover"] span,
+    div[role="listbox"] li,
+    div[role="listbox"] span {
+        color: #111827 !important;
+    }
+
+    /* Number input, text input, textarea */
+    [data-baseweb="input"] input,
+    [data-baseweb="base-input"] input,
+    [data-baseweb="textarea"] textarea {
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+    }
+
+    /* Slider tick labels */
+    .stSlider p,
+    .stSlider span {
+        color: #374151 !important;
+        -webkit-text-fill-color: #374151 !important;
+    }
+
+    /* Radio & checkbox labels */
+    [data-testid="stRadio"] label,
+    [data-testid="stRadio"] p,
+    [data-testid="stCheckbox"] label,
+    [data-testid="stCheckbox"] p {
+        color: #111827 !important;
+    }
+
+    /* Dataframe / table text */
+    [data-testid="stDataFrame"] *,
+    .stTable th,
+    .stTable td {
+        color: #111827 !important;
+    }
+
+    /* Toast messages */
+    [data-testid="stToast"] p,
+    [data-testid="stToast"] span {
+        color: #111827 !important;
+    }
+
+    /* Sidebar nav links */
+    [data-testid="stPageLink-NavLink"],
+    [data-testid="stPageLink-NavLink"] p {
+        color: #1E293B !important;
+    }
+
+    /* Download button */
+    .stDownloadButton button,
+    .stDownloadButton button * {
+        color: #111827 !important;
+    }
+
+    /* Alert/info boxes */
+    [data-testid="stAlert"] p,
+    [data-testid="stAlert"] span {
+        color: #111827 !important;
+    }
+
+    /* File uploader text */
+    [data-testid="stFileUploader"] label,
+    [data-testid="stFileUploader"] p,
+    [data-testid="stFileUploader"] span {
+        color: #374151 !important;
+    }
+
+    /* All markdown text elements */
+    [data-testid="stMarkdown"] p,
+    [data-testid="stMarkdown"] span,
+    [data-testid="stMarkdown"] li,
+    [data-testid="stMarkdown"] h1,
+    [data-testid="stMarkdown"] h2,
+    [data-testid="stMarkdown"] h3,
+    [data-testid="stMarkdown"] strong,
+    [data-testid="stMarkdown"] em,
+    [data-testid="stMarkdown"] code {
+        color: #111827 !important;
+    }
+
+    /* Sidebar section headers (NAVIGATION label, etc.) */
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] div {
+        color: #1E293B !important;
+    }
+
+    /* Number step buttons */
+    [data-testid="stNumberInputStepUp"] svg,
+    [data-testid="stNumberInputStepDown"] svg,
+    .stNumberInput button svg {
+        fill: #111827 !important;
+    }
+
+    /* Select arrow SVGs */
+    [data-baseweb="select"] svg {
+        fill: #374151 !important;
+    }
 """}
 h1 {{ font-family: var(--font-sans) !important; font-weight: 800 !important; color: var(--text-primary) !important; letter-spacing: -0.04em !important; }}
 .block-container h1 {{ font-size: 2.2rem !important; }}
