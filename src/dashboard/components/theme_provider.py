@@ -176,7 +176,7 @@ html, body, [class*="css"] {{
   font-size: 22px !important;
   font-weight: 800 !important;
   font-family: Arial, sans-serif !important;
-  color: #7dd3fc !important;
+  color: {("#00E6F0" if is_dark else "#1E293B")} !important;
   visibility: visible !important;
   display: block !important;
   position: absolute !important;
@@ -194,9 +194,12 @@ html, body, [class*="css"] {{
   font-size: 22px !important;
   font-weight: 800 !important;
   font-family: Arial, sans-serif !important;
-  color: #7dd3fc !important;
+  color: {("#00E6F0" if is_dark else "#1E293B")} !important;
   visibility: visible !important;
-  font-family: Arial, sans-serif !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
   line-height: 1 !important;
   z-index: 9999 !important;
   pointer-events: none !important;
