@@ -686,68 +686,63 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE ULTIMATE SIDEBAR FIX: ABSOLUTE CONTROL METHOD ── */
+/* ── THE PURE-CSS SHARP ICON FIX ── */
 
-/* 1. COMPLETELY HIDE Streamlit's native buttons and their containers */
+/* 1. Reset native buttons to be fully visible and solid */
 [data-testid="stSidebarCollapseControl"], 
 [data-testid="collapsedControl"],
 [data-testid="stSidebarCollapseControl"] button,
 [data-testid="collapsedControl"] button {{
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: {"rgba(255,255,255,0.05)" if is_dark else "rgba(0,0,0,0.05)"} !important;
+    border: 1px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    border-radius: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    z-index: 99999 !important;
+}}
+
+/* 2. Hide ALL internal Streamlit junk (text, svgs, spans) */
+[data-testid="stSidebarCollapseControl"] button *,
+[data-testid="collapsedControl"] button * {{
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
-    pointer-events: none !important;
 }}
 
-/* 2. CREATE OUR OWN FLOATING TOGGLE in the sidebar (Open State) */
-[data-testid="stSidebar"]::before {{
-    content: "«" !important;
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    width: 36px !important;
-    height: 36px !important;
-    background: {"#1e293b" if is_dark else "#f1f5f9"} !important;
-    color: {"#00E6F0" if is_dark else "#000000"} !important;
-    border: 1px solid {"#00E6F0" if is_dark else "#000000"} !important;
-    border-radius: 10px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    z-index: 999999 !important;
-    cursor: pointer !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-    pointer-events: auto !important;
+/* 3. Draw a PURE CSS Arrow (using borders) - sidebar OPEN (click to close) */
+[data-testid="stSidebarCollapseControl"] button::before {{
+    content: "" !important;
+    display: block !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-left: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    border-bottom: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    transform: rotate(45deg) !important;
+    margin-left: 4px !important;
 }}
 
-/* 3. CREATE OUR OWN FLOATING TOGGLE on the main page (Closed State) */
-.stApp::before {{
-    content: "»" !important;
-    position: fixed !important;
-    top: 20px !important;
-    left: 20px !important;
-    width: 36px !important;
-    height: 36px !important;
-    background: {"#1e293b" if is_dark else "#f1f5f9"} !important;
-    color: {"#00E6F0" if is_dark else "#000000"} !important;
-    border: 1px solid {"#00E6F0" if is_dark else "#000000"} !important;
-    border-radius: 10px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    z-index: 999999 !important;
-    cursor: pointer !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-    pointer-events: none !important; /* This is just a visual indicator; clicking the area still triggers Streamlit's hidden button below it */
+/* 4. Draw a PURE CSS Arrow (using borders) - sidebar CLOSED (click to open) */
+[data-testid="collapsedControl"] button::before {{
+    content: "" !important;
+    display: block !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-right: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    border-top: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    transform: rotate(45deg) !important;
+    margin-right: 4px !important;
 }}
 
-/* Ensure the main container doesn't hide our floating toggle */
-.stApp {{
-    position: relative !important;
+/* Hover effect */
+[data-testid="stSidebarCollapseControl"] button:hover, 
+[data-testid="collapsedControl"] button:hover {{
+    background-color: {"rgba(0,230,240,0.15)" if is_dark else "rgba(0,0,0,0.1)"} !important;
+    transform: scale(1.05) !important;
 }}
 </style>
 """, unsafe_allow_html=True)
