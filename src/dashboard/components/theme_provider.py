@@ -27,7 +27,7 @@ def inject_global_theme():
   --border: rgba(51,65,85,0.8);
   --border-hover: rgba(148,163,184,0.4);
   --text-primary: #FFFFFF;
-  --text-secondary: #E2E8F0;
+  --text-secondary: #FFFFFF;
   --text-muted: #94A3B8;
   --text-faint: #64748B;
   --shadow-soft: 0 4px 24px rgba(0,0,0,0.35);
@@ -856,6 +856,13 @@ section[data-testid="stMain"] > div:first-child {{
 /* ═══════════════════════════════════════════════════════════════
    RADIO / CHECKBOX (for theme toggle in popover)
    ═══════════════════════════════════════════════════════════════ */
+[data-testid="stMarkdownContainer"] p, 
+[data-testid="stMarkdownContainer"] span, 
+[data-testid="stMarkdownContainer"] h1, 
+[data-testid="stMarkdownContainer"] h2, 
+[data-testid="stMarkdownContainer"] h3 {{
+    color: {"#FFFFFF" if is_dark else "var(--text-primary)"} !important;
+}}
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
