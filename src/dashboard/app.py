@@ -224,10 +224,17 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
     # ─── FILE UPLOADER ───────────────────────────────────────────────
     col1, col2, col3 = st.columns([1.2, 2, 1.2])
     with col2:
-        process_dataset(uploaded_file)
-        else:
-            # Do NOT delete data automatically on every rerun. 
-            pass
+        uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
+        
+        if uploaded_file is not None:
+            if st.session_state.get("processed_file") != uploaded_file.name:
+                import os
+                if os.path.exists("saved_model/model_card.json"):
+                    try:
+                        os.remove("saved_model/model_card.json")
+                    except:
+                        pass
+                process_dataset(uploaded_file)
 
     # --- Move dialog outside to avoid nested re-renders ---
     @st.dialog("⚙️ Processing Dataset")
@@ -367,20 +374,6 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
         except Exception as e:
             st.error(f"❌ Error processing file: {e}")
 
-        uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
-
-        if uploaded_file is not None:
-            if st.session_state.get("processed_file") != uploaded_file.name:
-                import os
-                if os.path.exists("saved_model/model_card.json"):
-                    try:
-                        os.remove("saved_model/model_card.json")
-                    except:
-                        pass
-                process_dataset(uploaded_file)
-        else:
-            # Do NOT delete data automatically on every rerun. 
-            pass
 
     # ─── METRICS GRID ────────────────────────────────────────────────
     st.markdown(f"""
