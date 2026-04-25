@@ -228,7 +228,6 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
         
         if uploaded_file is not None:
             if st.session_state.get("processed_file") != uploaded_file.name:
-                # ── RENDER CUSTOM POPUP OVERLAY ──
                 modal_placeholder = st.empty()
                 with modal_placeholder.container():
                     st.markdown("""
@@ -237,33 +236,51 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                             position: fixed !important;
                             top: 0 !important; left: 0 !important;
                             width: 100vw !important; height: 100vh !important;
-                            background: rgba(0,0,0,0.4) !important;
+                            background: rgba(0,0,0,0.5) !important;
                             backdrop-filter: blur(12px) saturate(160%) !important;
                             z-index: 9999999 !important;
                             display: flex !important;
                             align-items: center !important;
                             justify-content: center !important;
                         }
-                        .custom-modal-container {
+                        .custom-modal-card {
+                            background: #1E293B !important; /* Specific dark color from image */
+                            border-radius: 28px !important;
+                            padding: 2.5rem !important;
                             width: 100% !important;
-                            max-width: 500px !important;
+                            max-width: 520px !important;
+                            box-shadow: 0 40px 100px rgba(0,0,0,0.7) !important;
+                            border: 1px solid rgba(255,255,255,0.05) !important;
                             animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+                            position: relative !important;
                         }
                         @keyframes modalPop {
                             from { transform: scale(0.9) translateY(20px); opacity: 0; }
                             to   { transform: scale(1) translateY(0); opacity: 1; }
                         }
+                        .modal-close {
+                            position: absolute; top: 20px; right: 24px;
+                            color: #FFF; font-size: 18px; cursor: pointer; opacity: 0.6;
+                        }
                         </style>
                         <div class="custom-modal-backdrop">
-                            <div class="custom-modal-container">
-                                <div class="glass-card" style="padding:2.5rem; width:100%; border-color:var(--brand-primary); box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
-                                    <h2 style="margin:0 0 1rem; font-family:var(--font-sans); color:var(--text-primary); text-align:center;">⚙️ Processing Dataset</h2>
+                            <div class="custom-modal-card">
+                                <div class="modal-close">✕</div>
+                                <h2 style="margin:0 0 2rem; font-family:var(--font-sans); color:#FFF; font-size:1.6rem; display:flex; align-items:center; gap:12px;">
+                                    <span style="font-size:1.8rem;">⚙️</span> Processing Dataset
+                                </h2>
                     """, unsafe_allow_html=True)
                     
                     import time, numpy as np
-                    st.markdown(f"<p style='text-align:center; color:var(--text-muted);'>File: <code>{uploaded_file.name}</code></p>", unsafe_allow_html=True)
+                    st.markdown(f"""
+                        <div style="margin-bottom:1.5rem; font-family:var(--font-sans);">
+                            <span style="color:#94A3B8; font-weight:700; font-size:13px; margin-right:8px;">File:</span>
+                            <span style="background:#334155; color:#E2E8F0; padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600; font-family:monospace;">{uploaded_file.name}</span>
+                        </div>
+                    """, unsafe_allow_html=True)
                     
                     progress_bar = st.progress(0)
+                    st.markdown("<div style='margin-bottom:1rem;'></div>", unsafe_allow_html=True)
                     status_text = st.empty()
 
                     try:
@@ -274,7 +291,7 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                         uploaded_file.seek(0)
                         new_df = pd.read_csv(uploaded_file)
 
-                        # ── Step 2: Detect col ──
+                        # ── Step 2: Validate ──
                         status_text.caption("Validating structure...")
                         progress_bar.progress(40)
                         col_lower_map = {c.lower().strip(): c for c in new_df.columns}
@@ -298,10 +315,35 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                             new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
                             
                             progress_bar.progress(100)
-                            status_text.caption("✅ Processing complete!")
-                            st.success("Dataset successfully prepared.")
+                            status_text.markdown("<div style='color:#10B981; font-size:13px; font-weight:600; margin-bottom:1.5rem;'>✅ Processing complete!</div>", unsafe_allow_html=True)
                             
-                            if st.button("🚀 Load Dashboard", type="primary", use_container_width=True):
+                            st.markdown(f"""
+                                <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); border-radius:12px; padding:1.2rem; margin-bottom:1.5rem; color:#A7F3D0; font-size:13px; font-weight:500;">
+                                    Dataset successfully validated and ready.
+                                </div>
+                                <div style="display:flex; gap:1.5rem; margin-bottom:1.5rem;">
+                                    <div><span style="color:#94A3B8; font-size:12px; font-weight:700; text-transform:uppercase;">Total Rows:</span> <span style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:11px; margin-left:4px;">{len(new_df):,}</span></div>
+                                    <div><span style="color:#94A3B8; font-size:12px; font-weight:700; text-transform:uppercase;">Total Features:</span> <span style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:11px; margin-left:4px;">{len(new_df.columns)}</span></div>
+                                </div>
+                            """, unsafe_allow_html=True)
+
+                            # Metrics row matching the image
+                            dist = new_df["Sentiment"].value_counts().head(3)
+                            m_cols = st.columns(3)
+                            labels = ["POSITIVE", "NEUTRAL", "NEGATIVE"]
+                            for i, label in enumerate(labels):
+                                val = dist.get(label, 0)
+                                with m_cols[i]:
+                                    st.markdown(f"""
+                                        <div style="text-align:left;">
+                                            <div style="color:#94A3B8; font-size:11px; font-weight:800; letter-spacing:0.05em;">{label}</div>
+                                            <div style="color:#FFF; font-size:1.8rem; font-weight:800; margin-top:2px; letter-spacing:-0.02em;">{val:,}</div>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+
+                            st.markdown("<div style='margin-bottom:2rem;'></div>", unsafe_allow_html=True)
+                            
+                            if st.button("Load Dashboard", type="primary", use_container_width=True):
                                 st.session_state["processed_file"] = uploaded_file.name
                                 st.cache_data.clear()
                                 st.rerun()
@@ -312,8 +354,7 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                         st.error(f"❌ Error: {e}")
                         if st.button("Close"): modal_placeholder.empty()
                     
-                    # Close HTML tags
-                    st.markdown("</div></div></div>", unsafe_allow_html=True)
+                    st.markdown("</div></div>", unsafe_allow_html=True)
 
 
     # ─── METRICS GRID ────────────────────────────────────────────────
