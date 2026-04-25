@@ -686,7 +686,7 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE CLICKABLE HIGH-CONTRAST FIX ── */
+/* ── THE SINGLE-ARROW CLEAN FIX ── */
 
 /* 1. Reset buttons to be solid, visible, AND clickable */
 [data-testid="stSidebarHeader"] button,
@@ -702,17 +702,23 @@ section[data-testid="stMain"] > div:first-child {{
     border-radius: 8px !important;
     min-width: 32px !important;
     min-height: 32px !important;
-    pointer-events: auto !important; /* Ensure clicks are heard */
+    pointer-events: auto !important;
     cursor: pointer !important;
     z-index: 999999 !important;
+    overflow: hidden !important; /* Ensure children don't bleed out */
 }}
 
-/* 2. Target the internal icons ONLY to hide them, not the whole child tree */
-[data-testid="stSidebarHeader"] button svg,
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="collapsedControl"] svg {{
+/* 2. COMPLETELY HIDE every single internal child (span, svg, div) to kill the double arrow */
+[data-testid="stSidebarHeader"] button *,
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] * {{
     display: none !important;
+    visibility: hidden !important;
     opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }}
 
 /* 3. Inject the LEFT arrow (Collapse) */
