@@ -686,49 +686,54 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE NUCLEAR SVG PATH FIX ── */
+/* ── THE AGGRESSIVE INHERITANCE FIX ── */
 
-/* 1. Target the expanded sidebar header button (the '<<' collapse arrow) */
-[data-testid="stSidebarHeader"] button svg,
-[data-testid="stSidebarHeader"] button svg path,
-[data-testid="stSidebarCollapseControl"] button svg,
-[data-testid="stSidebarCollapseControl"] button svg path {{
-    fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
+/* 1. Strip away constant background boxes and borders */
+[data-testid="stSidebarHeader"] button,
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"] {{
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}}
+
+/* 2. Force 'currentColor' inheritance on ALL nested children */
+[data-testid="stSidebarHeader"] button *,
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] * {{
     color: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    -webkit-text-fill-color: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
     stroke: {"%2300E6F0" if is_dark else "%23000000"} !important;
     opacity: 1 !important;
     visibility: visible !important;
 }}
 
-/* 2. Target the button container to ensure it pops */
-[data-testid="stSidebarHeader"] button,
-[data-testid="stSidebarCollapseControl"] button {{
-    opacity: 1 !important;
-    visibility: visible !important;
-    background-color: {"rgba(255,255,255,0.08)" if is_dark else "rgba(0,0,0,0.05)"} !important;
-    border: 1px solid {"%2300E6F0" if is_dark else "rgba(0,0,0,0.1)"} !important;
-    border-radius: 8px !important;
-}}
-
-/* 3. Target the collapsed control (the '>' expand arrow when sidebar is closed) */
+/* 3. Deep target SVGs specifically for redundant protection */
+[data-testid="stSidebarHeader"] button svg,
+[data-testid="stSidebarHeader"] button svg path,
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stSidebarCollapseButton"] svg path,
 [data-testid="collapsedControl"] svg,
 [data-testid="collapsedControl"] svg path {{
     fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
-    color: {"%2300E6F0" if is_dark else "%23000000"} !important;
     stroke: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    color: {"%2300E6F0" if is_dark else "%23000000"} !important;
     opacity: 1 !important;
     visibility: visible !important;
 }}
 
-[data-testid="collapsedControl"] {{
-    opacity: 1 !important;
-    visibility: visible !important;
-    background-color: {"%231e293b" if is_dark else "rgba(255,255,255,0.9)"} !important;
-    border: 1px solid {"%2300E6F0" if is_dark else "rgba(0,0,0,0.1)"} !important;
-    border-radius: 8px !important;
+/* 4. Smooth hover effect */
+[data-testid="stSidebarHeader"] button:hover svg,
+[data-testid="stSidebarCollapseButton"]:hover svg,
+[data-testid="collapsedControl"]:hover svg {{
+    transform: scale(1.15) !important;
+    transition: transform 0.2s ease !important;
 }}
 
-/* Kill any remaining internal ghosting from previous attempts */
+/* Ensure the hidden character from previous attempts stays gone */
 [data-testid="stSidebarCollapseControl"] button::before,
 [data-testid="collapsedControl"] button::before {{
     display: none !important;
