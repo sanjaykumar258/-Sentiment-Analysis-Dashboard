@@ -17,13 +17,14 @@ def inject_global_theme():
   --bg-card: rgba(255,255,255,0.03);
   --bg-card-hover: rgba(255,255,255,0.06);
   --bg-card-solid: #1E293B;
-  --bg-input: rgba(0,0,0,0.25);
+  --bg-input: #0F172A;
+  --bg-input-focus: #1E293B;
   --bg-bar-track: rgba(255,255,255,0.07);
   --bg-insight: rgba(255,255,255,0.02);
-  --border: rgba(51,65,85,0.6);
-  --border-hover: rgba(148,163,184,0.3);
-  --text-primary: #F1F5F9;
-  --text-secondary: #CBD5E1;
+  --border: rgba(51,65,85,0.8);
+  --border-hover: rgba(148,163,184,0.4);
+  --text-primary: #FFFFFF;
+  --text-secondary: #E2E8F0;
   --text-muted: #94A3B8;
   --text-faint: #64748B;
   --shadow-soft: 0 4px 24px rgba(0,0,0,0.35);
@@ -363,13 +364,14 @@ div[data-baseweb="select"] > div {{
   border-color: var(--border) !important;
 }}
 [data-baseweb="select"] span,
-[data-baseweb="select"] div {{
-  color: var(--text-primary) !important;
-  -webkit-text-fill-color: var(--text-primary) !important;
+[data-baseweb="select"] div,
+[data-baseweb="select"] input {{
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }}
 [data-baseweb="select"] svg {{
-  fill: var(--text-primary) !important;
-  color: var(--text-primary) !important;
+  fill: #FFFFFF !important;
+  color: #FFFFFF !important;
 }}
 
 /* Number Input Step Buttons (+ / -) */
