@@ -205,8 +205,8 @@ html, body, [class*="css"] {{
 /* Step 5: Hover effect */
 [data-testid="stSidebarCollapseControl"] button:hover::before,
 [data-testid="collapsedControl"] button:hover::before {{
-  color: #ffffff !important;
-  text-shadow: 0 0 10px rgba(125, 211, 252, 0.8) !important;
+  color: var(--text-primary) !important;
+  text-shadow: 0 0 10px var(--brand-primary) !important;
   transform: translate(-50%, -50%) scale(1.2) !important;
 }}
 
