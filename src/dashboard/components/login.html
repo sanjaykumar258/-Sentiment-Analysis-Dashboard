@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentiScope — Sign In</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #080b14;
+      --surface: #0e1422;
+      --card: #111827;
+      --border: rgba(255, 255, 255, 0.06);
+      --accent: #6ee7b7;
+      --accent2: #38bdf8;
+      --accent3: #a78bfa;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --error: #f87171;
+      --glow: rgba(110, 231, 183, 0.15);
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── Animated Background ── */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(110, 231, 183, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(167, 139, 250, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(56, 189, 248, 0.04) 0%, transparent 60%);
+    }
+
+    .grid-lines {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .orb1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(110, 231, 183, 0.08);
+      top: -100px;
+      left: -100px;
+      animation-delay: 0s;
+    }
+
+    .orb2 {
+      width: 300px;
+      height: 300px;
+      background: rgba(167, 139, 250, 0.08);
+      bottom: -80px;
+      right: -80px;
+      animation-delay: -4s;
+    }
+
+    .orb3 {
+      width: 200px;
+      height: 200px;
+      background: rgba(56, 189, 248, 0.06);
+      top: 50%;
+      left: 60%;
+      animation-delay: -2s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(20px, -20px) scale(1.05);
+      }
+
+      66% {
+        transform: translate(-15px, 15px) scale(0.97);
+      }
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+    }
+
+    /* ── Left Panel ── */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 10vh 50px 40px 50px;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(110, 231, 183, 0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-name span {
+      color: var(--accent);
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(110, 231, 183, 0.08);
+      border: 1px solid rgba(110, 231, 183, 0.2);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(1.4);
+      }
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-title .line2 {
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 30px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    /* Stats row */
+    .stats {
+      display: flex;
+      gap: 36px;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-val {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-lbl {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: var(--border);
+    }
+
+    /* Floating sentiment pills */
+    .sentiment-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      white-space: nowrap;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pill-bar {
+      height: 4px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .pill.pos .pill-dot {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .pill.neu .pill-dot {
+      background: var(--accent2);
+      box-shadow: 0 0 8px var(--accent2);
+    }
+
+    .pill.neg .pill-dot {
+      background: var(--error);
+      box-shadow: 0 0 8px var(--error);
+    }
+
+    .pill.pos .pill-bar {
+      background: var(--accent);
+      width: 60px;
+    }
+
+    .pill.neu .pill-bar {
+      background: var(--accent2);
+      width: 40px;
+    }
+
+    .pill.neg .pill-bar {
+      background: var(--error);
+      width: 25px;
+    }
+
+    /* ── Right Panel (Form) ── */
+    .right-panel {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 10vh 40px 40px 40px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 32px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      animation: cardIn 0.7s 0.2s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(110, 231, 183, 0.4), transparent);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .card-header {
+      margin-bottom: 24px;
+    }
+
+    .card-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    .card-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── Form Elements ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94a3b8;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      color: var(--muted);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 1;
+      transition: color 0.2s;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 11px 14px 11px 40px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      background: rgba(110, 231, 183, 0.04);
+      box-shadow: 0 0 0 3px rgba(110, 231, 183, 0.1);
+    }
+
+    input:focus+.input-icon,
+    .input-icon-focused {
+      color: var(--accent);
+    }
+
+    .input-wrap:focus-within .input-icon {
+      color: var(--accent);
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 16px;
+      transition: color 0.2s;
+      padding: 4px;
+    }
+
+    .eye-btn:hover {
+      color: var(--text);
+    }
+
+    /* Remember / Forgot row */
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      display: none;
+    }
+
+    .checkbox-box {
+      width: 17px;
+      height: 17px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .checkbox-label input:checked~.checkbox-box {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .checkbox-label input:checked~.checkbox-box::after {
+      content: '✓';
+      font-size: 11px;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .forgot {
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    /* Error message */
+    .error-msg {
+      display: none;
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--error);
+      margin-bottom: 18px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .error-msg.show {
+      display: flex;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #080b14;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(110, 231, 183, 0.25);
+      letter-spacing: 0.2px;
+    }
+
+    .btn-submit:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(110, 231, 183, 0.35);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    .btn-submit.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .btn-submit .btn-text {
+      transition: opacity 0.2s;
+    }
+
+    .btn-submit .btn-spinner {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-submit.loading .btn-text {
+      opacity: 0;
+    }
+
+    .btn-submit.loading .btn-spinner {
+      display: flex;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(0, 0, 0, 0.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Social buttons */
+    .social-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-social {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 11px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .btn-social:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .btn-social svg {
+      flex-shrink: 0;
+    }
+
+    /* Sign-up footer */
+    .card-footer {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .card-footer a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .card-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Success overlay ── */
+    .success-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: var(--card);
+      border-radius: 24px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.3s ease;
+      z-index: 10;
+    }
+
+    .success-overlay.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      animation: popIn 0.4s 0.1s ease both;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .success-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .left-panel {
+        display: none;
+      }
+
+      .right-panel {
+        padding: 40px 20px;
+      }
+
+      html,
+      body {
+        overflow: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-canvas"></div>
+  <div class="grid-lines"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="brand">
+        <div class="brand-icon">📊</div>
+        <div class="brand-name">Senti<span>Intel</span></div>
+      </div>
+
+      <div class="hero-tag">AI-Powered Analytics</div>
+
+      <h1 class="hero-title">
+        Decode Every<br>
+        <span class="line2">Emotion & Insight</span>
+      </h1>
+
+      <p class="hero-desc">
+        Fine-tuned DistilBERT intelligence across social media, engagement trends, and real-time text analytics.
+      </p>
+
+      <div style="display: flex; align-items: center; gap: 60px;">
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-val">100.0%</span>
+            <span class="stat-lbl">Accuracy</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-val">GPU</span>
+            <span class="stat-lbl">Accelerated</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-val">&lt;15ms</span>
+            <span class="stat-lbl">Latency</span>
+          </div>
+        </div>
+
+        <div class="sentiment-pills">
+          <div class="pill pos">
+            <div class="pill-dot"></div>
+            <span>Positive — 62%</span>
+            <div class="pill-bar"></div>
+          </div>
+          <div class="pill neu">
+            <div class="pill-dot"></div>
+            <span>Neutral — 26%</span>
+            <div class="pill-bar"></div>
+          </div>
+          <div class="pill neg">
+            <div class="pill-dot"></div>
+            <span>Negative — 12%</span>
+            <div class="pill-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL (FORM) -->
+    <div class="right-panel">
+      <div class="card" id="loginCard">
+
+        <!-- Top shimmer line via ::before -->
+
+        <div class="card-header">
+          <div class="card-eyebrow">Welcome back</div>
+          <div class="card-title">Sign in to your dashboard</div>
+          <div class="card-sub">Enter your credentials to continue</div>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-msg" id="errorMsg">
+          <span>⚠</span>
+          <span id="errorText">Invalid email or password.</span>
+        </div>
+
+        <!-- User ID -->
+        <div class="field">
+          <label for="userid">User ID</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="userid" placeholder="Enter your User ID" autocomplete="username" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="eye-btn" id="eyeBtn" onclick="togglePwd()">👁</button>
+          </div>
+        </div>
+
+        <!-- Remember / Forgot -->
+        <div class="row-between">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember" />
+            <div class="checkbox-box"></div>
+            Remember me
+          </label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-submit" id="submitBtn" onclick="handleAuth()">
+          <span class="btn-text" id="submitBtnText">Sign In →</span>
+          <span class="btn-spinner">
+            <div class="spinner"></div>
+          </span>
+        </button>
+
+        <div class="card-footer">
+          <span id="toggleText">Don't have an account?</span> <a href="#" onclick="toggleMode(); return false;" id="toggleLink">Create one free →</a>
+        </div>
+
+        <!-- Success Overlay -->
+        <div class="success-overlay" id="successOverlay">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Welcome back!</div>
+          <div class="success-sub">Redirecting to your dashboard…</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle password visibility
+    function togglePwd() {
+      const input = document.getElementById('password');
+      const btn = document.getElementById('eyeBtn');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+      }
+    }
+
+    // Show error
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      document.getElementById('errorText').textContent = msg;
+      el.classList.add('show');
+      document.getElementById('loginCard').style.animation = 'shake 0.4s ease';
+      setTimeout(() => document.getElementById('loginCard').style.animation = '', 400);
+    }
+
+    // Add shake keyframe
+    const style = document.createElement('style');
+    style.textContent = `
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+    }
+  `;
+    document.head.appendChild(style);
+
+    let isLoginMode = true;
+
+    function toggleMode() {
+      isLoginMode = !isLoginMode;
+      const title = document.querySelector('.card-title');
+      const sub = document.querySelector('.card-sub');
+      const eyebrow = document.querySelector('.card-eyebrow');
+      const btnText = document.getElementById('submitBtnText');
+      const toggleText = document.getElementById('toggleText');
+      const toggleLink = document.getElementById('toggleLink');
+
+      if (isLoginMode) {
+        eyebrow.textContent = 'Welcome back';
+        title.textContent = 'Sign in to your dashboard';
+        sub.textContent = 'Enter your credentials to continue';
+        btnText.textContent = 'Sign In →';
+        toggleText.textContent = "Don't have an account?";
+        toggleLink.textContent = 'Create one free →';
+      } else {
+        eyebrow.textContent = 'Get Started';
+        title.textContent = 'Create your account';
+        sub.textContent = 'Enter a User ID and Password to sign up';
+        btnText.textContent = 'Sign Up →';
+        toggleText.textContent = 'Already have an account?';
+        toggleLink.textContent = 'Sign in here →';
+      }
+    }
+
+    // Main login handler
+    function handleAuth() {
+      const userid = document.getElementById('userid').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('submitBtn');
+
+      // Clear error
+      document.getElementById('errorMsg').classList.remove('show');
+
+      // Validation
+      if (!userid) { showError('Please enter your User ID.'); return; }
+      if (!password) { showError('Please enter your password.'); return; }
+      if (password.length < 4) { showError('Password must be at least 4 characters.'); return; }
+
+      // Loading state
+      btn.classList.add('loading');
+
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        
+        if (isLoginMode) {
+          const savedPwd = localStorage.getItem('senti_user_' + userid);
+          if ((userid === 'admin' && password === 'admin') || (savedPwd && savedPwd === password)) {
+            showSuccess('Welcome back!', 'Redirecting to your dashboard…', userid);
+          } else {
+            showError('Invalid credentials. Try signing up first or use admin/admin.');
+          }
+        } else {
+          // Signup mode
+          localStorage.setItem('senti_user_' + userid, password);
+          showSuccess('Account Created!', 'Redirecting to your new dashboard…', userid);
+        }
+      }, 1200);
+    }
+
+    function showSuccess(titleText, subText, userid) {
+      const overlay = document.getElementById('successOverlay');
+      overlay.querySelector('.success-title').textContent = titleText;
+      overlay.querySelector('.success-sub').textContent = subText;
+      overlay.classList.add('show');
+      setTimeout(() => {
+        window.parent.location.href = "/?logged_in=true&user=" + encodeURIComponent(userid);
+      }, 1400);
+    }
+
+    // Enter key triggers login/signup
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleAuth();
+    });
+  </script>
+</body>
+
+</html>

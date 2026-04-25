@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentiScope — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    function sendMessageToStreamlitClient(type, data) {
+      window.parent.postMessage({ isStreamlitMessage: true, type: type, ...data }, "*");
+    }
+    sendMessageToStreamlitClient("streamlit:componentReady", { apiVersion: 1 });
+    window.addEventListener("load", function () {
+      sendMessageToStreamlitClient("streamlit:componentReady", { apiVersion: 1 });
+      sendMessageToStreamlitClient("streamlit:setFrameHeight", { height: window.innerHeight });
+    });
+    function sendValue(v) { sendMessageToStreamlitClient("streamlit:setComponentValue", { value: v }); }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b14;
+      --card: #111827;
+      --border: rgba(255,255,255,0.06);
+      --accent: #6ee7b7;
+      --accent2: #38bdf8;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --error: #f87171;
+      --success: #6ee7b7;
+    }
+
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+
+    /* Background */
+    .bg-canvas { position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(110,231,183,.07) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 80% 80%, rgba(167,139,250,.07) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 40% at 50% 50%, rgba(56,189,248,.04) 0%, transparent 60%); }
+    .grid-lines { position: fixed; inset: 0; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%); }
+    .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; animation: float 8s ease-in-out infinite; }
+    .orb1 { width:400px; height:400px; background:rgba(110,231,183,.08); top:-100px; left:-100px; }
+    .orb2 { width:300px; height:300px; background:rgba(167,139,250,.08); bottom:-80px; right:-80px; animation-delay:-4s; }
+    .orb3 { width:200px; height:200px; background:rgba(56,189,248,.06); top:50%; left:60%; animation-delay:-2s; }
+    @keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(20px,-20px) scale(1.05);} 66%{transform:translate(-15px,15px) scale(0.97);} }
+
+    /* Layout */
+    .page { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; height:100vh; }
+
+    /* Left Panel */
+    .left-panel { display:flex; flex-direction:column; justify-content:flex-start; align-items:flex-start;
+      padding:10vh 50px 40px 50px; border-right:1px solid var(--border); position:relative; overflow:hidden; }
+    .left-panel::after { content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(110,231,183,.03) 0%,transparent 60%); pointer-events:none; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:30px; animation:fadeUp .6s ease both; }
+    .brand-icon { width:42px; height:42px; background:linear-gradient(135deg,var(--accent),var(--accent2));
+      border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .brand-name { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; letter-spacing:-.3px; }
+    .brand-name span { color:var(--accent); }
+    .hero-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(110,231,183,.08);
+      border:1px solid rgba(110,231,183,.2); border-radius:100px; padding:6px 14px;
+      font-size:12px; font-weight:500; color:var(--accent); letter-spacing:.5px; text-transform:uppercase;
+      margin-bottom:16px; animation:fadeUp .6s .1s ease both; }
+    .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(1.4);} }
+    .hero-title { font-family:'Playfair Display',serif; font-size:52px; font-weight:700; line-height:1.1;
+      letter-spacing:-1px; margin-bottom:12px; animation:fadeUp .6s .2s ease both; }
+    .hero-title .line2 { color:var(--accent); }
+    .hero-desc { font-size:16px; line-height:1.6; color:var(--muted); max-width:420px; margin-bottom:30px; animation:fadeUp .6s .3s ease both; }
+    .stats { display:flex; gap:36px; animation:fadeUp .6s .4s ease both; }
+    .stat { display:flex; flex-direction:column; gap:4px; }
+    .stat-val { font-size:28px; font-weight:600; line-height:1;
+      background:linear-gradient(135deg,var(--text) 0%,var(--accent) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .stat-lbl { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+    .stat-divider { width:1px; background:var(--border); }
+    .sentiment-pills { display:flex; flex-direction:column; gap:12px; animation:fadeUp .8s .6s ease both; }
+    .pill { display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--border);
+      border-radius:40px; padding:10px 16px; font-size:13px; font-weight:500; backdrop-filter:blur(10px);
+      box-shadow:0 4px 20px rgba(0,0,0,.3); white-space:nowrap; }
+    .pill-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .pill-bar { height:4px; border-radius:2px; flex-shrink:0; }
+    .pill.pos .pill-dot { background:var(--accent); box-shadow:0 0 8px var(--accent); }
+    .pill.neu .pill-dot { background:var(--accent2); box-shadow:0 0 8px var(--accent2); }
+    .pill.neg .pill-dot { background:var(--error); box-shadow:0 0 8px var(--error); }
+    .pill.pos .pill-bar { background:var(--accent); width:60px; }
+    .pill.neu .pill-bar { background:var(--accent2); width:40px; }
+    .pill.neg .pill-bar { background:var(--error); width:25px; }
+
+    /* Right Panel */
+    .right-panel { display:flex; align-items:flex-start; justify-content:center; padding:10vh 40px 40px 40px; }
+    .card { width:100%; max-width:440px; background:var(--card); border:1px solid var(--border); border-radius:24px;
+      padding:32px; box-shadow:0 25px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);
+      animation:cardIn .7s .2s ease both; position:relative; overflow:hidden; }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(110,231,183,.4),transparent); }
+    @keyframes cardIn { from{opacity:0;transform:translateY(24px) scale(.98);} to{opacity:1;transform:none;} }
+
+    /* Tabs */
+    .tabs { display:flex; background:rgba(255,255,255,.04); border:1px solid var(--border);
+      border-radius:14px; padding:4px; gap:4px; margin-bottom:28px; }
+    .tab-btn { flex:1; padding:10px; border:none; border-radius:10px; font-family:'DM Sans',sans-serif;
+      font-size:14px; font-weight:600; cursor:pointer; transition:all .2s;
+      background:transparent; color:var(--muted); }
+    .tab-btn.active { background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#080b14; box-shadow:0 4px 16px rgba(110,231,183,.25); }
+    .tab-btn:not(.active):hover { background:rgba(255,255,255,.06); color:var(--text); }
+
+    /* Form header */
+    .card-eyebrow { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+      color:var(--accent); margin-bottom:8px; }
+    .card-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; line-height:1.2; letter-spacing:-.5px; }
+    .card-sub { font-size:13px; color:var(--muted); margin-top:5px; margin-bottom:22px; }
+
+    /* Fields */
+    .field { display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+    label { font-size:13px; font-weight:500; color:#94a3b8; letter-spacing:.3px; }
+    .input-wrap { position:relative; display:flex; align-items:center; }
+    .input-icon { position:absolute; left:14px; color:var(--muted); font-size:15px; pointer-events:none; z-index:1; transition:color .2s; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+      border-radius:12px; padding:11px 14px 11px 38px; font-family:'DM Sans',sans-serif;
+      font-size:14px; color:var(--text); outline:none; transition:border-color .2s,background .2s,box-shadow .2s; }
+    input:focus { border-color:var(--accent); background:rgba(110,231,183,.04); box-shadow:0 0 0 3px rgba(110,231,183,.1); }
+    .input-wrap:focus-within .input-icon { color:var(--accent); }
+    .eye-btn { position:absolute; right:12px; background:none; border:none; cursor:pointer;
+      color:var(--muted); font-size:15px; transition:color .2s; padding:4px; }
+    .eye-btn:hover { color:var(--text); }
+
+    /* Remember/Forgot row */
+    .row-between { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .checkbox-label { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); cursor:pointer; }
+    .checkbox-label input { display:none; }
+    .checkbox-box { width:17px; height:17px; border:1px solid rgba(255,255,255,.15); border-radius:5px;
+      display:flex; align-items:center; justify-content:center; transition:background .2s,border-color .2s; flex-shrink:0; }
+    .checkbox-label input:checked ~ .checkbox-box { background:var(--accent); border-color:var(--accent); }
+    .checkbox-label input:checked ~ .checkbox-box::after { content:'✓'; font-size:11px; color:#000; font-weight:700; }
+    .forgot { font-size:13px; color:var(--accent); text-decoration:none; font-weight:500; }
+    .forgot:hover { text-decoration:underline; }
+
+    /* Error/Success banners */
+    .msg-banner { display:none; border-radius:10px; padding:10px 14px; font-size:13px;
+      margin-bottom:16px; gap:8px; align-items:center; }
+    .msg-banner.show { display:flex; }
+    .msg-banner.error { background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.25); color:var(--error); }
+    .msg-banner.success-msg { background:rgba(110,231,183,.08); border:1px solid rgba(110,231,183,.25); color:var(--accent); }
+
+    /* Submit button */
+    .btn-submit { width:100%; background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+      border:none; border-radius:12px; padding:13px; font-family:'DM Sans',sans-serif;
+      font-size:15px; font-weight:600; color:#080b14; cursor:pointer; position:relative; overflow:hidden;
+      transition:opacity .2s,transform .15s,box-shadow .2s; box-shadow:0 4px 20px rgba(110,231,183,.25); }
+    .btn-submit:hover { opacity:.92; transform:translateY(-1px); box-shadow:0 8px 28px rgba(110,231,183,.35); }
+    .btn-submit:active { transform:translateY(1px); }
+    .btn-submit.loading { pointer-events:none; opacity:.8; }
+    .btn-submit .btn-text { transition:opacity .2s; }
+    .btn-submit .btn-spinner { display:none; position:absolute; inset:0; align-items:center; justify-content:center; }
+    .btn-submit.loading .btn-text { opacity:0; }
+    .btn-submit.loading .btn-spinner { display:flex; }
+    .spinner { width:20px; height:20px; border:2.5px solid rgba(0,0,0,.3); border-top-color:#000; border-radius:50%; animation:spin .7s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg);} }
+
+    /* Footer link */
+    .card-footer { text-align:center; margin-top:22px; font-size:13px; color:var(--muted); }
+    .card-footer a { color:var(--accent); font-weight:500; text-decoration:none; }
+    .card-footer a:hover { text-decoration:underline; }
+
+    /* Hidden panel */
+    .form-panel { display:none; }
+    .form-panel.active { display:block; }
+
+    /* Success overlay */
+    .success-overlay { display:none; position:absolute; inset:0; background:var(--card); border-radius:24px;
+      align-items:center; justify-content:center; flex-direction:column; gap:16px; animation:fadeIn .3s ease; z-index: 10; }
+    .success-overlay.show { display:flex; }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    .success-icon { width:64px; height:64px; background:linear-gradient(135deg,var(--accent),var(--accent2));
+      border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;
+      animation:popIn .4s .1s ease both; }
+    @keyframes popIn { from{transform:scale(.3);opacity:0;} to{transform:scale(1);opacity:1;} }
+    .success-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; }
+    .success-sub { font-size:14px; color:var(--muted); }
+
+    /* Animations */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:none;} }
+    @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-6px);} 80%{transform:translateX(6px);} }
+
+    /* Responsive */
+    @media(max-width:900px){
+      .page{grid-template-columns:1fr;overflow-y:auto;height:auto;min-height:100vh;}
+      .left-panel{display:none;}
+      .right-panel{padding:40px 20px;}
+      html,body{overflow:auto;}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-canvas"></div>
+  <div class="grid-lines"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="page">
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="brand">
+        <div class="brand-icon">📊</div>
+        <div class="brand-name">Senti<span>Intel</span></div>
+      </div>
+      <div class="hero-tag">AI-Powered Analytics</div>
+      <h1 class="hero-title">Decode Every<br><span class="line2">Emotion &amp; Insight</span></h1>
+      <p class="hero-desc">Fine-tuned DistilBERT intelligence across social media, engagement trends, and real-time text analytics.</p>
+      <div style="display:flex;align-items:center;gap:60px;">
+        <div class="stats">
+          <div class="stat"><span class="stat-val">100.0%</span><span class="stat-lbl">Accuracy</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-val">GPU</span><span class="stat-lbl">Accelerated</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-val">&lt;15ms</span><span class="stat-lbl">Latency</span></div>
+        </div>
+        <div class="sentiment-pills">
+          <div class="pill pos"><div class="pill-dot"></div><span>Positive — 62%</span><div class="pill-bar"></div></div>
+          <div class="pill neu"><div class="pill-dot"></div><span>Neutral — 26%</span><div class="pill-bar"></div></div>
+          <div class="pill neg"><div class="pill-dot"></div><span>Negative — 12%</span><div class="pill-bar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div class="card" id="loginCard">
+
+        <!-- TABS -->
+        <div class="tabs">
+          <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+          <button class="tab-btn" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- ERROR / SUCCESS banners -->
+        <div class="msg-banner error" id="errorMsg"><span>⚠</span><span id="errorText">Invalid credentials.</span></div>
+        <div class="msg-banner success-msg" id="successMsg"><span>✓</span><span id="successText"></span></div>
+
+        <!-- SIGN IN PANEL -->
+        <div class="form-panel active" id="panelSignin">
+          <div class="card-eyebrow">Welcome back</div>
+          <div class="card-title">Sign in to your dashboard</div>
+          <div class="card-sub">Enter your credentials to continue</div>
+
+          <div class="field">
+            <label for="si-email">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉</span>
+              <input type="email" id="si-email" placeholder="you@example.com" autocomplete="email" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="si-password">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="si-password" placeholder="••••••••" autocomplete="current-password" />
+              <button type="button" class="eye-btn" onclick="togglePwd('si-password',this)">👁</button>
+            </div>
+          </div>
+          <div class="row-between">
+            <label class="checkbox-label">
+              <input type="checkbox" id="remember" />
+              <div class="checkbox-box"></div>
+              Remember me
+            </label>
+            <a href="#" class="forgot">Forgot password?</a>
+          </div>
+          <button class="btn-submit" id="signinBtn" onclick="handleSignIn()">
+            <span class="btn-text">Sign In →</span>
+            <span class="btn-spinner"><div class="spinner"></div></span>
+          </button>
+          <div class="card-footer">
+            Don't have an account? <a href="#" onclick="switchTab('signup');return false;">Create one free →</a>
+          </div>
+        </div>
+
+        <!-- SIGN UP PANEL -->
+        <div class="form-panel" id="panelSignup">
+          <div class="card-eyebrow">Get Started</div>
+          <div class="card-title">Create your account</div>
+          <div class="card-sub">Join SentiIntel — free forever</div>
+
+          <div class="field">
+            <label for="su-name">Full Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="su-name" placeholder="Your name" autocomplete="name" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="su-email">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉</span>
+              <input type="email" id="su-email" placeholder="you@example.com" autocomplete="email" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="su-password">Password <span style="color:var(--muted);font-weight:400;">(min 6 chars)</span></label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="su-password" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="eye-btn" onclick="togglePwd('su-password',this)">👁</button>
+            </div>
+          </div>
+          <button class="btn-submit" id="signupBtn" onclick="handleSignUp()">
+            <span class="btn-text">Create Account →</span>
+            <span class="btn-spinner"><div class="spinner"></div></span>
+          </button>
+          <div class="card-footer">
+            Already have an account? <a href="#" onclick="switchTab('signin');return false;">Sign in here →</a>
+          </div>
+        </div>
+
+        <!-- SUCCESS OVERLAY -->
+        <div class="success-overlay" id="successOverlay">
+          <div class="success-icon">✓</div>
+          <div class="success-title" id="overlayTitle">Welcome back!</div>
+          <div class="success-sub" id="overlaySub">Redirecting to your dashboard…</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── SHA-256 (pure JS, no crypto.subtle needed in older browsers) ── */
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    let currentTab = 'signin';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('panelSignin').classList.toggle('active', tab === 'signin');
+      document.getElementById('panelSignup').classList.toggle('active', tab === 'signup');
+      document.getElementById('tabSignIn').classList.toggle('active', tab === 'signin');
+      document.getElementById('tabSignUp').classList.toggle('active', tab === 'signup');
+      clearMessages();
+    }
+
+    function clearMessages() {
+      document.getElementById('errorMsg').classList.remove('show');
+      document.getElementById('successMsg').classList.remove('show');
+    }
+
+    function showError(msg) {
+      clearMessages();
+      document.getElementById('errorText').textContent = msg;
+      document.getElementById('errorMsg').classList.add('show');
+      const card = document.getElementById('loginCard');
+      card.style.animation = 'shake 0.4s ease';
+      setTimeout(() => card.style.animation = '', 400);
+    }
+
+    function showSuccess(msg) {
+      clearMessages();
+      document.getElementById('successText').textContent = msg;
+      document.getElementById('successMsg').classList.add('show');
+    }
+
+    function togglePwd(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+    }
+
+    function setLoading(btnId, loading) {
+      document.getElementById(btnId).classList.toggle('loading', loading);
+    }
+
+    function showOverlay(title, sub) {
+      document.getElementById('overlayTitle').textContent = title;
+      document.getElementById('overlaySub').textContent = sub;
+      document.getElementById('successOverlay').classList.add('show');
+    }
+
+    async function handleSignIn() {
+      const email    = document.getElementById('si-email').value.trim();
+      const password = document.getElementById('si-password').value;
+
+      if (!email)    { showError('Please enter your email address.'); return; }
+      if (!email.includes('@')) { showError('Please enter a valid email address.'); return; }
+      if (!password) { showError('Please enter your password.'); return; }
+      if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+      setLoading('signinBtn', true);
+      const hashedPwd = await sha256(password);
+      sendValue(JSON.stringify({ action: 'signin', email: email, password: hashedPwd, name: '' }));
+    }
+
+    async function handleSignUp() {
+      const name     = document.getElementById('su-name').value.trim();
+      const email    = document.getElementById('su-email').value.trim();
+      const password = document.getElementById('su-password').value;
+
+      if (!name)     { showError('Please enter your full name.'); return; }
+      if (!email)    { showError('Please enter your email address.'); return; }
+      if (!email.includes('@')) { showError('Please enter a valid email address.'); return; }
+      if (!password) { showError('Please enter a password.'); return; }
+      if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+      setLoading('signupBtn', true);
+      const hashedPwd = await sha256(password);
+      sendValue(JSON.stringify({ action: 'signup', email: email, password: hashedPwd, name: name }));
+    }
+
+    /* Listen for Streamlit response */
+    window.addEventListener('message', function(event) {
+      if (!event.data || event.data.type !== 'streamlit:render') return;
+      const args = event.data.args || {};
+
+      setLoading('signinBtn', false);
+      setLoading('signupBtn', false);
+
+      if (args.auth_error && args.auth_error.length > 0) {
+        showError(args.auth_error);
+      } else if (args.auth_success) {
+        const isSignUp = currentTab === 'signup';
+        showOverlay(
+          isSignUp ? 'Account Created! 🎉' : 'Welcome back!',
+          'Redirecting to your dashboard…'
+        );
+        setTimeout(() => sendValue('logged_in'), 1400);
+      }
+    });
+
+    /* Enter key support */
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      if (currentTab === 'signin') handleSignIn();
+      else handleSignUp();
+    });
+  </script>
+</body>
+</html>

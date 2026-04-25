@@ -1,0 +1,39 @@
+paths:
+  raw_data: "data/raw/social_media_engagement_dataset.csv"
+  processed_data: "data/processed/processed_data.parquet"
+  data_quality_report: "data/artifacts/data_quality_report.json"
+  feature_pipeline: "data/artifacts/feature_pipeline.joblib"
+  data_splits: "data/artifacts/data_splits.json"
+  model_output: "model_output"
+  saved_model: "saved_model"
+  model_card: "saved_model/model_card.json"
+  drift_alerts: "src/monitoring/drift_alerts.log"
+  drift_report: "data/artifacts/data_drift_report.html"
+
+model:
+  base_model: "distilbert-base-uncased"
+  num_labels: 3
+  max_length: 128
+
+training:
+  num_train_epochs: 10
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  learning_rate: 0.00002
+  gradient_accumulation_steps: 4
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  lr_scheduler_type: "cosine"
+  evaluation_strategy: "epoch"
+  save_strategy: "best"
+  load_best_model_at_end: true
+  metric_for_best_model: "f1_macro"
+  fp16: true
+  logging_steps: 50
+  report_to: "none"
+
+app:
+  redis_ttl: 3600
+  rate_limit: "100/minute"
+  drift_threshold_psi: 0.2
+  retrain_f1_threshold: 0.75

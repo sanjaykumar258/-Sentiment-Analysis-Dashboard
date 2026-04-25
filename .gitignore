@@ -1,0 +1,63 @@
+# Virtual Environment
+venv/
+venv_gpu/
+.env
+.venv
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ML Model (Hosted on Hugging Face)
+saved_model/
+*.bin
+*.safetensors
+*.pt
+*.pkl
+
+# Data & Artifacts
+data/raw/*.csv
+data/processed/*.parquet
+!data/processed/.gitkeep
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+temp/
+
+# IDE files
+.vscode/
+.idea/
+.ipynb_checkpoints/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST

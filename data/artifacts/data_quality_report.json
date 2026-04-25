@@ -1,0 +1,33 @@
+{
+    "missing_values": {
+        "Post_ID": 0,
+        "Timestamp": 0,
+        "Platform": 0,
+        "Content_Type": 0,
+        "Category": 0,
+        "Text_Content": 0,
+        "Likes": 0,
+        "Comments": 0,
+        "Shares": 0,
+        "Views": 0,
+        "Saves": 0,
+        "Follower_Count": 0,
+        "Engagement_Rate": 0,
+        "Hour_of_Day": 0,
+        "Day_of_Week": 0,
+        "Hashtag_Count": 511,
+        "Content_Length": 0,
+        "Sentiment": 0,
+        "Influencer_Tier": 0,
+        "Has_Media": 0,
+        "Is_Verified": 0
+    },
+    "sentiment_distribution": {
+        "Neutral": 2270,
+        "Positive": 1931,
+        "Negative": 849
+    },
+    "duplicate_post_ids": 50,
+    "outliers_engagement_rate": 19,
+    "temporal_continuity_gaps": 0
+}
