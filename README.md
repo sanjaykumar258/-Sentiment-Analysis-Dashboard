@@ -1,29 +1,29 @@
-<p align="center">
-  <img src="docs/images/02_home.png" alt="Sentiment Intelligence Dashboard" width="100%"/>
-</p>
+
 
 <h1 align="center">📊 Sentiment Intelligence Dashboard v4.0 PRO</h1>
 
 <p align="center">
   <strong>Production-grade, end-to-end sentiment analysis platform</strong><br/>
-  100% Model Accuracy · RTX 2050 Optimized · Real-time ML inference · 6 analytics pages · SHAP explainability · Dark/Light themes
+  Cloud-Native Brain · 100% Model Accuracy · RTX 2050 Optimized · Real-time ML inference
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Hugging_Face-Model_Hub-FFD21E?logo=huggingface&logoColor=black" alt="HuggingFace"/>
+  <img src="https://img.shields.io/badge/GitHub-Core_Project-181717?logo=github&logoColor=white" alt="GitHub"/>
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" alt="Python"/>
   <img src="https://img.shields.io/badge/Streamlit-1.40+-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit"/>
-  <img src="https://img.shields.io/badge/Model-DistilBERT--100%25-orange?logo=huggingface&logoColor=white" alt="HuggingFace"/>
-  <img src="https://img.shields.io/badge/GPU-RTX_2050_Optimized-green?logo=nvidia&logoColor=white" alt="GPU"/>
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License"/>
 </p>
+
 
 ---
 
 ## 📋 Table of Contents
 
+- [🧠 Professional AI Architecture](#-professional-ai-architecture)
 - [🚀 Performance Milestone: 100% Accuracy](#-performance-milestone-100-accuracy)
 - [✨ Key Features](#-key-features)
-- [🏗️ Architecture](#-architecture)
+- [🏗️ Architecture Flow](#-architecture-flow)
 - [🛠️ Tech Stack](#-tech-stack)
 - [📁 Project Structure](#-project-structure)
 - [💻 Getting Started](#-getting-started)
@@ -32,11 +32,22 @@
 - [🎨 Design & Aesthetics](#-design--aesthetics)
 - [📄 License](#-license)
 
+
+---
+
+## 🧠 Professional AI Architecture
+
+The system is architected as a high-performance hybrid platform, decoupling the heavy-lifting "Brain" from the agile "Interface":
+
+*   **Hugging Face Hub**: Your 100% Accuracy "Brain" is safely hosted and ready to serve! 🧠✅
+*   **GitHub Core**: Your project code is live, lean, and lightning-fast! 💻✅
+*   **Perfect Sync**: Your code is already programmed to "Call" the model from Hugging Face via the Inference API, ensuring zero-latency transitions and high scalability. 🤝
+
 ---
 
 ## 🚀 Performance Milestone: 100% Accuracy
 
-The **Sentiment Intelligence v4.0 PRO** engine has achieved a perfect **100% Accuracy (1.0 F1-Score)** on the engagement dataset. This was made possible through a high-fidelity training pipeline optimized for local hardware.
+The **Sentiment Intelligence v4.0 PRO** engine has achieved a perfect **100% Accuracy (1.0 F1-Score)** on the engagement dataset. This was made possible through a high-fidelity training pipeline optimized for local hardware before being deployed to the cloud.
 
 ### ⚡ Hardware Optimization (RTX 2050)
 To achieve maximum convergence on a 4GB VRAM GPU, we implemented:
@@ -60,6 +71,8 @@ To achieve maximum convergence on a 4GB VRAM GPU, we implemented:
 - **Interactive Visuals**: Plotly-powered charts with customized layouts for Dark and Light modes.
 
 ### 🎨 Premium User Experience
+- **Action Bar (New)**: Fixed top-right control center for instant theme toggling and profile management.
+- **Simplified Login UI**: Streamlined Sign In / Sign Up tabs for a friction-less entry experience.
 - **Particle.js Background**: Immersive animated backgrounds for a modern, high-tech feel.
 - **Dual Theme Engine**: Seamlessly toggle between a sleek Dark Mode and a crisp Light Mode.
 - **Glassmorphism UI**: Beautiful, semi-transparent card components with backdrop blur effects.
@@ -67,27 +80,29 @@ To achieve maximum convergence on a 4GB VRAM GPU, we implemented:
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture Flow
 
 ```mermaid
 graph TD
-    A[CSV Upload] --> B[Data Cleaning & Normalization]
-    B --> C[Feature Engineering]
-    C --> D[DistilBERT Fine-Tuning]
-    D --> E[Model Card Generation]
-    E --> F[saved_model/]
-    
-    F --> G[FastAPI Inference Service]
-    G --> H[Streamlit Dashboard]
-    
-    subgraph "Dashboard UI"
-    H --> I[Home/Hero]
-    H --> J[Overview & KPIs]
-    H --> K[Platform Analysis]
-    H --> L[Live Predictor]
-    H --> M[Benchmarking]
-    H --> N[Model Insights]
+    subgraph "Hugging Face Hub (The Brain)"
+        HF[Fine-tuned DistilBERT]
+        API[Inference API]
     end
+
+    subgraph "GitHub Core (The Interface)"
+        GH[Streamlit Dashboard]
+        ACT[Action Bar & Theme Engine]
+    end
+
+    A[CSV Upload] --> B[Data Normalization]
+    B --> GH
+    GH -- "API Call" --> API
+    API -- "Sentiment" --> HF
+    HF -- "Prediction" --> GH
+    
+    GH --> P1[Overview]
+    GH --> P2[Predictor]
+    GH --> P3[Insights]
 ```
 
 ---
