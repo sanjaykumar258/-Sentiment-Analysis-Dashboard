@@ -688,12 +688,23 @@ section[data-testid="stMain"] > div:first-child {{
 }}
 /* ── Arrow color based on active Python theme ── */
 [data-testid="stSidebarCollapseControl"] button::before {{
-  color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
-  -webkit-text-fill-color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
+  color: {"#00E6F0" if is_dark else "#000000"} !important;
+  -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }}
 [data-testid="collapsedControl"] button::before {{
-  color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
-  -webkit-text-fill-color: {"#7dd3fc" if is_dark else "#1e40af"} !important;
+  color: {"#00E6F0" if is_dark else "#000000"} !important;
+  -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}}
+
+/* Force the container to be visible as well */
+[data-testid="stSidebarCollapseControl"], 
+[data-testid="collapsedControl"] {{
+    opacity: 1 !important;
+    visibility: visible !important;
 }}
 </style>
 """, unsafe_allow_html=True)
