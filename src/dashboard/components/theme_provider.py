@@ -581,6 +581,53 @@ div[role="listbox"] li:hover {{
   color: var(--text-primary) !important;
 }}
 
+/* ── MODALS / DIALOGS — Force theme awareness ── */
+[data-testid="stDialog"] {{
+  backdrop-filter: blur(8px) !important;
+  background-color: rgba(0,0,0,0.4) !important;
+}}
+
+[data-testid="stDialog"] > div:first-child > div:first-child {{
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-soft) !important;
+  border-radius: 24px !important;
+  padding: 2.5rem !important;
+  animation: modalPop 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67) both !important;
+}}
+
+@keyframes modalPop {{
+  from {{ transform: scale(0.9) translateY(20px); opacity: 0; }}
+  to   {{ transform: scale(1) translateY(0); opacity: 1; }}
+}}
+
+[data-testid="stDialog"] * {{
+  color: var(--text-primary) !important;
+}}
+
+/* ── CODE & KBD — Force readability in Light Mode ── */
+code, kbd, tt, pre {{
+  background-color: {"rgba(255,255,255,0.15)" if is_dark else "#F3F4F6"} !important;
+  color: {"#00E6F0" if is_dark else "#111827"} !important;
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+  font-family: 'Source Code Pro', monospace !important;
+  border: 1px solid {"rgba(255,255,255,0.1)" if is_dark else "#E5E7EB"} !important;
+  font-weight: 600 !important;
+}}
+
+/* Force dark text for metrics inside modals in Light Mode */
+{"" if is_dark else """
+[data-testid="stDialog"] [data-testid="metric-container"] *,
+[data-testid="stDialog"] [data-testid="stMarkdownContainer"] *,
+[data-testid="stDialog"] button p,
+[data-testid="stDialog"] code,
+[data-testid="stDialog"] kbd {
+    color: #111827 !important;
+}
+"""}
+
 /* ═══════════════════════════════════════════════════════════════
    SIDEBAR NAV
    ═══════════════════════════════════════════════════════════════ */
