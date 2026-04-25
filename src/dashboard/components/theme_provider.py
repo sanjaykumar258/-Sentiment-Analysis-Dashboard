@@ -582,16 +582,11 @@ div[role="listbox"] li:hover {{
 }}
 
 /* ── MODALS / DIALOGS — Force theme awareness ── */
-[data-testid="stDialog"] {{
+/* Only apply backdrop filter to the active dialog container */
+div[role="dialog"] {{
   backdrop-filter: blur(12px) saturate(180%) !important;
-  background-color: rgba(0,0,0,0.3) !important;
-  z-index: 999999 !important;
-}}
-
-/* Ensure the main page content is NOT hidden when modal is open */
-[data-testid="stAppViewContainer"] {{
-  display: block !important;
-  visibility: visible !important;
+  background-color: rgba(0,0,0,0.4) !important;
+  z-index: 9999 !important;
 }}
 
 [data-testid="stDialog"] > div:first-child > div:first-child {{
