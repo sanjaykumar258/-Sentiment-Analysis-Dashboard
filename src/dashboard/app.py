@@ -1,5 +1,12 @@
 import streamlit as st
-import base64, pathlib
+import base64, pathlib, sys, os
+
+# --- Fix for Streamlit Cloud ModuleNotFoundError ---
+current_dir = pathlib.Path(__file__).parent.resolve()
+root_dir = current_dir.parents[1] # Go up to the project root
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
 from dotenv import load_dotenv
 load_dotenv()
 
