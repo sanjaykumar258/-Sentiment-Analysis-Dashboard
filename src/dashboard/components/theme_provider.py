@@ -583,18 +583,27 @@ div[role="listbox"] li:hover {{
 
 /* ── MODALS / DIALOGS — Force theme awareness ── */
 [data-testid="stDialog"] {{
-  backdrop-filter: blur(8px) !important;
-  background-color: rgba(0,0,0,0.4) !important;
+  backdrop-filter: blur(12px) saturate(180%) !important;
+  background-color: rgba(0,0,0,0.3) !important;
+  z-index: 999999 !important;
+}}
+
+/* Ensure the main page content is NOT hidden when modal is open */
+[data-testid="stAppViewContainer"] {{
+  display: block !important;
+  visibility: visible !important;
 }}
 
 [data-testid="stDialog"] > div:first-child > div:first-child {{
   background-color: var(--bg-secondary) !important;
   color: var(--text-primary) !important;
   border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-soft) !important;
-  border-radius: 24px !important;
-  padding: 2.5rem !important;
-  animation: modalPop 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67) both !important;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
+  border-radius: 28px !important;
+  padding: 2rem !important;
+  max-width: 550px !important;
+  margin: 0 auto !important;
+  animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
 }}
 
 @keyframes modalPop {{
