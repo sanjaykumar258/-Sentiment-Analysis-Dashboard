@@ -219,8 +219,29 @@ html, body, [class*="css"] {{
 }}
 
 /* ═══════════════════════════════════════════════════════════════
-   TYPOGRAPHY
+   TYPOGRAPHY — Global text resets
    ═══════════════════════════════════════════════════════════════ */
+html, body, [data-testid="stAppViewContainer"] {{
+  font-family: 'Inter', sans-serif !important;
+  color: var(--text-primary) !important;
+}}
+
+/* Force visibility for common text elements - essential for Light Mode */
+h1, h2, h3, h4, h5, h6, p, span, label, li, strong, b {{
+  color: var(--text-primary) !important;
+}}
+
+/* Explicitly target Light Mode backgrounds to ensure dark text */
+{"" if is_dark else """
+[data-testid="stHeader"], 
+[data-testid="stSidebar"], 
+[data-testid="stAppViewContainer"], 
+[data-testid="stVerticalBlock"] span,
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stWidgetLabel"] label {
+    color: #111827 !important;
+}
+"""}
 h1 {{ font-family: var(--font-sans) !important; font-weight: 800 !important; color: var(--text-primary) !important; letter-spacing: -0.04em !important; }}
 .block-container h1 {{ font-size: 2.2rem !important; }}
 .hero-title,
@@ -592,31 +613,8 @@ div[role="listbox"] li:hover {{
 }}
 
 /* ═══════════════════════════════════════════════════════════════
-   DIALOG / POPUP (st.dialog)
+   SCROLLBAR & DIVIDER
    ═══════════════════════════════════════════════════════════════ */
-[data-testid="stDialog"] {{
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-soft) !important;
-  border-radius: 20px !important;
-}}
-[data-testid="stDialog"] h1, 
-[data-testid="stDialog"] h2, 
-[data-testid="stDialog"] h3, 
-[data-testid="stDialog"] p, 
-[data-testid="stDialog"] span, 
-[data-testid="stDialog"] div {{
-  color: var(--text-primary) !important;
-}}
-[data-testid="stDialog"] .stCaption p {{
-  color: var(--text-secondary) !important;
-}}
-[data-testid="stDialog"] button {{
-  border-radius: 12px !important;
-}}
-
-/* Scrollbar & Divider */
 ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
 ::-webkit-scrollbar-track {{ background: transparent; }}
 ::-webkit-scrollbar-thumb {{ background: var(--border-hover); border-radius: 6px; }}
