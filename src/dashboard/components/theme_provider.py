@@ -686,63 +686,53 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE GUARANTEED VISIBILITY FIX ── */
+/* ── THE NUCLEAR SVG PATH FIX ── */
 
-/* 1. Force ALL containers to 100% opacity - this kills the 'ghosting' */
-[data-testid="stSidebarCollapseControl"], 
-[data-testid="collapsedControl"],
-[data-testid="stSidebarCollapseControl"] button,
-[data-testid="collapsedControl"] button {{
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: flex !important;
-    background-color: {"rgba(255,255,255,0.08)" if is_dark else "rgba(0,0,0,0.05)"} !important;
-    border: 1px solid {"#00E6F0" if is_dark else "#1e40af"} !important;
-    border-radius: 8px !important;
-    width: 32px !important;
-    height: 32px !important;
-    z-index: 99999 !important;
-}}
-
-/* 2. Kill Streamlit's internal ghosting span */
-[data-testid="stSidebarCollapseControl"] button span,
-[data-testid="collapsedControl"] button span,
+/* 1. Target the expanded sidebar header button (the '<<' collapse arrow) */
+[data-testid="stSidebarHeader"] button svg,
+[data-testid="stSidebarHeader"] button svg path,
 [data-testid="stSidebarCollapseControl"] button svg,
-[data-testid="collapsedControl"] button svg {{
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-}}
-
-/* 3. Inject a SOLID arrow using a standard character with absolute positioning */
-[data-testid="stSidebarCollapseControl"] button::before {{
-    content: "«" !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    color: {"#00E6F0" if is_dark else "#000000"} !important;
-    -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
-    visibility: visible !important;
+[data-testid="stSidebarCollapseControl"] button svg path {{
+    fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    color: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    stroke: {"%2300E6F0" if is_dark else "%23000000"} !important;
     opacity: 1 !important;
-    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
+    visibility: visible !important;
 }}
 
+/* 2. Target the button container to ensure it pops */
+[data-testid="stSidebarHeader"] button,
+[data-testid="stSidebarCollapseControl"] button {{
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: {"rgba(255,255,255,0.08)" if is_dark else "rgba(0,0,0,0.05)"} !important;
+    border: 1px solid {"%2300E6F0" if is_dark else "rgba(0,0,0,0.1)"} !important;
+    border-radius: 8px !important;
+}}
+
+/* 3. Target the collapsed control (the '>' expand arrow when sidebar is closed) */
+[data-testid="collapsedControl"] svg,
+[data-testid="collapsedControl"] svg path {{
+    fill: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    color: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    stroke: {"%2300E6F0" if is_dark else "%23000000"} !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}}
+
+[data-testid="collapsedControl"] {{
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: {"%231e293b" if is_dark else "rgba(255,255,255,0.9)"} !important;
+    border: 1px solid {"%2300E6F0" if is_dark else "rgba(0,0,0,0.1)"} !important;
+    border-radius: 8px !important;
+}}
+
+/* Kill any remaining internal ghosting from previous attempts */
+[data-testid="stSidebarCollapseControl"] button::before,
 [data-testid="collapsedControl"] button::before {{
-    content: "»" !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    font-size: 20px !important;
-    font-weight: 900 !important;
-    color: {"#00E6F0" if is_dark else "#000000"} !important;
-    -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
+    display: none !important;
+    content: none !important;
 }}
 </style>
 """, unsafe_allow_html=True)
