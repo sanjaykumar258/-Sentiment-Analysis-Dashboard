@@ -687,34 +687,34 @@ section[data-testid="stMain"] > div:first-child {{
   color: var(--text-primary) !important;
 }}
 /* ── Arrow color based on active Python theme ── */
-/* Target the button AND every possible span/div/svg child to kill the ghosting */
-[data-testid="stSidebarCollapseControl"] button::before,
-[data-testid="collapsedControl"] button::before,
-[data-testid="stSidebarCollapseControl"] button *,
-[data-testid="collapsedControl"] button * {{
-  content: "«" !important;
-  color: {"#00E6F0" if is_dark else "#000000"} !important;
-  -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  font-size: 22px !important;
-  font-weight: 800 !important;
-  font-family: Arial, sans-serif !important;
-}}
-
-[data-testid="collapsedControl"] button::before,
-[data-testid="collapsedControl"] button * {{
-  content: "»" !important;
-}}
-
-/* Force the container and button to be fully solid */
-[data-testid="stSidebarCollapseControl"], 
-[data-testid="collapsedControl"],
+/* THE ULTIMATE FIX: Inject SVG background images to bypass all CSS ghosting */
 [data-testid="stSidebarCollapseControl"] button,
 [data-testid="collapsedControl"] button {{
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 24px !important;
     opacity: 1 !important;
     visibility: visible !important;
     background-color: {"transparent" if is_dark else "rgba(0,0,0,0.05)"} !important;
+    border: 1px solid {"rgba(0,230,240,0.3)" if is_dark else "rgba(0,0,0,0.1)"} !important;
+}}
+
+/* Collapse icon (Sidebar OPEN) */
+[data-testid="stSidebarCollapseControl"] button {{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M18.41 7.41L17 6l-6 6 6 6 1.41-1.41L13.83 12l4.58-4.59zM11 18V6l-6 6 6 6z' fill='{("%2300E6F0" if is_dark else "%23000000")}'/%3E%3C/svg%3E") !important;
+}}
+
+/* Expand icon (Sidebar CLOSED) */
+[data-testid="collapsedControl"] button {{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M5.59 7.41L7 6l6 6-6 6-1.41-1.41L10.17 12 5.59 7.41zM13 18V6l6 6-6 6z' fill='{("%2300E6F0" if is_dark else "%23000000")}'/%3E%3C/svg%3E") !important;
+}}
+
+/* Hide all Streamlit's internal icon children */
+[data-testid="stSidebarCollapseControl"] button *,
+[data-testid="collapsedControl"] button * {{
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
 }}
 </style>
 """, unsafe_allow_html=True)
