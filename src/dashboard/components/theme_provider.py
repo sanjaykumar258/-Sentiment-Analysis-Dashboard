@@ -686,63 +686,63 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE PURE-CSS SHARP ICON FIX ── */
+/* ── THE GUARANTEED VISIBILITY FIX ── */
 
-/* 1. Reset native buttons to be fully visible and solid */
+/* 1. Force ALL containers to 100% opacity - this kills the 'ghosting' */
 [data-testid="stSidebarCollapseControl"], 
 [data-testid="collapsedControl"],
 [data-testid="stSidebarCollapseControl"] button,
 [data-testid="collapsedControl"] button {{
-    display: flex !important;
-    visibility: visible !important;
     opacity: 1 !important;
-    background-color: {"rgba(255,255,255,0.05)" if is_dark else "rgba(0,0,0,0.05)"} !important;
-    border: 1px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    visibility: visible !important;
+    display: flex !important;
+    background-color: {"rgba(255,255,255,0.08)" if is_dark else "rgba(0,0,0,0.05)"} !important;
+    border: 1px solid {"#00E6F0" if is_dark else "#1e40af"} !important;
     border-radius: 8px !important;
     width: 32px !important;
     height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
     z-index: 99999 !important;
 }}
 
-/* 2. Hide ALL internal Streamlit junk (text, svgs, spans) */
-[data-testid="stSidebarCollapseControl"] button *,
-[data-testid="collapsedControl"] button * {{
+/* 2. Kill Streamlit's internal ghosting span */
+[data-testid="stSidebarCollapseControl"] button span,
+[data-testid="collapsedControl"] button span,
+[data-testid="stSidebarCollapseControl"] button svg,
+[data-testid="collapsedControl"] button svg {{
     display: none !important;
-    visibility: hidden !important;
     opacity: 0 !important;
+    visibility: hidden !important;
 }}
 
-/* 3. Draw a PURE CSS Arrow (using borders) - sidebar OPEN (click to close) */
+/* 3. Inject a SOLID arrow using a standard character with absolute positioning */
 [data-testid="stSidebarCollapseControl"] button::before {{
-    content: "" !important;
-    display: block !important;
-    width: 10px !important;
-    height: 10px !important;
-    border-left: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
-    border-bottom: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
-    transform: rotate(45deg) !important;
-    margin-left: 4px !important;
+    content: "«" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    color: {"#00E6F0" if is_dark else "#000000"} !important;
+    -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
 }}
 
-/* 4. Draw a PURE CSS Arrow (using borders) - sidebar CLOSED (click to open) */
 [data-testid="collapsedControl"] button::before {{
-    content: "" !important;
-    display: block !important;
-    width: 10px !important;
-    height: 10px !important;
-    border-right: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
-    border-top: 3px solid {"#00E6F0" if is_dark else "#000000"} !important;
-    transform: rotate(45deg) !important;
-    margin-right: 4px !important;
-}}
-
-/* Hover effect */
-[data-testid="stSidebarCollapseControl"] button:hover, 
-[data-testid="collapsedControl"] button:hover {{
-    background-color: {"rgba(0,230,240,0.15)" if is_dark else "rgba(0,0,0,0.1)"} !important;
-    transform: scale(1.05) !important;
+    content: "»" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    color: {"#00E6F0" if is_dark else "#000000"} !important;
+    -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
 }}
 </style>
 """, unsafe_allow_html=True)
