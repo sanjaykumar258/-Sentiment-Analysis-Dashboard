@@ -168,11 +168,9 @@ html, body, [class*="css"] {{
   text-indent: -9999px !important;
 }}
 
-/* EXACT FIX - targets the stIconMaterial span directly */
-[data-testid="stIconMaterial"] {{
-    font-size: 0 !important;
-    color: transparent !important;
-    visibility: hidden !important;
+/* SURGICAL FIX - Only hide icons INSIDE the sidebar controls */
+[data-testid="stSidebarCollapseControl"] [data-testid="stIconMaterial"],
+[data-testid="collapsedControl"] [data-testid="stIconMaterial"] {{
     display: none !important;
 }}
 
@@ -187,7 +185,7 @@ html, body, [class*="css"] {{
 [data-testid="stSidebarCollapseControl"]::before {{
   content: "«" !important;
   font-size: 22px !important;
-  color: var(--brand-primary) !important;
+  color: #7dd3fc !important;
   visibility: visible !important;
   font-weight: 800 !important;
   font-family: Arial, sans-serif !important;
@@ -204,7 +202,7 @@ html, body, [class*="css"] {{
   content: "»" !important;
   font-size: 22px !important;
   font-weight: 800 !important;
-  color: var(--brand-primary) !important;
+  color: #7dd3fc !important;
   visibility: visible !important;
   font-family: Arial, sans-serif !important;
   line-height: 1 !important;
@@ -215,16 +213,18 @@ html, body, [class*="css"] {{
   transform: translate(-50%, -50%) !important;
 }}
 
-/* Hover effects */
-[data-testid="stSidebarCollapseControl"]:hover, 
-[data-testid="collapsedControl"]:hover {{
-  background: var(--bg-card-hover) !important;
-  border-color: var(--brand-primary) !important;
-}}
+/* Hover Glow & Scale Effects */
 [data-testid="stSidebarCollapseControl"]:hover::before, 
 [data-testid="collapsedControl"]:hover::before {{
-  color: var(--text-primary) !important;
-  transform: translate(-50%, -50%) scale(1.1) !important;
+  color: #ffffff !important;
+  transform: translate(-50%, -50%) scale(1.2) !important;
+  text-shadow: 0 0 10px rgba(125, 211, 252, 0.8) !important;
+}}
+
+[data-testid="stSidebarCollapseControl"]:hover, 
+[data-testid="collapsedControl"]:hover {{
+  background: rgba(125, 211, 252, 0.1) !important;
+  border-color: #7dd3fc !important;
 }}
 
 /* Hide Streamlit Tooltips */
