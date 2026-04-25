@@ -583,9 +583,23 @@ div[role="listbox"] li:hover {{
 
 /* ── MODALS / DIALOGS — Stable Visibility Fix ── */
 div[role="dialog"] {{
-  backdrop-filter: blur(10px) saturate(160%) !important;
-  background-color: rgba(0,0,0,0.4) !important;
+  backdrop-filter: blur(8px) saturate(140%) !important;
+  background-color: rgba(0,0,0,0.25) !important;
   z-index: 9999 !important;
+}}
+
+/* CRITICAL: Prevent Streamlit from hiding the background content when modal is open */
+[data-testid="stAppViewContainer"]:has(div[role="dialog"]),
+[data-testid="stAppViewContainer"]:has([data-testid="stDialog"]) {{
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}}
+
+/* Ensure the main container doesn't shift */
+.main .block-container {{
+    max-width: 100% !important;
+    padding-top: 5rem !important;
 }}
 
 [data-testid="stDialog"] > div:first-child > div:first-child {{
