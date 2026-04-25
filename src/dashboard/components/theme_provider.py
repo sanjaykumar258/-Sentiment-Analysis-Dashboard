@@ -6,6 +6,9 @@ import streamlit as st
 
 def inject_global_theme():
     """Inject the complete CSS design system for the active theme."""
+    # ── Load Material Icons ───────────────────────────────────────────
+    st.markdown('<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">', unsafe_allow_html=True)
+
     theme = st.session_state.get("theme", "dark")
     is_dark = theme == "dark"
 
