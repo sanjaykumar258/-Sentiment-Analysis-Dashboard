@@ -686,47 +686,51 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE OPTICAL FILTER FIX ── */
+/* ── THE BASE64 BRUTE-FORCE FIX ── */
 
-/* 1. Ensure the parent button containers are clean and visible */
+/* 1. COMPLETELY HIDE every single internal child Streamlit uses (SVG, Span, Path) */
+[data-testid="stSidebarHeader"] button *,
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] * {{
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}}
+
+/* 2. Target the BUTTONS and inject our own Solid Background Image */
 [data-testid="stSidebarHeader"] button,
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {{
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 20px !important;
     opacity: 1 !important;
     visibility: visible !important;
+    background-color: {"rgba(255,255,255,0.05)" if is_dark else "rgba(0,0,0,0.05)"} !important;
+    border: 1px solid {"%2300E6F0" if is_dark else "%23000000"} !important;
+    border-radius: 8px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
 }}
 
-/* 2. The Optical Override: Force pixels using post-processing filters */
-[data-testid="stSidebarHeader"] button svg,
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="collapsedControl"] svg {{
-    /* brightness(0) forces black in light mode; brightness(2) forces a glow in dark mode */
-    filter: {("brightness(1.5) contrast(1.5) drop-shadow(0px 0px 5px %2300E6F0)" if is_dark else "brightness(0) drop-shadow(0px 0px 1px black)")} !important;
-    
-    /* Force absolute visibility */
-    opacity: 1 !important;
-    visibility: visible !important;
-    
-    /* Scale slightly for clarity */
-    transform: scale(1.1) !important;
+/* 3. Inject the LEFT arrow (Collapse) */
+[data-testid="stSidebarHeader"] button,
+[data-testid="stSidebarCollapseButton"] {{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='{("%2300E6F0" if is_dark else "%23000000")}'%3E%3Cpath d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E") !important;
 }}
 
-/* 3. Smooth hover effect */
-[data-testid="stSidebarHeader"] button:hover svg,
-[data-testid="stSidebarCollapseButton"]:hover svg,
-[data-testid="collapsedControl"]:hover svg {{
-    transform: scale(1.25) !important;
-    transition: transform 0.2s ease-in-out !important;
+/* 4. Inject the RIGHT arrow (Expand) */
+[data-testid="collapsedControl"] {{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='{("%2300E6F0" if is_dark else "%23000000")}'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E") !important;
 }}
 
-/* Ensure the hidden characters from previous attempts stay gone */
-[data-testid="stSidebarCollapseControl"] button::before,
-[data-testid="collapsedControl"] button::before {{
-    display: none !important;
-    content: none !important;
+/* Hover effect */
+[data-testid="stSidebarHeader"] button:hover,
+[data-testid="stSidebarCollapseButton"]:hover,
+[data-testid="collapsedControl"]:hover {{
+    background-color: {"rgba(0,230,240,0.1)" if is_dark else "rgba(0,0,0,0.1)"} !important;
+    background-size: 22px !important;
+    transition: all 0.2s ease !important;
 }}
 </style>
 """, unsafe_allow_html=True)
