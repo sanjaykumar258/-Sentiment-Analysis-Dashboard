@@ -652,12 +652,25 @@ hr {{ border-color: var(--border) !important; }}
   color: var(--text-primary) !important;
 }}
 
+/* ── CODE & KBD — Force readability in Light Mode ── */
+code, kbd, tt, pre {{
+  background-color: {"rgba(255,255,255,0.1)" if is_dark else "rgba(0,0,0,0.05)"} !important;
+  color: {"#00E6F0" if is_dark else "#111827"} !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: 'Source Code Pro', monospace !important;
+  border: 1px solid {"rgba(255,255,255,0.1)" if is_dark else "rgba(0,0,0,0.1)"} !important;
+}}
+
 /* Force dark text for metrics inside modals in Light Mode */
 {"" if is_dark else """
 [data-testid="stDialog"] [data-testid="metric-container"] *,
 [data-testid="stDialog"] [data-testid="stMarkdownContainer"] *,
-[data-testid="stDialog"] button p {
+[data-testid="stDialog"] button p,
+[data-testid="stDialog"] code,
+[data-testid="stDialog"] kbd {
     color: #111827 !important;
+    background-color: #F3F4F6 !important;
 }
 """}
 
