@@ -231,6 +231,10 @@ h1, h2, h3, h4, h5, h6, p, span, label, li, strong, b {{
   color: var(--text-primary) !important;
 }}
 
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
+    background-color: var(--bg-main) !important;
+}}
+
 /* Explicitly target Light Mode backgrounds to ensure dark text */
 {"" if is_dark else """
     /* ═══════════════════════════════════════════════════════════════
