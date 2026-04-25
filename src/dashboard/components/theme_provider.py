@@ -168,6 +168,14 @@ html, body, [class*="css"] {{
   text-indent: -9999px !important;
 }}
 
+/* EXACT FIX - targets the stIconMaterial span directly */
+[data-testid="stIconMaterial"] {{
+    font-size: 0 !important;
+    color: transparent !important;
+    visibility: hidden !important;
+    display: none !important;
+}}
+
 /* Hide all existing children (SVGs, raw spans) */
 [data-testid="stSidebarCollapseControl"] *, 
 [data-testid="collapsedControl"] * {{
