@@ -765,15 +765,8 @@ div[role="listbox"] li:hover {{
 }}
 
 /* ═══════════════════════════════════════════════════════════════
-   DIALOG / POPUP (st.dialog) - THEME AWARE
+   DIALOG CONTENT VISIBILITY FIX
    ═══════════════════════════════════════════════════════════════ */
-[data-testid="stDialog"] {{
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-soft) !important;
-  border-radius: 20px !important;
-}}
 [data-testid="stDialog"] h1, 
 [data-testid="stDialog"] h2, 
 [data-testid="stDialog"] h3, 
@@ -783,14 +776,8 @@ div[role="listbox"] li:hover {{
 [data-testid="stDialog"] [data-testid="stMetricValue"],
 [data-testid="stDialog"] [data-testid="stMetricLabel"],
 [data-testid="stDialog"] [data-testid="stMetricDelta"] {{
-  color: var(--text-primary) !important;
-  -webkit-text-fill-color: var(--text-primary) !important;
-}}
-[data-testid="stDialog"] .stCaption p {{
-  color: var(--text-secondary) !important;
-}}
-[data-testid="stDialog"] button {{
-  border-radius: 12px !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }}
 
 /* Scrollbar & Divider */
