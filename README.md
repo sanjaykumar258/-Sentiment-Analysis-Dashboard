@@ -1,6 +1,6 @@
 
 
-<h1 align="center">📊 Sentiment Intelligence Dashboard v4.0 PRO</h1>
+<h1 align="center">📊 SentiIntel Dashboard v4.0 PRO</h1>
 
 <p align="center">
   <strong>Production-grade, end-to-end sentiment analysis platform</strong><br/>
@@ -15,6 +15,9 @@
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License"/>
 </p>
 
+<p align="center">
+  <img src="src/dashboard/assets/readme_hero.png" width="100%" alt="SentiIntel Hero Image"/>
+</p>
 
 ---
 
@@ -47,7 +50,7 @@ The system is architected as a high-performance hybrid platform, decoupling the 
 
 ## 🚀 Performance Milestone: 100% Accuracy
 
-The **Sentiment Intelligence v4.0 PRO** engine has achieved a perfect **100% Accuracy (1.0 F1-Score)** on the engagement dataset. This was made possible through a high-fidelity training pipeline optimized for local hardware before being deployed to the cloud.
+The **SentiIntel v4.0 PRO** engine has achieved a perfect **100% Accuracy (1.0 F1-Score)** on the engagement dataset. This was made possible through a high-fidelity training pipeline optimized for local hardware before being deployed to the cloud.
 
 ### ⚡ Hardware Optimization (RTX 2050)
 To achieve maximum convergence on a 4GB VRAM GPU, we implemented:
