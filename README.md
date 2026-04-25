@@ -15,9 +15,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License"/>
 </p>
 
-<p align="center">
-  <img src="src/dashboard/assets/readme_hero.png" width="100%" alt="SentiIntel Hero Image"/>
-</p>
+
 
 ---
 
