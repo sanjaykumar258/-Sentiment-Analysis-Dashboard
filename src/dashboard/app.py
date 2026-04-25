@@ -229,15 +229,34 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
         if uploaded_file is not None:
             if st.session_state.get("processed_file") != uploaded_file.name:
                 # ── RENDER CUSTOM POPUP OVERLAY ──
-                # This placeholder holds the entire modal UI
                 modal_placeholder = st.empty()
-                
                 with modal_placeholder.container():
-                    # Inject Modal Wrapper
                     st.markdown("""
+                        <style>
+                        .custom-modal-backdrop {
+                            position: fixed !important;
+                            top: 0 !important; left: 0 !important;
+                            width: 100vw !important; height: 100vh !important;
+                            background: rgba(0,0,0,0.4) !important;
+                            backdrop-filter: blur(12px) saturate(160%) !important;
+                            z-index: 9999999 !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                        }
+                        .custom-modal-container {
+                            width: 100% !important;
+                            max-width: 500px !important;
+                            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+                        }
+                        @keyframes modalPop {
+                            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+                            to   { transform: scale(1) translateY(0); opacity: 1; }
+                        }
+                        </style>
                         <div class="custom-modal-backdrop">
                             <div class="custom-modal-container">
-                                <div class="glass-card" style="padding:2.5rem; width:100%; max-width:500px; border-color:var(--brand-primary); box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
+                                <div class="glass-card" style="padding:2.5rem; width:100%; border-color:var(--brand-primary); box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
                                     <h2 style="margin:0 0 1rem; font-family:var(--font-sans); color:var(--text-primary); text-align:center;">⚙️ Processing Dataset</h2>
                     """, unsafe_allow_html=True)
                     

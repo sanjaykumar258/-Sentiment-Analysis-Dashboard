@@ -588,36 +588,12 @@ div[role="dialog"] {{
   z-index: 9999 !important;
 }}
 
-/* ── CUSTOM MODAL OVERLAY — Zero-Refresh Popup ── */
-.custom-modal-backdrop {{
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: rgba(0,0,0,0.3) !important;
-    backdrop-filter: blur(12px) saturate(160%) !important;
-    z-index: 999999 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 2rem !important;
-    pointer-events: all !important;
-}}
 
-.custom-modal-container {{
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    max-width: 550px !important;
-    animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-}}
-
-/* Ensure the main container doesn't disappear when modal is on top */
-[data-testid="stAppViewContainer"] {{
-    display: block !important;
-    visibility: visible !important;
+/* MODALS / DIALOGS — Keep existing for other parts */
+div[role="dialog"] {{
+  backdrop-filter: blur(10px) saturate(160%) !important;
+  background-color: rgba(0,0,0,0.4) !important;
+  z-index: 9999 !important;
 }}
 
 /* Ensure the main container doesn't shift */
