@@ -230,7 +230,7 @@ def render_sidebar(df: pd.DataFrame) -> pd.DataFrame:
 <div style="display:flex;align-items:center;gap:14px;">
 <div style="width:40px;height:40px;background:linear-gradient(135deg,#00E6F0,#6366F1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 15px rgba(99,102,241,0.35), inset 0 1px 2px rgba(255,255,255,0.2);">📊</div>
 <div>
-<span style="font-family:var(--font-sans);font-weight:800;font-size:17px;color:{_brand_text_color};letter-spacing:-0.03em;display:block;">Sentiment Intel</span>
+<span style="font-family:var(--font-sans);font-weight:800;font-size:17px;color:{_brand_text_color};letter-spacing:-0.03em;display:block;">SentiIntel</span>
 <span style="font-size:10.5px;color:{_version_color};font-family:var(--font-sans);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">v4.0 Pro</span>
 </div>
 </div>

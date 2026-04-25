@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 st.set_page_config(
-    page_title="Sentiment Intel v4.0",
+    page_title="SentiIntel v4.0",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
