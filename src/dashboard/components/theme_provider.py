@@ -176,7 +176,7 @@ html, body, [class*="css"] {{
   font-size: 22px !important;
   font-weight: 800 !important;
   font-family: Arial, sans-serif !important;
-  color: var(--brand-secondary) !important;
+  color: #334155 !important;
   visibility: visible !important;
   display: block !important;
   position: absolute !important;
@@ -194,7 +194,7 @@ html, body, [class*="css"] {{
   font-size: 22px !important;
   font-weight: 800 !important;
   font-family: Arial, sans-serif !important;
-  color: var(--brand-secondary) !important;
+  color: #334155 !important;
   visibility: visible !important;
   position: absolute !important;
   top: 50% !important;
@@ -208,8 +208,8 @@ html, body, [class*="css"] {{
 /* Step 5: Hover effect */
 [data-testid="stSidebarCollapseControl"] button:hover::before,
 [data-testid="collapsedControl"] button:hover::before {{
-  color: var(--text-primary) !important;
-  text-shadow: 0 0 10px rgba(99, 102, 241, 0.6) !important;
+  color: #6366F1 !important;
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.4) !important;
   transform: translate(-50%, -50%) scale(1.2) !important;
 }}
 
