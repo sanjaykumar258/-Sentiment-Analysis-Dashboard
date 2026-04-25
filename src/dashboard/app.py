@@ -17,6 +17,24 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# --- NUCLEAR DEBUG TEST ---
+st.markdown("""
+<style>
+/* if you see a red box, the button exists */
+[data-testid="collapsedControl"] {
+    background: red !important;
+    width: 50px !important;
+    height: 50px !important;
+    z-index: 1000000 !important;
+}
+[data-testid="collapsedControl"] button {
+    background: blue !important;
+    width: 50px !important;
+    height: 50px !important;
+    z-index: 1000001 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ─── Theme initialisation ─────────────────────────────────────────────
 if "theme" not in st.session_state:
@@ -51,6 +69,51 @@ def load_data():
 # ─── GLOBAL CSS — Dual theme design system ────────────────────────────
 from src.dashboard.components.theme_provider import inject_global_theme
 inject_global_theme()
+
+# --- FORCE SIDEBAR ICON VISIBILITY ---
+st.markdown("""
+<style>
+/* Default - dark mode */
+[data-testid="stSidebarCollapseControl"] button::before,
+[data-testid="collapsedControl"] button::before {
+    content: "«" !important;
+    color: #7dd3fc !important;
+    -webkit-text-fill-color: #7dd3fc !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    font-family: Arial, sans-serif !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    text-shadow: none !important;
+}
+
+[data-testid="collapsedControl"] button::before {
+    content: "»" !important;
+}
+
+/* Light mode - Target Streamlit theme attributes and emotion cache classes */
+[data-theme="light"] [data-testid="stSidebarCollapseControl"] button::before,
+[data-theme="light"] [data-testid="collapsedControl"] button::before,
+.st-emotion-cache-light [data-testid="stSidebarCollapseControl"] button::before,
+.st-emotion-cache-light [data-testid="collapsedControl"] button::before {
+    color: #1e40af !important;
+    -webkit-text-fill-color: #1e40af !important;
+}
+
+/* Fallback for OS Light Mode */
+@media (prefers-color-scheme: light) {
+    [data-testid="stSidebarCollapseControl"] button::before,
+    [data-testid="collapsedControl"] button::before {
+        color: #1e40af !important;
+        -webkit-text-fill-color: #1e40af !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ─── Particle background ─────────────────────────────────────────────
 from src.dashboard.components.particles import inject_particle_background
@@ -221,100 +284,177 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
 </div>
     """, unsafe_allow_html=True)
 
-    # ─── FILE UPLOADER & CUSTOM POPUP ───────────────────────────
+    # ─── FILE UPLOADER ───────────────────────────────────────────────
     col1, col2, col3 = st.columns([1.2, 2, 1.2])
     with col2:
+        @st.dialog("⚙️ Processing Dataset")
+        def process_dataset(file):
+            import time, numpy as np
+            st.markdown(f"**File:** `{file.name}`")
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+
+            try:
+                # ── Step 1: Read CSV ──
+                status_text.caption("Reading file...")
+                progress_bar.progress(10)
+                time.sleep(0.3)
+
+                file.seek(0)
+                new_df = pd.read_csv(file)
+
+                # ── Step 2: Auto-detect sentiment column (case-insensitive) ──
+                status_text.caption("Detecting sentiment column...")
+                progress_bar.progress(25)
+                time.sleep(0.3)
+
+                col_lower_map = {c.lower().strip(): c for c in new_df.columns}
+                sentiment_col = None
+                for alias in ["sentiment", "label", "class", "target", "emotion", "polarity"]:
+                    if alias in col_lower_map:
+                        sentiment_col = col_lower_map[alias]
+                        break
+
+                if sentiment_col is None:
+                    st.error("⚠️ Could not find a sentiment column. Expected one of: "
+                             "`Sentiment`, `Label`, `Class`, `Target`, `Emotion`, `Polarity`.")
+                    return
+
+                # Rename to standard "Sentiment" if needed
+                if sentiment_col != "Sentiment":
+                    new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
+
+                # ── Step 3: Normalize sentiment values ──
+                status_text.caption("Normalizing sentiment labels...")
+                progress_bar.progress(40)
+                time.sleep(0.3)
+
+                new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip()
+                positive_aliases = {"positive", "pos", "1", "1.0", "good", "happy", "joy", "love"}
+                negative_aliases = {"negative", "neg", "-1", "-1.0", "bad", "sad", "anger", "hate", "fear"}
+                neutral_aliases  = {"neutral", "neu", "0", "0.0", "mixed", "none", "other", "surprise"}
+
+                def normalize_sentiment(val):
+                    v = str(val).lower().strip()
+                    if v in positive_aliases:
+                        return "Positive"
+                    elif v in negative_aliases:
+                        return "Negative"
+                    elif v in neutral_aliases:
+                        return "Neutral"
+                    else:
+                        return val.title()  # Keep original but title-case
+
+                new_df["Sentiment"] = new_df["Sentiment"].apply(normalize_sentiment)
+
+                # ── Step 4: Ensure required columns exist ──
+                status_text.caption("Preparing dataset structure...")
+                progress_bar.progress(55)
+                time.sleep(0.3)
+
+                required_cols = {
+                    "Post_ID":         lambda: [f"POST_{i:05d}" for i in range(len(new_df))],
+                    "Timestamp":       lambda: pd.date_range("2024-01-01", periods=len(new_df), freq="h").astype(str).tolist(),
+                    "Platform":        lambda: np.random.choice(["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"], len(new_df)).tolist(),
+                    "Content_Type":    lambda: np.random.choice(["Video", "Image", "Text", "Carousel", "Link"], len(new_df)).tolist(),
+                    "Category":        lambda: np.random.choice(["Tech", "Fashion", "Finance", "Gaming", "Education", "Entertainment", "Health"], len(new_df)).tolist(),
+                    "Likes":           lambda: np.random.randint(10, 5000, len(new_df)).tolist(),
+                    "Comments":        lambda: np.random.randint(0, 500, len(new_df)).tolist(),
+                    "Shares":          lambda: np.random.randint(0, 300, len(new_df)).tolist(),
+                    "Views":           lambda: np.random.randint(100, 100000, len(new_df)).tolist(),
+                    "Saves":           lambda: np.random.randint(0, 200, len(new_df)).tolist(),
+                    "Follower_Count":  lambda: np.random.randint(1000, 500000, len(new_df)).tolist(),
+                    "Hashtag_Count":   lambda: np.random.randint(0, 30, len(new_df)).tolist(),
+                    "Content_Length":  lambda: np.random.randint(10, 2200, len(new_df)).tolist(),
+                    "Influencer_Tier": lambda: np.random.choice(["Nano", "Micro", "Mid-tier", "Macro"], len(new_df)).tolist(),
+                    "Has_Media":       lambda: np.random.choice([True, False], len(new_df)).tolist(),
+                    "Is_Verified":     lambda: np.random.choice([True, False], len(new_df)).tolist(),
+                }
+
+                generated_cols = []
+                for col_name, gen_fn in required_cols.items():
+                    if col_name not in new_df.columns:
+                        # Try case-insensitive match first
+                        match = col_lower_map.get(col_name.lower().strip())
+                        if match and match in new_df.columns:
+                            new_df = new_df.rename(columns={match: col_name})
+                        else:
+                            new_df[col_name] = gen_fn()
+                            generated_cols.append(col_name)
+
+                # Ensure numeric engagement columns exist
+                if "Engagement_Rate" not in new_df.columns:
+                    views_safe = new_df["Views"].replace(0, 1)
+                    new_df["Engagement_Rate"] = (
+                        (new_df["Likes"] + new_df["Comments"] + new_df["Shares"] + new_df["Saves"]) / views_safe * 100
+                    ).round(2)
+                    generated_cols.append("Engagement_Rate")
+
+                if "Hour_of_Day" not in new_df.columns:
+                    new_df["Hour_of_Day"] = pd.to_datetime(new_df["Timestamp"], errors="coerce").dt.hour.fillna(12).astype(int)
+                    generated_cols.append("Hour_of_Day")
+
+                if "Day_of_Week" not in new_df.columns:
+                    new_df["Day_of_Week"] = pd.to_datetime(new_df["Timestamp"], errors="coerce").dt.dayofweek.fillna(0).astype(int)
+                    generated_cols.append("Day_of_Week")
+
+                # ── Step 5: Save to Parquet ──
+                status_text.caption("Saving dataset to backend...")
+                progress_bar.progress(80)
+
+                import os
+                save_dir = "data/processed"
+                os.makedirs(save_dir, exist_ok=True)
+                new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
+
+
+
+                progress_bar.progress(100)
+                status_text.caption("✅ Processing complete!")
+                time.sleep(0.4)
+
+                st.divider()
+                st.success("Dataset successfully validated and ready.")
+
+                # Show dataset details
+                st.markdown(f"**Total Rows:** `{len(new_df):,}`")
+                st.markdown(f"**Total Features:** `{len(new_df.columns)}`")
+
+                if generated_cols:
+                    st.caption(f"ℹ️ Auto-generated missing columns: {', '.join(generated_cols)}")
+
+                # Show sentiment distribution (max 5 columns to avoid overflow)
+                dist = new_df["Sentiment"].value_counts().head(5)
+                n_cols = min(len(dist), 4)
+                cols = st.columns(n_cols)
+                for i, (k, v) in enumerate(dist.items()):
+                    if i >= n_cols:
+                        break
+                    cols[i].metric(label=str(k), value=f"{v:,}")
+
+                st.write("")
+                if st.button("Load Dashboard", type="primary", use_container_width=True):
+                    st.session_state["processed_file"] = file.name
+                    st.cache_data.clear()
+                    st.rerun()
+
+            except Exception as e:
+                st.error(f"❌ Error processing file: {e}")
+
         uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
-        
+
         if uploaded_file is not None:
             if st.session_state.get("processed_file") != uploaded_file.name:
-                # ── RENDER CUSTOM POPUP OVERLAY ──
-                modal_placeholder = st.empty()
-                with modal_placeholder.container():
-                    st.markdown("""
-                        <style>
-                        .custom-modal-backdrop {
-                            position: fixed !important;
-                            top: 0 !important; left: 0 !important;
-                            width: 100vw !important; height: 100vh !important;
-                            background: rgba(0,0,0,0.4) !important;
-                            backdrop-filter: blur(12px) saturate(160%) !important;
-                            z-index: 9999999 !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                        }
-                        .custom-modal-container {
-                            width: 100% !important;
-                            max-width: 500px !important;
-                            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-                        }
-                        @keyframes modalPop {
-                            from { transform: scale(0.9) translateY(20px); opacity: 0; }
-                            to   { transform: scale(1) translateY(0); opacity: 1; }
-                        }
-                        </style>
-                        <div class="custom-modal-backdrop">
-                            <div class="custom-modal-container">
-                                <div class="glass-card" style="padding:2.5rem; width:100%; border-color:var(--brand-primary); box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
-                                    <h2 style="margin:0 0 1rem; font-family:var(--font-sans); color:var(--text-primary); text-align:center;">⚙️ Processing Dataset</h2>
-                    """, unsafe_allow_html=True)
-                    
-                    import time, numpy as np
-                    st.markdown(f"<p style='text-align:center; color:var(--text-muted);'>File: <code>{uploaded_file.name}</code></p>", unsafe_allow_html=True)
-                    
-                    progress_bar = st.progress(0)
-                    status_text = st.empty()
-
+                import os
+                if os.path.exists("saved_model/model_card.json"):
                     try:
-                        # ── Step 1: Read CSV ──
-                        status_text.caption("Reading file...")
-                        progress_bar.progress(10)
-                        time.sleep(0.4)
-                        uploaded_file.seek(0)
-                        new_df = pd.read_csv(uploaded_file)
-
-                        # ── Step 2: Detect col ──
-                        status_text.caption("Validating structure...")
-                        progress_bar.progress(40)
-                        col_lower_map = {c.lower().strip(): c for c in new_df.columns}
-                        sentiment_col = None
-                        for alias in ["sentiment", "label", "class", "target"]:
-                            if alias in col_lower_map:
-                                sentiment_col = col_lower_map[alias]
-                                break
-
-                        if sentiment_col:
-                            if sentiment_col != "Sentiment":
-                                new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
-                            new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip().apply(lambda x: x.title())
-                            
-                            # ── Step 3: Save ──
-                            status_text.caption("Saving to backend...")
-                            progress_bar.progress(80)
-                            import os
-                            save_dir = "data/processed"
-                            os.makedirs(save_dir, exist_ok=True)
-                            new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
-                            
-                            progress_bar.progress(100)
-                            status_text.caption("✅ Processing complete!")
-                            st.success("Dataset successfully prepared.")
-                            
-                            if st.button("🚀 Load Dashboard", type="primary", use_container_width=True):
-                                st.session_state["processed_file"] = uploaded_file.name
-                                st.cache_data.clear()
-                                st.rerun()
-                        else:
-                            st.error("❌ Sentiment column not found.")
-                            if st.button("Cancel"): modal_placeholder.empty()
-                    except Exception as e:
-                        st.error(f"❌ Error: {e}")
-                        if st.button("Close"): modal_placeholder.empty()
-                    
-                    # Close HTML tags
-                    st.markdown("</div></div></div>", unsafe_allow_html=True)
-
+                        os.remove("saved_model/model_card.json")
+                    except:
+                        pass
+                process_dataset(uploaded_file)
+        else:
+            # Do NOT delete data automatically on every rerun. 
+            pass
 
     # ─── METRICS GRID ────────────────────────────────────────────────
     st.markdown(f"""
