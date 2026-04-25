@@ -221,141 +221,173 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
 </div>
     """, unsafe_allow_html=True)
 
-    # ─── FILE UPLOADER & CUSTOM POPUP ───────────────────────────
+    # --- Move dialog outside to avoid nested re-renders ---
+    @st.dialog("⚙️ Processing Dataset")
+    def process_dataset(file):
+        import time, numpy as np
+        st.markdown(f"**File:** `{file.name}`")
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+
+        try:
+            # ── Step 1: Read CSV ──
+            status_text.caption("Reading file...")
+            progress_bar.progress(10)
+            time.sleep(0.3)
+
+            file.seek(0)
+            new_df = pd.read_csv(file)
+
+            # ── Step 2: Auto-detect sentiment column (case-insensitive) ──
+            status_text.caption("Detecting sentiment column...")
+            progress_bar.progress(25)
+            time.sleep(0.3)
+
+            col_lower_map = {c.lower().strip(): c for c in new_df.columns}
+            sentiment_col = None
+            for alias in ["sentiment", "label", "class", "target", "emotion", "polarity"]:
+                if alias in col_lower_map:
+                    sentiment_col = col_lower_map[alias]
+                    break
+
+            if sentiment_col is None:
+                st.error("⚠️ Could not find a sentiment column. Expected one of: "
+                            "`Sentiment`, `Label`, `Class`, `Target`, `Emotion`, `Polarity`.")
+                return
+
+            # Rename to standard "Sentiment" if needed
+            if sentiment_col != "Sentiment":
+                new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
+
+            # ── Step 3: Normalize sentiment values ──
+            status_text.caption("Normalizing sentiment labels...")
+            progress_bar.progress(40)
+            time.sleep(0.3)
+
+            new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip()
+            positive_aliases = {"positive", "pos", "1", "1.0", "good", "happy", "joy", "love"}
+            negative_aliases = {"negative", "neg", "-1", "-1.0", "bad", "sad", "anger", "hate", "fear"}
+            neutral_aliases  = {"neutral", "neu", "0", "0.0", "mixed", "none", "other", "surprise"}
+
+            def normalize_sentiment(val):
+                v = str(val).lower().strip()
+                if v in positive_aliases:
+                    return "Positive"
+                elif v in negative_aliases:
+                    return "Negative"
+                elif v in neutral_aliases:
+                    return "Neutral"
+                else:
+                    return val.title()  # Keep original but title-case
+
+            new_df["Sentiment"] = new_df["Sentiment"].apply(normalize_sentiment)
+
+            # ── Step 4: Ensure required columns exist ──
+            status_text.caption("Preparing dataset structure...")
+            progress_bar.progress(55)
+            time.sleep(0.3)
+
+            required_cols = {
+                "Post_ID":         lambda: [f"POST_{i:05d}" for i in range(len(new_df))],
+                "Timestamp":       lambda: pd.date_range("2024-01-01", periods=len(new_df), freq="h").astype(str).tolist(),
+                "Platform":        lambda: np.random.choice(["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"], len(new_df)).tolist(),
+                "Content_Type":    lambda: np.random.choice(["Video", "Image", "Text", "Carousel", "Link"], len(new_df)).tolist(),
+                "Category":        lambda: np.random.choice(["Tech", "Fashion", "Finance", "Gaming", "Education", "Entertainment", "Health"], len(new_df)).tolist(),
+                "Likes":           lambda: np.random.randint(10, 5000, len(new_df)).tolist(),
+                "Comments":        lambda: np.random.randint(0, 500, len(new_df)).tolist(),
+                "Shares":          lambda: np.random.randint(0, 300, len(new_df)).tolist(),
+                "Views":           lambda: np.random.randint(100, 100000, len(new_df)).tolist(),
+                "Saves":           lambda: np.random.randint(0, 200, len(new_df)).tolist(),
+                "Follower_Count":  lambda: np.random.randint(1000, 500000, len(new_df)).tolist(),
+                "Hashtag_Count":   lambda: np.random.randint(0, 30, len(new_df)).tolist(),
+                "Content_Length":  lambda: np.random.randint(10, 2200, len(new_df)).tolist(),
+                "Influencer_Tier": lambda: np.random.choice(["Nano", "Micro", "Mid-tier", "Macro"], len(new_df)).tolist(),
+                "Has_Media":       lambda: np.random.choice([True, False], len(new_df)).tolist(),
+                "Is_Verified":     lambda: np.random.choice([True, False], len(new_df)).tolist(),
+            }
+
+            generated_cols = []
+            for col_name, gen_fn in required_cols.items():
+                if col_name not in new_df.columns:
+                    # Try case-insensitive match first
+                    match = col_lower_map.get(col_name.lower().strip())
+                    if match and match in new_df.columns:
+                        new_df = new_df.rename(columns={match: col_name})
+                    else:
+                        new_df[col_name] = gen_fn()
+                        generated_cols.append(col_name)
+
+            # Ensure numeric engagement columns exist
+            if "Engagement_Rate" not in new_df.columns:
+                views_safe = new_df["Views"].replace(0, 1)
+                new_df["Engagement_Rate"] = (
+                    (new_df["Likes"] + new_df["Comments"] + new_df["Shares"] + new_df["Saves"]) / views_safe * 100
+                ).round(2)
+                generated_cols.append("Engagement_Rate")
+
+            if "Hour_of_Day" not in new_df.columns:
+                new_df["Hour_of_Day"] = pd.to_datetime(new_df["Timestamp"], errors="coerce").dt.hour.fillna(12).astype(int)
+                generated_cols.append("Hour_of_Day")
+
+            if "Day_of_Week" not in new_df.columns:
+                new_df["Day_of_Week"] = pd.to_datetime(new_df["Timestamp"], errors="coerce").dt.dayofweek.fillna(0).astype(int)
+                generated_cols.append("Day_of_Week")
+
+            # ── Step 5: Save to Parquet ──
+            status_text.caption("Saving dataset to backend...")
+            progress_bar.progress(80)
+
+            import os
+            save_dir = "data/processed"
+            os.makedirs(save_dir, exist_ok=True)
+            new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
+
+            progress_bar.progress(100)
+            status_text.caption("✅ Processing complete!")
+            time.sleep(0.4)
+
+            st.divider()
+            st.success("Dataset successfully validated and ready.")
+
+            # Show dataset details
+            st.markdown(f"**Total Rows:** `{len(new_df):,}`")
+            st.markdown(f"**Total Features:** `{len(new_df.columns)}`")
+
+            if generated_cols:
+                st.caption(f"ℹ️ Auto-generated missing columns: {', '.join(generated_cols)}")
+
+            # Show sentiment distribution (max 5 columns to avoid overflow)
+            dist = new_df["Sentiment"].value_counts().head(5)
+            n_cols = min(len(dist), 4)
+            cols = st.columns(n_cols)
+            for i, (k, v) in enumerate(dist.items()):
+                if i >= n_cols:
+                    break
+                cols[i].metric(label=str(k), value=f"{v:,}")
+
+            st.write("")
+            if st.button("Load Dashboard", type="primary", use_container_width=True):
+                st.session_state["processed_file"] = file.name
+                st.cache_data.clear()
+                st.rerun()
+
+        except Exception as e:
+            st.error(f"❌ Error processing file: {e}")
+
+    # ─── FILE UPLOADER ───────────────────────────────────────────────
     col1, col2, col3 = st.columns([1.2, 2, 1.2])
     with col2:
         uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
         
         if uploaded_file is not None:
             if st.session_state.get("processed_file") != uploaded_file.name:
-                modal_placeholder = st.empty()
-                with modal_placeholder.container():
-                    st.markdown("""
-                        <style>
-                        .custom-modal-backdrop {
-                            position: fixed !important;
-                            top: 0 !important; left: 0 !important;
-                            width: 100vw !important; height: 100vh !important;
-                            background: rgba(15, 23, 42, 0.5) !important; /* Deeper slate but transparent */
-                            backdrop-filter: blur(12px) saturate(180%) !important;
-                            z-index: 9999999 !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                        }
-                        .custom-modal-card {
-                            background: #1E293B !important;
-                            border-radius: 32px !important;
-                            padding: 2.8rem !important;
-                            width: 100% !important;
-                            max-width: 540px !important;
-                            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8) !important;
-                            border: 1px solid rgba(255,255,255,0.08) !important;
-                            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-                            position: relative !important;
-                            overflow: hidden;
-                        }
-                        @keyframes modalPop {
-                            from { transform: scale(0.9) translateY(40px); opacity: 0; }
-                            to   { transform: scale(1) translateY(0); opacity: 1; }
-                        }
-                        .modal-close {
-                            position: absolute; top: 24px; right: 28px;
-                            color: #FFF; font-size: 20px; cursor: pointer; opacity: 0.5; transition: 0.2s;
-                        }
-                        .modal-close:hover { opacity: 1; transform: rotate(90deg); }
-                        </style>
-                        <div class="custom-modal-backdrop">
-                            <div class="custom-modal-card">
-                                <div class="modal-close" onclick="window.location.reload()">✕</div>
-                                <h2 style="margin:0 0 2rem; font-family:var(--font-sans); color:#FFF; font-size:1.7rem; font-weight:800; display:flex; align-items:center; gap:14px;">
-                                    <span style="font-size:2rem; filter: drop-shadow(0 0 10px rgba(139,92,246,0.3));">⚙️</span> Processing Dataset
-                                </h2>
-                    """, unsafe_allow_html=True)
-                    
-                    import time, numpy as np
-                    st.markdown(f"""
-                        <div style="margin-bottom:1.8rem; font-family:var(--font-sans);">
-                            <span style="color:#94A3B8; font-weight:700; font-size:13px; margin-right:8px; text-transform:uppercase; letter-spacing:0.05em;">File:</span>
-                            <span style="background:#334155; color:#E2E8F0; padding:5px 12px; border-radius:8px; font-size:12px; font-weight:600; font-family:var(--font-mono); border:1px solid rgba(255,255,255,0.05);">{uploaded_file.name}</span>
-                        </div>
-                    """, unsafe_allow_html=True)
-                    
-                    progress_bar = st.progress(0)
-                    st.markdown("<div style='margin-bottom:1.2rem;'></div>", unsafe_allow_html=True)
-                    status_text = st.empty()
-
+                import os
+                if os.path.exists("saved_model/model_card.json"):
                     try:
-                        # ── Step 1: Read CSV ──
-                        status_text.markdown("<div style='color:#94A3B8; font-size:13px; font-weight:600;'>Reading file...</div>", unsafe_allow_html=True)
-                        progress_bar.progress(15)
-                        time.sleep(0.5)
-                        uploaded_file.seek(0)
-                        new_df = pd.read_csv(uploaded_file)
-
-                        # ── Step 2: Validate ──
-                        status_text.markdown("<div style='color:#94A3B8; font-size:13px; font-weight:600;'>Validating labels...</div>", unsafe_allow_html=True)
-                        progress_bar.progress(45)
-                        col_lower_map = {c.lower().strip(): c for c in new_df.columns}
-                        sentiment_col = None
-                        for alias in ["sentiment", "label", "class", "target"]:
-                            if alias in col_lower_map:
-                                sentiment_col = col_lower_map[alias]
-                                break
-
-                        if sentiment_col:
-                            if sentiment_col != "Sentiment":
-                                new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
-                            new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip().apply(lambda x: x.title())
-                            
-                            # ── Step 3: Save ──
-                            status_text.markdown("<div style='color:#10B981; font-size:13px; font-weight:700;'>✅ Processing complete!</div>", unsafe_allow_html=True)
-                            progress_bar.progress(100)
-                            
-                            import os
-                            save_dir = "data/processed"
-                            os.makedirs(save_dir, exist_ok=True)
-                            new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
-                            
-                            st.markdown(f"""
-                                <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:15px; padding:1.3rem; margin:1.5rem 0; color:#A7F3D0; font-size:13.5px; font-weight:500; line-height:1.5;">
-                                    Dataset successfully validated and ready.
-                                </div>
-                                <div style="display:flex; gap:1.8rem; margin-bottom:1.8rem; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:1.2rem;">
-                                    <div><span style="color:#94A3B8; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;">Total Rows:</span> <span style="background:#334155; color:#FFF; padding:3px 8px; border-radius:6px; font-size:11px; margin-left:4px; font-weight:600;">{len(new_df):,}</span></div>
-                                    <div><span style="color:#94A3B8; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;">Total Features:</span> <span style="background:#334155; color:#FFF; padding:3px 8px; border-radius:6px; font-size:11px; margin-left:4px; font-weight:600;">{len(new_df.columns)}</span></div>
-                                </div>
-                            """, unsafe_allow_html=True)
-
-                            # Rich metrics row matching the second image
-                            dist = new_df["Sentiment"].value_counts()
-                            m_cols = st.columns(3)
-                            labels = ["POSITIVE", "NEUTRAL", "NEGATIVE"]
-                            colors = ["#10B981", "#94A3B8", "#EF4444"]
-                            for i, label in enumerate(labels):
-                                val = dist.get(label, 0)
-                                with m_cols[i]:
-                                    st.markdown(f"""
-                                        <div style="text-align:left;">
-                                            <div style="color:#94A3B8; font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">{label}</div>
-                                            <div style="color:#FFF; font-size:2rem; font-weight:800; margin-top:4px; letter-spacing:-0.03em;">{val:,}</div>
-                                        </div>
-                                    """, unsafe_allow_html=True)
-
-                            st.markdown("<div style='margin-bottom:2.5rem;'></div>", unsafe_allow_html=True)
-                            
-                            if st.button("Load Dashboard", type="primary", use_container_width=True):
-                                st.session_state["processed_file"] = uploaded_file.name
-                                st.cache_data.clear()
-                                st.rerun()
-                        else:
-                            st.error("❌ Sentiment column not found.")
-                            if st.button("Cancel"): modal_placeholder.empty()
-                    except Exception as e:
-                        st.error(f"❌ Error: {e}")
-                        if st.button("Close"): modal_placeholder.empty()
-                    
-                    st.markdown("</div></div>", unsafe_allow_html=True)
+                        os.remove("saved_model/model_card.json")
+                    except:
+                        pass
+                process_dataset(uploaded_file)
 
 
     # ─── METRICS GRID ────────────────────────────────────────────────

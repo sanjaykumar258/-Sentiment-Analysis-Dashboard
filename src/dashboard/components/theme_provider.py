@@ -581,25 +581,12 @@ div[role="listbox"] li:hover {{
   color: var(--text-primary) !important;
 }}
 
-/* ── MODALS / DIALOGS — Stable Visibility Fix ── */
+/* ── MODALS / DIALOGS — Force theme awareness ── */
+/* Only apply backdrop filter to the active dialog container */
 div[role="dialog"] {{
-  backdrop-filter: blur(8px) saturate(140%) !important;
-  background-color: rgba(0,0,0,0.25) !important;
-  z-index: 9999 !important;
-}}
-
-
-/* MODALS / DIALOGS — Keep existing for other parts */
-div[role="dialog"] {{
-  backdrop-filter: blur(10px) saturate(160%) !important;
+  backdrop-filter: blur(12px) saturate(180%) !important;
   background-color: rgba(0,0,0,0.4) !important;
   z-index: 9999 !important;
-}}
-
-/* Ensure the main container doesn't shift */
-.main .block-container {{
-    max-width: 100% !important;
-    padding-top: 5rem !important;
 }}
 
 [data-testid="stDialog"] > div:first-child > div:first-child {{
@@ -612,15 +599,6 @@ div[role="dialog"] {{
   max-width: 550px !important;
   margin: 0 auto !important;
   animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-}}
-
-@keyframes modalPop {{
-  from {{ transform: scale(0.9) translateY(20px); opacity: 0; }}
-  to   {{ transform: scale(1) translateY(0); opacity: 1; }}
-}}
-
-[data-testid="stDialog"] * {{
-  color: var(--text-primary) !important;
 }}
 
 [data-testid="stDialog"] > div:first-child > div:first-child {{
