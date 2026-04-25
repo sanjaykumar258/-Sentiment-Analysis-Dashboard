@@ -169,45 +169,34 @@ html, body, [class*="css"] {{
   border: 1px solid var(--border) !important;
 }}
 
-/* Hide ALL inner content — spans, text, svgs, and raw labels */
-[data-testid="stSidebarCollapseControl"] span,
-[data-testid="collapsedControl"] span,
-[data-testid="stSidebarCollapseControl"] svg,
-[data-testid="collapsedControl"] svg,
-[data-testid="stSidebarCollapseControl"] div,
-[data-testid="collapsedControl"] div {{
-  font-size: 0px !important;
-  line-height: 0 !important;
-  color: transparent !important;
+/* Hide EVERY POSSIBLE ELEMENT inside the button to prevent raw text from leaking */
+[data-testid="stSidebarCollapseControl"] *,
+[data-testid="collapsedControl"] *,
+[data-testid="stSidebarCollapseControl"]::before,
+[data-testid="collapsedControl"]::before {{
+  display: none !important;
   visibility: hidden !important;
-  opacity: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  display: block !important;
+  font-size: 0px !important;
+  color: transparent !important;
 }}
 
-/* Show « when sidebar is OPEN (collapse button inside sidebar) */
+/* Show « when sidebar is OPEN */
 [data-testid="stSidebarCollapseControl"]::after {{
   content: "«" !important;
-  font-family: var(--font-sans) !important;
-  font-size: 20px !important;
-  font-weight: 700 !important;
-  color: var(--text-muted) !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: var(--brand-primary) !important;
   line-height: 1 !important;
-  pointer-events: none !important;
 }}
 
-/* Show » when sidebar is CLOSED (expand button outside sidebar) */
+/* Show » when sidebar is CLOSED */
 [data-testid="collapsedControl"]::after {{
   content: "»" !important;
-  font-family: var(--font-sans) !important;
-  font-size: 20px !important;
-  font-weight: 700 !important;
-  color: var(--text-muted) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: var(--brand-primary) !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
