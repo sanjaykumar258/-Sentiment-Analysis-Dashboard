@@ -73,14 +73,34 @@ inject_global_theme()
 # --- FORCE SIDEBAR ICON VISIBILITY ---
 st.markdown("""
 <style>
-/* Force arrow visible in BOTH themes - overrides Streamlit Light Mode ghosting */
+/* Dark mode arrow (Default) */
 [data-testid="stSidebarCollapseControl"] button::before,
 [data-testid="collapsedControl"] button::before {
-    color: #1E293B !important;
-    -webkit-text-fill-color: #1E293B !important;
+    content: "«" !important;
+    color: #7dd3fc !important;
+    -webkit-text-fill-color: #7dd3fc !important;
     opacity: 1 !important;
     visibility: visible !important;
-    filter: invert(0) !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    font-family: Arial, sans-serif !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+[data-testid="collapsedControl"] button::before {
+    content: "»" !important;
+}
+
+/* Light mode arrow - Force deep blue for visibility */
+@media (prefers-color-scheme: light) {
+    [data-testid="stSidebarCollapseControl"] button::before,
+    [data-testid="collapsedControl"] button::before {
+        color: #1e40af !important;
+        -webkit-text-fill-color: #1e40af !important;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
