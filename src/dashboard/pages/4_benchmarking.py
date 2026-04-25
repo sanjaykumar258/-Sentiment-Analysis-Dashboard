@@ -1,7 +1,7 @@
 import pathlib, sys, os
 # --- Fix for Streamlit Cloud ModuleNotFoundError ---
 current_dir = pathlib.Path(__file__).parent.resolve()
-root_dir = current_dir.parents[3] # Go up: pages -> dashboard -> src -> root
+root_dir = current_dir.parents[2] # Go up: pages -> dashboard -> root
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
