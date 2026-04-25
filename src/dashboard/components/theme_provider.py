@@ -635,6 +635,33 @@ hr {{ border-color: var(--border) !important; }}
 }}
 
 /* ═══════════════════════════════════════════════════════════════
+   MODALS / DIALOGS — Force theme awareness
+   ═══════════════════════════════════════════════════════════════ */
+[data-testid="stDialog"],
+[data-testid="stModal"],
+[role="dialog"],
+.st-emotion-cache-12w0436 {{
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-soft) !important;
+}}
+
+[data-testid="stDialog"] *,
+[data-testid="stModal"] * {{
+  color: var(--text-primary) !important;
+}}
+
+/* Force dark text for metrics inside modals in Light Mode */
+{"" if is_dark else """
+[data-testid="stDialog"] [data-testid="metric-container"] *,
+[data-testid="stDialog"] [data-testid="stMarkdownContainer"] *,
+[data-testid="stDialog"] button p {
+    color: #111827 !important;
+}
+"""}
+
+/* ═══════════════════════════════════════════════════════════════
    ANIMATIONS
    ═══════════════════════════════════════════════════════════════ */
 section[data-testid="stMain"] > div:first-child {{
