@@ -104,7 +104,7 @@ def render_floating_chatbot(df: pd.DataFrame = None):
             /* ── Floating Action Button ── */
             #si-fab {{
                 position: fixed;
-                bottom: 28px;
+                bottom: 85px; /* Moved up to clear Streamlit Manage Bar */
                 right: 28px;
                 width: 60px;
                 height: 60px;
@@ -131,7 +131,7 @@ def render_floating_chatbot(df: pd.DataFrame = None):
             /* ── Chat Panel ── */
             #si-panel {{
                 position: fixed;
-                bottom: 100px;
+                bottom: 155px; /* Adjusted based on FAB move */
                 right: 28px;
                 width: 380px;
                 height: 550px;

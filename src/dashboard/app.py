@@ -389,21 +389,8 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                         pass
                 process_dataset(uploaded_file)
         else:
-            if st.session_state.get("processed_file") is not None:
-                import os
-                if os.path.exists("data/processed/processed_data.parquet"):
-                    try:
-                        os.remove("data/processed/processed_data.parquet")
-                    except:
-                        pass
-                if os.path.exists("saved_model/model_card.json"):
-                    try:
-                        os.remove("saved_model/model_card.json")
-                    except:
-                        pass
-                st.session_state["processed_file"] = None
-                st.cache_data.clear()
-                st.rerun()
+            # Do NOT delete data automatically on every rerun. 
+            pass
 
     # ─── METRICS GRID ────────────────────────────────────────────────
     st.markdown(f"""

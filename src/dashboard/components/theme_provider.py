@@ -366,12 +366,24 @@ div[data-baseweb="select"] > div {{
 [data-baseweb="select"] span,
 [data-baseweb="select"] div,
 [data-baseweb="select"] input {{
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
 }}
 [data-baseweb="select"] svg {{
-  fill: #FFFFFF !important;
-  color: #FFFFFF !important;
+  fill: var(--text-primary) !important;
+  color: var(--text-primary) !important;
+}}
+[data-baseweb="select"] [data-baseweb="tag"] {{
+  background: var(--bg-card-hover) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+}}
+[data-baseweb="popover"] [data-baseweb="menu"] li {{
+  color: var(--text-primary) !important;
+  background: var(--bg-card-solid) !important;
+}}
+[data-baseweb="popover"] [data-baseweb="menu"] li:hover {{
+  background: var(--bg-card-hover) !important;
 }}
 
 /* Number Input Step Buttons (+ / -) */
