@@ -581,7 +581,34 @@ div[role="listbox"] li:hover {{
   color: var(--text-primary) !important;
 }}
 
-/* ── MODALS / DIALOGS — Force theme awareness ── */
+/* ── CUSTOM MODAL OVERLAY — Bypass restrictive st.dialog ── */
+.custom-modal-overlay {{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0,0,0,0.3) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2rem !important;
+}}
+
+.custom-modal-card {{
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 28px !important;
+    padding: 2.5rem !important;
+    width: 100% !important;
+    max-width: 550px !important;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
+    animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}}
+
+/* ── MODALS / DIALOGS — Keep existing for other parts ── */
 /* Only apply backdrop filter to the active dialog container */
 div[role="dialog"] {{
   backdrop-filter: blur(12px) saturate(180%) !important;
