@@ -149,81 +149,74 @@ html, body, [class*="css"] {{
 }}
 
 /* ── Sidebar Collapse / Expand Button ── */
-/* Hide the raw "keyboard_double_arrow" text and show « » instead */
-
-/* Base button styling */
-[data-testid="stSidebarCollapseControl"],
+/* Base button styling: Kill the raw text and prepare for injection */
+[data-testid="stSidebarCollapseControl"], 
 [data-testid="collapsedControl"] {{
+  font-size: 0 !important;
+  color: transparent !important;
+  overflow: hidden !important;
+  position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 28px !important;
-  height: 28px !important;
-  min-width: 28px !important;
-  border-radius: 6px !important;
-  cursor: pointer !important;
-  transition: background 0.2s ease !important;
-  position: relative !important;
-  overflow: hidden !important;
+  width: 32px !important;
+  height: 32px !important;
   background: transparent !important;
   border: 1px solid var(--border) !important;
-  font-size: 0 !important; /* Kills the 'keyboard_double' text instantly */
-  color: transparent !important;
-  text-indent: -9999px !important; /* Final insurance against text leak */
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  text-indent: -9999px !important;
 }}
 
-/* Hide EVERY POSSIBLE ELEMENT inside the button to prevent raw text from leaking */
-[data-testid="stSidebarCollapseControl"] *,
-[data-testid="collapsedControl"] *,
-[data-testid="stSidebarCollapseControl"]::before,
-[data-testid="collapsedControl"]::before {{
+/* Hide all existing children (SVGs, raw spans) */
+[data-testid="stSidebarCollapseControl"] *, 
+[data-testid="collapsedControl"] * {{
   display: none !important;
   visibility: hidden !important;
-  font-size: 0px !important;
-  color: transparent !important;
 }}
 
-/* Show « when sidebar is OPEN */
-[data-testid="stSidebarCollapseControl"]::after {{
+/* Inject the « (collapse) icon for Open Sidebar */
+[data-testid="stSidebarCollapseControl"]::before {{
   content: "«" !important;
+  font-size: 22px !important;
+  color: var(--brand-primary) !important;
+  visibility: visible !important;
+  font-weight: 800 !important;
   font-family: Arial, sans-serif !important;
-  content: "\e5cb" !important; /* chevron_left code */
-  font-family: 'Material Icons' !important;
-  font-size: 24px !important;
-  color: var(--brand-primary) !important;
+  line-height: 1 !important;
+  text-indent: 0 !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  line-height: 1 !important;
-  text-indent: 0 !important;
-  visibility: visible !important;
 }}
 
-[data-testid="collapsedControl"]::after {{
-  content: "\e5cc" !important; /* chevron_right code */
-  font-family: 'Material Icons' !important;
-  font-size: 24px !important;
+/* Inject the » (expand) icon for Closed Sidebar */
+[data-testid="collapsedControl"]::before {{
+  content: "»" !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
   color: var(--brand-primary) !important;
+  visibility: visible !important;
+  font-family: Arial, sans-serif !important;
+  line-height: 1 !important;
+  text-indent: 0 !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  line-height: 1 !important;
-  text-indent: 0 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
 }}
 
-/* Hover */
-[data-testid="stSidebarCollapseControl"]:hover,
+/* Hover effects */
+[data-testid="stSidebarCollapseControl"]:hover, 
 [data-testid="collapsedControl"]:hover {{
   background: var(--bg-card-hover) !important;
-  border-color: var(--border-hover) !important;
+  border-color: var(--brand-primary) !important;
 }}
-[data-testid="stSidebarCollapseControl"]:hover::after,
-[data-testid="collapsedControl"]:hover::after {{
+[data-testid="stSidebarCollapseControl"]:hover::before, 
+[data-testid="collapsedControl"]:hover::before {{
   color: var(--text-primary) !important;
+  transform: translate(-50%, -50%) scale(1.1) !important;
 }}
 
 /* Hide Streamlit Tooltips */
