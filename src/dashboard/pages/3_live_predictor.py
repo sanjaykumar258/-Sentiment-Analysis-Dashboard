@@ -71,7 +71,27 @@ with st.container():
                 st.session_state["ex_eng"]       = float(row["Engagement_Rate"])
                 st.session_state["ex_label"]     = row["Sentiment"]
                 st.session_state["ex_text"]      = row.get("Text_Content", "")
-                st.rerun()
+            else:
+                # Mock fallback if no data is loaded
+                import random
+                mock_posts = [
+                    "Just tried the new AI features and they are absolutely game-changing! 🚀 #Tech #Innovation",
+                    "Feeling frustrated with the latest update. It keeps crashing. 😤 #Broken #UI",
+                    "Had a wonderful time at the conference today! So many great insights. ✨",
+                    "This product is okay, but definitely overpriced for what it offers.",
+                    "Absolutely love the new design! It's so sleek and modern. 😍",
+                    "The service was terrible. I will not be coming back again. 👎"
+                ]
+                st.session_state["ex_platform"]  = random.choice(["Instagram", "TikTok", "Twitter", "YouTube"])
+                st.session_state["ex_category"]  = random.choice(["Tech", "Fashion", "Gaming", "Education"])
+                st.session_state["ex_type"]      = random.choice(["Video", "Image", "Text"])
+                st.session_state["ex_tier"]      = random.choice(["Nano", "Micro", "Mid-tier", "Macro"])
+                st.session_state["ex_followers"] = random.randint(1000, 500000)
+                st.session_state["ex_hashtags"]  = random.randint(1, 15)
+                st.session_state["ex_length"]    = random.randint(50, 1000)
+                st.session_state["ex_eng"]       = round(random.uniform(0.5, 15.0), 2)
+                st.session_state["ex_text"]      = random.choice(mock_posts)
+            st.rerun()
 
     post_text = st.text_area("Post content", value=st.session_state.get("ex_text", ""), placeholder="e.g. Amazing results on this new tech post!", height=100)
 
