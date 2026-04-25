@@ -221,125 +221,109 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
 </div>
     """, unsafe_allow_html=True)
 
-    # --- CUSTOM MODAL POPUP (Replaces st.dialog for better background visibility) ---
+    # --- Stable Processing Dialog ---
+    @st.dialog("⚙️ Processing Dataset")
     def process_dataset(file):
-        # Create a full-screen overlay placeholder
-        overlay = st.empty()
-        
-        with overlay.container():
-            # Inject custom overlay styles
-            st.markdown(f"""
-                <div class="custom-modal-overlay">
-                    <div class="custom-modal-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                            <h3 style="margin:0; font-family:var(--font-sans); color:var(--text-primary);">⚙️ Processing Dataset</h3>
-                        </div>
-            """, unsafe_allow_html=True)
-            
-            import time, numpy as np
-            st.markdown(f"**File:** `{file.name}`")
-            progress_bar = st.progress(0)
-            status_text = st.empty()
+        import time, numpy as np
+        st.markdown(f"**File:** `{file.name}`")
+        progress_bar = st.progress(0)
+        status_text = st.empty()
 
-            try:
-                # ── Step 1: Read CSV ──
-                status_text.caption("Reading file...")
-                progress_bar.progress(10)
-                time.sleep(0.3)
+        try:
+            # ── Step 1: Read CSV ──
+            status_text.caption("Reading file...")
+            progress_bar.progress(10)
+            time.sleep(0.3)
 
-                file.seek(0)
-                new_df = pd.read_csv(file)
+            file.seek(0)
+            new_df = pd.read_csv(file)
 
-                # ── Step 2: Auto-detect sentiment column ──
-                status_text.caption("Detecting sentiment column...")
-                progress_bar.progress(25)
-                time.sleep(0.3)
+            # ── Step 2: Auto-detect sentiment column ──
+            status_text.caption("Detecting sentiment column...")
+            progress_bar.progress(25)
+            time.sleep(0.3)
 
-                col_lower_map = {c.lower().strip(): c for c in new_df.columns}
-                sentiment_col = None
-                for alias in ["sentiment", "label", "class", "target", "emotion", "polarity"]:
-                    if alias in col_lower_map:
-                        sentiment_col = col_lower_map[alias]
-                        break
+            col_lower_map = {c.lower().strip(): c for c in new_df.columns}
+            sentiment_col = None
+            for alias in ["sentiment", "label", "class", "target", "emotion", "polarity"]:
+                if alias in col_lower_map:
+                    sentiment_col = col_lower_map[alias]
+                    break
 
-                if sentiment_col is None:
-                    st.error("⚠️ Could not find a sentiment column.")
-                    if st.button("Close"): overlay.empty()
-                    return
+            if sentiment_col is None:
+                st.error("⚠️ Could not find a sentiment column.")
+                return
 
-                if sentiment_col != "Sentiment":
-                    new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
+            if sentiment_col != "Sentiment":
+                new_df = new_df.rename(columns={sentiment_col: "Sentiment"})
 
-                # ── Step 3: Normalize ──
-                status_text.caption("Normalizing sentiment labels...")
-                progress_bar.progress(40)
-                time.sleep(0.3)
-                new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip().apply(lambda x: x.title())
+            # ── Step 3: Normalize ──
+            status_text.caption("Normalizing sentiment labels...")
+            progress_bar.progress(40)
+            time.sleep(0.3)
+            new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip().apply(lambda x: x.title())
 
-                # ── Step 4: Ensure columns ──
-                status_text.caption("Preparing dataset structure...")
-                progress_bar.progress(55)
-                time.sleep(0.3)
+            # ── Step 4: Ensure columns ──
+            status_text.caption("Preparing dataset structure...")
+            progress_bar.progress(55)
+            time.sleep(0.3)
 
-                required_cols = {
-                    "Post_ID":         lambda: [f"POST_{i:05d}" for i in range(len(new_df))],
-                    "Timestamp":       lambda: pd.date_range("2024-01-01", periods=len(new_df), freq="h").astype(str).tolist(),
-                    "Platform":        lambda: np.random.choice(["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"], len(new_df)).tolist(),
-                    "Likes":           lambda: np.random.randint(10, 5000, len(new_df)).tolist(),
-                    "Comments":        lambda: np.random.randint(0, 500, len(new_df)).tolist(),
-                    "Shares":          lambda: np.random.randint(0, 300, len(new_df)).tolist(),
-                    "Views":           lambda: np.random.randint(100, 100000, len(new_df)).tolist(),
-                    "Saves":           lambda: np.random.randint(0, 200, len(new_df)).tolist(),
-                }
+            required_cols = {
+                "Post_ID":         lambda: [f"POST_{i:05d}" for i in range(len(new_df))],
+                "Timestamp":       lambda: pd.date_range("2024-01-01", periods=len(new_df), freq="h").astype(str).tolist(),
+                "Platform":        lambda: np.random.choice(["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"], len(new_df)).tolist(),
+                "Likes":           lambda: np.random.randint(10, 5000, len(new_df)).tolist(),
+                "Comments":        lambda: np.random.randint(0, 500, len(new_df)).tolist(),
+                "Shares":          lambda: np.random.randint(0, 300, len(new_df)).tolist(),
+                "Views":           lambda: np.random.randint(100, 100000, len(new_df)).tolist(),
+                "Saves":           lambda: np.random.randint(0, 200, len(new_df)).tolist(),
+                "Category":        lambda: np.random.choice(["Tech", "Fashion", "Finance", "Gaming", "Education", "Entertainment", "Health"], len(new_df)).tolist(),
+                "Content_Type":    lambda: np.random.choice(["Video", "Image", "Text", "Carousel", "Link"], len(new_df)).tolist(),
+            }
 
-                for col_name, gen_fn in required_cols.items():
-                    if col_name not in new_df.columns:
-                        new_df[col_name] = gen_fn()
+            for col_name, gen_fn in required_cols.items():
+                if col_name not in new_df.columns:
+                    new_df[col_name] = gen_fn()
 
-                # ── Step 5: Save ──
-                status_text.caption("Saving dataset...")
-                progress_bar.progress(80)
-                save_dir = "data/processed"
-                import os
-                os.makedirs(save_dir, exist_ok=True)
-                new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
+            # ── Step 5: Save ──
+            status_text.caption("Saving dataset...")
+            progress_bar.progress(80)
+            save_dir = "data/processed"
+            import os
+            os.makedirs(save_dir, exist_ok=True)
+            new_df.to_parquet(os.path.join(save_dir, "processed_data.parquet"), index=False)
 
-                progress_bar.progress(100)
-                status_text.caption("✅ Processing complete!")
-                time.sleep(0.4)
+            progress_bar.progress(100)
+            status_text.caption("✅ Processing complete!")
+            time.sleep(0.4)
 
-                st.divider()
-                st.success("Dataset ready.")
-                st.markdown(f"**Total Rows:** `{len(new_df):,}`")
+            st.divider()
+            st.success("Dataset ready.")
+            st.markdown(f"**Total Rows:** `{len(new_df):,}`")
+            st.markdown(f"**Total Features:** `{len(new_df.columns)}`")
 
-                if st.button("Load Dashboard", type="primary", use_container_width=True):
-                    st.session_state["processed_file"] = file.name
-                    st.cache_data.clear()
-                    st.rerun()
-                
-                if st.button("Cancel", use_container_width=True):
-                    overlay.empty()
+            # Show distribution
+            dist = new_df["Sentiment"].value_counts().head(5)
+            n_cols = min(len(dist), 4)
+            cols = st.columns(n_cols)
+            for i, (k, v) in enumerate(dist.items()):
+                if i >= n_cols: break
+                cols[i].metric(label=str(k), value=f"{v:,}")
 
-            except Exception as e:
-                st.error(f"❌ Error: {e}")
-                if st.button("Close"): overlay.empty()
-            
-            # Close the custom modal div tags
-            st.markdown("</div></div>", unsafe_allow_html=True)
+            if st.button("Load Dashboard", type="primary", use_container_width=True):
+                st.session_state["processed_file"] = file.name
+                st.cache_data.clear()
+                st.rerun()
+
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
 
     # ─── FILE UPLOADER ───────────────────────────────────────────────
     col1, col2, col3 = st.columns([1.2, 2, 1.2])
     with col2:
         uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
-        
         if uploaded_file is not None:
             if st.session_state.get("processed_file") != uploaded_file.name:
-                import os
-                if os.path.exists("saved_model/model_card.json"):
-                    try:
-                        os.remove("saved_model/model_card.json")
-                    except:
-                        pass
                 process_dataset(uploaded_file)
 
 

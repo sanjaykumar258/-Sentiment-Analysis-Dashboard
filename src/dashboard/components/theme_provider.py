@@ -581,39 +581,32 @@ div[role="listbox"] li:hover {{
   color: var(--text-primary) !important;
 }}
 
-/* ── CUSTOM MODAL OVERLAY — Bypass restrictive st.dialog ── */
-.custom-modal-overlay {{
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: rgba(0,0,0,0.3) !important;
-    backdrop-filter: blur(12px) saturate(180%) !important;
-    z-index: 999999 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 2rem !important;
-}}
-
-.custom-modal-card {{
-    background: var(--bg-secondary) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 28px !important;
-    padding: 2.5rem !important;
-    width: 100% !important;
-    max-width: 550px !important;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
-    animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
-}}
-
-/* ── MODALS / DIALOGS — Keep existing for other parts ── */
-/* Only apply backdrop filter to the active dialog container */
+/* ── MODALS / DIALOGS — Stable Visibility Fix ── */
 div[role="dialog"] {{
-  backdrop-filter: blur(12px) saturate(180%) !important;
+  backdrop-filter: blur(10px) saturate(160%) !important;
   background-color: rgba(0,0,0,0.4) !important;
   z-index: 9999 !important;
+}}
+
+[data-testid="stDialog"] > div:first-child > div:first-child {{
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
+  border-radius: 28px !important;
+  padding: 2rem !important;
+  max-width: 550px !important;
+  margin: 0 auto !important;
+  animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}}
+
+@keyframes modalPop {{
+  from {{ transform: scale(0.9) translateY(20px); opacity: 0; }}
+  to   {{ transform: scale(1) translateY(0); opacity: 1; }}
+}}
+
+[data-testid="stDialog"] * {{
+  color: var(--text-primary) !important;
 }}
 
 [data-testid="stDialog"] > div:first-child > div:first-child {{
