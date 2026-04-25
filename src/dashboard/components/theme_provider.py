@@ -687,24 +687,34 @@ section[data-testid="stMain"] > div:first-child {{
   color: var(--text-primary) !important;
 }}
 /* ── Arrow color based on active Python theme ── */
-[data-testid="stSidebarCollapseControl"] button::before {{
+/* Target the button AND every possible span/div/svg child to kill the ghosting */
+[data-testid="stSidebarCollapseControl"] button::before,
+[data-testid="collapsedControl"] button::before,
+[data-testid="stSidebarCollapseControl"] button *,
+[data-testid="collapsedControl"] button * {{
+  content: "«" !important;
   color: {"#00E6F0" if is_dark else "#000000"} !important;
   -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
   opacity: 1 !important;
   visibility: visible !important;
-}}
-[data-testid="collapsedControl"] button::before {{
-  color: {"#00E6F0" if is_dark else "#000000"} !important;
-  -webkit-text-fill-color: {"#00E6F0" if is_dark else "#000000"} !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  font-family: Arial, sans-serif !important;
 }}
 
-/* Force the container to be visible as well */
+[data-testid="collapsedControl"] button::before,
+[data-testid="collapsedControl"] button * {{
+  content: "»" !important;
+}}
+
+/* Force the container and button to be fully solid */
 [data-testid="stSidebarCollapseControl"], 
-[data-testid="collapsedControl"] {{
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapseControl"] button,
+[data-testid="collapsedControl"] button {{
     opacity: 1 !important;
     visibility: visible !important;
+    background-color: {"transparent" if is_dark else "rgba(0,0,0,0.05)"} !important;
 }}
 </style>
 """, unsafe_allow_html=True)
