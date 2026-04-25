@@ -686,35 +686,68 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── Arrow color based on active Python theme ── */
-/* THE ULTIMATE FIX: Inject SVG background images to bypass all CSS ghosting */
+/* ── THE ULTIMATE SIDEBAR FIX: ABSOLUTE CONTROL METHOD ── */
+
+/* 1. COMPLETELY HIDE Streamlit's native buttons and their containers */
+[data-testid="stSidebarCollapseControl"], 
+[data-testid="collapsedControl"],
 [data-testid="stSidebarCollapseControl"] button,
 [data-testid="collapsedControl"] button {{
-    background-repeat: no-repeat !important;
-    background-position: center !important;
-    background-size: 24px !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    background-color: {"transparent" if is_dark else "rgba(0,0,0,0.05)"} !important;
-    border: 1px solid {"rgba(0,230,240,0.3)" if is_dark else "rgba(0,0,0,0.1)"} !important;
-}}
-
-/* Collapse icon (Sidebar OPEN) */
-[data-testid="stSidebarCollapseControl"] button {{
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M18.41 7.41L17 6l-6 6 6 6 1.41-1.41L13.83 12l4.58-4.59zM11 18V6l-6 6 6 6z' fill='{("%2300E6F0" if is_dark else "%23000000")}'/%3E%3C/svg%3E") !important;
-}}
-
-/* Expand icon (Sidebar CLOSED) */
-[data-testid="collapsedControl"] button {{
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M5.59 7.41L7 6l6 6-6 6-1.41-1.41L10.17 12 5.59 7.41zM13 18V6l6 6-6 6z' fill='{("%2300E6F0" if is_dark else "%23000000")}'/%3E%3C/svg%3E") !important;
-}}
-
-/* Hide all Streamlit's internal icon children */
-[data-testid="stSidebarCollapseControl"] button *,
-[data-testid="collapsedControl"] button * {{
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
+    pointer-events: none !important;
+}}
+
+/* 2. CREATE OUR OWN FLOATING TOGGLE in the sidebar (Open State) */
+[data-testid="stSidebar"]::before {{
+    content: "«" !important;
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: {"#1e293b" if is_dark else "#f1f5f9"} !important;
+    color: {"#00E6F0" if is_dark else "#000000"} !important;
+    border: 1px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    pointer-events: auto !important;
+}}
+
+/* 3. CREATE OUR OWN FLOATING TOGGLE on the main page (Closed State) */
+.stApp::before {{
+    content: "»" !important;
+    position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: {"#1e293b" if is_dark else "#f1f5f9"} !important;
+    color: {"#00E6F0" if is_dark else "#000000"} !important;
+    border: 1px solid {"#00E6F0" if is_dark else "#000000"} !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    pointer-events: none !important; /* This is just a visual indicator; clicking the area still triggers Streamlit's hidden button below it */
+}}
+
+/* Ensure the main container doesn't hide our floating toggle */
+.stApp {{
+    position: relative !important;
 }}
 </style>
 """, unsafe_allow_html=True)
