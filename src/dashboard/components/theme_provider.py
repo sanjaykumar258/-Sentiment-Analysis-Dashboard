@@ -149,82 +149,78 @@ html, body, [class*="css"] {{
 }}
 
 /* ── Sidebar Collapse / Expand Button ── */
-/* Base button styling: Kill the raw text and prepare for injection */
-[data-testid="stSidebarCollapseControl"], 
+[data-testid="stSidebarCollapseControl"],
 [data-testid="collapsedControl"] {{
-  font-size: 0 !important;
-  color: transparent !important;
-  overflow: hidden !important;
-  position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 32px !important;
-  height: 32px !important;
+}}
+
+/* Target the actual button inside the control */
+[data-testid="stSidebarCollapseControl"] button,
+[data-testid="collapsedControl"] button {{
+  position: relative !important;
   background: transparent !important;
   border: 1px solid var(--border) !important;
   border-radius: 8px !important;
-  transition: all 0.2s ease !important;
-  text-indent: -9999px !important;
+  width: 32px !important;
+  height: 32px !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }}
 
-/* SURGICAL FIX - Only hide icons INSIDE the sidebar controls */
+/* Hide the raw Material icon only inside these buttons */
 [data-testid="stSidebarCollapseControl"] [data-testid="stIconMaterial"],
 [data-testid="collapsedControl"] [data-testid="stIconMaterial"] {{
-    display: none !important;
-}}
-
-/* Hide all existing children (SVGs, raw spans) */
-[data-testid="stSidebarCollapseControl"] *, 
-[data-testid="collapsedControl"] * {{
-  display: none !important;
   visibility: hidden !important;
+  font-size: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
 }}
 
-/* Inject the « (collapse) icon for Open Sidebar */
-[data-testid="stSidebarCollapseControl"]::before {{
+/* Inject « for collapse (Sidebar is OPEN) */
+[data-testid="stSidebarCollapseControl"] button::before {{
   content: "«" !important;
-  font-size: 22px !important;
-  color: #7dd3fc !important;
-  visibility: visible !important;
-  font-weight: 800 !important;
-  font-family: Arial, sans-serif !important;
-  line-height: 1 !important;
-  text-indent: 0 !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #7dd3fc !important;
+  visibility: visible !important;
+  font-family: Arial, sans-serif !important;
+  line-height: 1 !important;
 }}
 
-/* Inject the » (expand) icon for Closed Sidebar */
-[data-testid="collapsedControl"]::before {{
+/* Inject » for expand (Sidebar is CLOSED) */
+[data-testid="collapsedControl"] button::before {{
   content: "»" !important;
-  font-size: 22px !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 20px !important;
   font-weight: 800 !important;
   color: #7dd3fc !important;
   visibility: visible !important;
   font-family: Arial, sans-serif !important;
   line-height: 1 !important;
   text-indent: 0 !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
 }}
 
-/* Hover Glow & Scale Effects */
-[data-testid="stSidebarCollapseControl"]:hover::before, 
-[data-testid="collapsedControl"]:hover::before {{
-  color: #ffffff !important;
-  transform: translate(-50%, -50%) scale(1.2) !important;
-  text-shadow: 0 0 10px rgba(125, 211, 252, 0.8) !important;
-}}
-
-[data-testid="stSidebarCollapseControl"]:hover, 
-[data-testid="collapsedControl"]:hover {{
-  background: rgba(125, 211, 252, 0.1) !important;
+/* Hover State with Glow */
+[data-testid="stSidebarCollapseControl"] button:hover,
+[data-testid="collapsedControl"] button:hover {{
   border-color: #7dd3fc !important;
+  background: rgba(125, 211, 252, 0.08) !important;
+  box-shadow: 0 0 15px rgba(125, 211, 252, 0.2) !important;
+}}
+
+[data-testid="stSidebarCollapseControl"] button:hover::before,
+[data-testid="collapsedControl"] button:hover::before {{
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(125, 211, 252, 0.8) !important;
+  transform: translate(-50%, -50%) scale(1.1) !important;
 }}
 
 /* Hide Streamlit Tooltips */
