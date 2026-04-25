@@ -686,18 +686,9 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE BASE64 BRUTE-FORCE FIX ── */
+/* ── THE CLICKABLE HIGH-CONTRAST FIX ── */
 
-/* 1. COMPLETELY HIDE every single internal child Streamlit uses (SVG, Span, Path) */
-[data-testid="stSidebarHeader"] button *,
-[data-testid="stSidebarCollapseButton"] *,
-[data-testid="collapsedControl"] * {{
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-}}
-
-/* 2. Target the BUTTONS and inject our own Solid Background Image */
+/* 1. Reset buttons to be solid, visible, AND clickable */
 [data-testid="stSidebarHeader"] button,
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {{
@@ -706,11 +697,22 @@ section[data-testid="stMain"] > div:first-child {{
     background-size: 20px !important;
     opacity: 1 !important;
     visibility: visible !important;
-    background-color: {"rgba(255,255,255,0.05)" if is_dark else "rgba(0,0,0,0.05)"} !important;
+    background-color: {"rgba(255,255,255,0.1)" if is_dark else "rgba(0,0,0,0.05)"} !important;
     border: 1px solid {"%2300E6F0" if is_dark else "%23000000"} !important;
     border-radius: 8px !important;
     min-width: 32px !important;
     min-height: 32px !important;
+    pointer-events: auto !important; /* Ensure clicks are heard */
+    cursor: pointer !important;
+    z-index: 999999 !important;
+}}
+
+/* 2. Target the internal icons ONLY to hide them, not the whole child tree */
+[data-testid="stSidebarHeader"] button svg,
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="collapsedControl"] svg {{
+    display: none !important;
+    opacity: 0 !important;
 }}
 
 /* 3. Inject the LEFT arrow (Collapse) */
