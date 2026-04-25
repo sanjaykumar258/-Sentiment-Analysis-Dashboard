@@ -588,12 +588,36 @@ div[role="dialog"] {{
   z-index: 9999 !important;
 }}
 
-/* CRITICAL: Prevent Streamlit from hiding the background content when modal is open */
-[data-testid="stAppViewContainer"]:has(div[role="dialog"]),
-[data-testid="stAppViewContainer"]:has([data-testid="stDialog"]) {{
+/* ── CUSTOM MODAL OVERLAY — Zero-Refresh Popup ── */
+.custom-modal-backdrop {{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0,0,0,0.3) !important;
+    backdrop-filter: blur(12px) saturate(160%) !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2rem !important;
+    pointer-events: all !important;
+}}
+
+.custom-modal-container {{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 550px !important;
+    animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}}
+
+/* Ensure the main container doesn't disappear when modal is on top */
+[data-testid="stAppViewContainer"] {{
     display: block !important;
     visibility: visible !important;
-    opacity: 1 !important;
 }}
 
 /* Ensure the main container doesn't shift */

@@ -221,20 +221,29 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
 </div>
     """, unsafe_allow_html=True)
 
-    # ─── FILE UPLOADER & INLINE PROCESSING ───────────────────────────
+    # ─── FILE UPLOADER & CUSTOM POPUP ───────────────────────────
     col1, col2, col3 = st.columns([1.2, 2, 1.2])
     with col2:
         uploaded_file = st.file_uploader("Choose a dataset file", type=["csv"], label_visibility="collapsed")
         
         if uploaded_file is not None:
             if st.session_state.get("processed_file") != uploaded_file.name:
-                # Create a placeholder for inline processing so background stays visible
-                proc_placeholder = st.container()
-                with proc_placeholder:
-                    st.markdown("""<div class="glass-card" style="padding:1.5rem; margin-top:1rem; border-color:var(--brand-primary);">""", unsafe_allow_html=True)
-                    st.subheader("⚙️ Processing Dataset")
+                # ── RENDER CUSTOM POPUP OVERLAY ──
+                # This placeholder holds the entire modal UI
+                modal_placeholder = st.empty()
+                
+                with modal_placeholder.container():
+                    # Inject Modal Wrapper
+                    st.markdown("""
+                        <div class="custom-modal-backdrop">
+                            <div class="custom-modal-container">
+                                <div class="glass-card" style="padding:2.5rem; width:100%; max-width:500px; border-color:var(--brand-primary); box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
+                                    <h2 style="margin:0 0 1rem; font-family:var(--font-sans); color:var(--text-primary); text-align:center;">⚙️ Processing Dataset</h2>
+                    """, unsafe_allow_html=True)
+                    
                     import time, numpy as np
-                    st.markdown(f"**File:** `{uploaded_file.name}`")
+                    st.markdown(f"<p style='text-align:center; color:var(--text-muted);'>File: <code>{uploaded_file.name}</code></p>", unsafe_allow_html=True)
+                    
                     progress_bar = st.progress(0)
                     status_text = st.empty()
 
@@ -242,13 +251,13 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                         # ── Step 1: Read CSV ──
                         status_text.caption("Reading file...")
                         progress_bar.progress(10)
-                        time.sleep(0.3)
+                        time.sleep(0.4)
                         uploaded_file.seek(0)
                         new_df = pd.read_csv(uploaded_file)
 
                         # ── Step 2: Detect col ──
-                        status_text.caption("Detecting sentiment column...")
-                        progress_bar.progress(30)
+                        status_text.caption("Validating structure...")
+                        progress_bar.progress(40)
                         col_lower_map = {c.lower().strip(): c for c in new_df.columns}
                         sentiment_col = None
                         for alias in ["sentiment", "label", "class", "target"]:
@@ -262,8 +271,8 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                             new_df["Sentiment"] = new_df["Sentiment"].astype(str).str.strip().apply(lambda x: x.title())
                             
                             # ── Step 3: Save ──
-                            status_text.caption("Saving dataset...")
-                            progress_bar.progress(70)
+                            status_text.caption("Saving to backend...")
+                            progress_bar.progress(80)
                             import os
                             save_dir = "data/processed"
                             os.makedirs(save_dir, exist_ok=True)
@@ -271,17 +280,21 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                             
                             progress_bar.progress(100)
                             status_text.caption("✅ Processing complete!")
-                            st.success("Dataset ready for dashboard.")
+                            st.success("Dataset successfully prepared.")
                             
-                            if st.button("🚀 Load Dashboard Now", type="primary", use_container_width=True):
+                            if st.button("🚀 Load Dashboard", type="primary", use_container_width=True):
                                 st.session_state["processed_file"] = uploaded_file.name
                                 st.cache_data.clear()
                                 st.rerun()
                         else:
                             st.error("❌ Sentiment column not found.")
+                            if st.button("Cancel"): modal_placeholder.empty()
                     except Exception as e:
                         st.error(f"❌ Error: {e}")
-                    st.markdown("</div>", unsafe_allow_html=True)
+                        if st.button("Close"): modal_placeholder.empty()
+                    
+                    # Close HTML tags
+                    st.markdown("</div></div></div>", unsafe_allow_html=True)
 
 
     # ─── METRICS GRID ────────────────────────────────────────────────
