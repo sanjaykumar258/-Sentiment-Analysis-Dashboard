@@ -378,18 +378,22 @@ div[data-baseweb="select"] > div {{
   color: var(--text-primary) !important;
   border: 1px solid var(--border) !important;
 }}
-[data-baseweb="popover"] [data-baseweb="menu"] li {{
+/* Aggressive Popover Override for Selectboxes */
+[data-baseweb="popover"], 
+[data-baseweb="popover"] *, 
+div[role="listbox"],
+div[role="listbox"] * {{
+  background-color: var(--bg-card-solid) !important;
   color: var(--text-primary) !important;
-  background: var(--bg-card-solid) !important;
-  font-family: var(--font-sans) !important;
 }}
-[data-baseweb="popover"] [data-baseweb="menu"] li:hover {{
-  background: var(--bg-card-hover) !important;
+[data-baseweb="popover"] li:hover,
+div[role="listbox"] li:hover {{
+  background-color: var(--bg-card-hover) !important;
 }}
 [data-baseweb="popover"] [data-baseweb="menu"] {{
-  background: var(--bg-card-solid) !important;
   border: 1px solid var(--border) !important;
   border-radius: 12px !important;
+  box-shadow: var(--shadow-soft) !important;
 }}
 
 /* Number Input Step Buttons (+ / -) */
