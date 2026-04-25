@@ -142,96 +142,72 @@ html, body, [class*="css"] {{
   border-right: 1px solid var(--sidebar-border) !important;
   padding-top: 2.5rem !important;
 }}
-[data-testid="stSidebar"] p, [data-testid="stSidebar"] span,
+[data-testid="stSidebar"] p,
 [data-testid="stSidebar"] label, [data-testid="stSidebar"] div {{
   font-family: var(--font-sans) !important;
   color: var(--text-secondary) !important;
 }}
 
-/* ── Sidebar Toggle: FINAL FIX ── */
-/* Move the toggle buttons to the BOTTOM of the sidebar */
-[data-testid="stSidebarCollapseControl"],
-[data-testid="collapsedControl"] {{
-    position: fixed !important;
-    bottom: 24px !important;
-    left: 18px !important;
-    z-index: 100000 !important;
-    width: fit-content !important;
-    height: fit-content !important;
-}}
+/* ── Sidebar Collapse / Expand Button — FINAL FIX ── */
 
-/* Base button styling: High-contrast floating circle */
-[data-testid="stSidebarCollapseControl"] button,
-[data-testid="collapsedControl"] button {{
-    position: relative !important;
-    width: 42px !important;
-    height: 42px !important;
-    background: var(--bg-secondary) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
-    padding: 0 !important;
-}}
-
-/* SURGICAL HIDE - only kill the raw text icon inside these buttons */
+/* Step 1: Only hide the raw text span inside collapse buttons */
 [data-testid="stSidebarCollapseControl"] [data-testid="stIconMaterial"],
 [data-testid="collapsedControl"] [data-testid="stIconMaterial"] {{
-    visibility: hidden !important;
-    font-size: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    display: none !important;
+  visibility: hidden !important;
+  font-size: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  display: block !important;
 }}
 
-/* Inject « (Collapse) when sidebar is OPEN */
+/* Step 2: Make the button itself position:relative for ::before */
+[data-testid="stSidebarCollapseControl"] button,
+[data-testid="collapsedControl"] button {{
+  position: relative !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}}
+
+/* Step 3: Inject « on the BUTTON (not container) when sidebar is open */
 [data-testid="stSidebarCollapseControl"] button::before {{
-    content: "«" !important;
-    font-size: 24px !important;
-    color: #00E6F0 !important;
-    visibility: visible !important;
-    font-family: Arial, sans-serif !important;
-    font-weight: 800 !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    line-height: 1 !important;
-    text-indent: 0 !important;
+  content: "«" !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  font-family: Arial, sans-serif !important;
+  color: #7dd3fc !important;
+  visibility: visible !important;
+  display: block !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  line-height: 1 !important;
+  z-index: 9999 !important;
+  pointer-events: none !important;
 }}
 
-/* Inject » (Expand) when sidebar is CLOSED */
+/* Step 4: Inject » on the BUTTON when sidebar is closed */
 [data-testid="collapsedControl"] button::before {{
-    content: "»" !important;
-    font-size: 24px !important;
-    color: #00E6F0 !important;
-    visibility: visible !important;
-    font-family: Arial, sans-serif !important;
-    font-weight: 800 !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    line-height: 1 !important;
-    text-indent: 0 !important;
+  content: "»" !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  font-family: Arial, sans-serif !important;
+  color: #7dd3fc !important;
+  visibility: visible !important;
+  font-family: Arial, sans-serif !important;
+  line-height: 1 !important;
+  z-index: 9999 !important;
+  pointer-events: none !important;
 }}
 
-/* Hover Glow & Pop Effect */
-[data-testid="stSidebarCollapseControl"] button:hover,
-[data-testid="collapsedControl"] button:hover {{
-    background: var(--bg-card-hover) !important;
-    border-color: #00E6F0 !important;
-    box-shadow: 0 0 20px rgba(0, 230, 240, 0.4) !important;
-    transform: translateY(-2px) scale(1.05) !important;
-}}
-
+/* Step 5: Hover effect */
 [data-testid="stSidebarCollapseControl"] button:hover::before,
 [data-testid="collapsedControl"] button:hover::before {{
-    color: #ffffff !important;
-    text-shadow: 0 0 10px #00E6F0 !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(125, 211, 252, 0.8) !important;
+  transform: translate(-50%, -50%) scale(1.2) !important;
 }}
 
 /* Hide Streamlit Tooltips */
