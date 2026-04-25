@@ -765,8 +765,37 @@ div[role="listbox"] li:hover {{
 }}
 
 /* ═══════════════════════════════════════════════════════════════
-   SCROLLBAR & DIVIDER
+   DIALOG / POPUP (st.dialog) - FORCED LIGHT MODE FOR VISIBILITY
    ═══════════════════════════════════════════════════════════════ */
+[data-testid="stDialog"] {{
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
+  border-radius: 20px !important;
+}}
+[data-testid="stDialog"] h1, 
+[data-testid="stDialog"] h2, 
+[data-testid="stDialog"] h3, 
+[data-testid="stDialog"] p, 
+[data-testid="stDialog"] span, 
+[data-testid="stDialog"] div {{
+  color: #0F172A !important;
+}}
+[data-testid="stDialog"] .stCaption p {{
+  color: #475569 !important;
+}}
+[data-testid="stDialog"] button {{
+  border-radius: 12px !important;
+}}
+[data-testid="stDialog"] [data-testid="stMetricValue"] {{
+    color: #0F172A !important;
+}}
+[data-testid="stDialog"] [data-testid="stMetricLabel"] {{
+    color: #475569 !important;
+}}
+
+/* Scrollbar & Divider */
 ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
 ::-webkit-scrollbar-track {{ background: transparent; }}
 ::-webkit-scrollbar-thumb {{ background: var(--border-hover); border-radius: 6px; }}
