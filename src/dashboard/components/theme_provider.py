@@ -686,7 +686,7 @@ section[data-testid="stMain"] > div:first-child {{
 [data-testid="stRadio"] label {{
   color: var(--text-primary) !important;
 }}
-/* ── THE SINGLE-ARROW CLEAN FIX ── */
+/* ── THE FULLY FUNCTIONAL HIGH-CONTRAST FIX ── */
 
 /* 1. Reset buttons to be solid, visible, AND clickable */
 [data-testid="stSidebarHeader"] button,
@@ -702,23 +702,21 @@ section[data-testid="stMain"] > div:first-child {{
     border-radius: 8px !important;
     min-width: 32px !important;
     min-height: 32px !important;
-    pointer-events: auto !important;
+    pointer-events: auto !important; /* IMPORTANT: Let the button catch clicks */
     cursor: pointer !important;
     z-index: 999999 !important;
-    overflow: hidden !important; /* Ensure children don't bleed out */
+    overflow: hidden !important;
 }}
 
-/* 2. COMPLETELY HIDE every single internal child (span, svg, div) to kill the double arrow */
+/* 2. Make internal children invisible BUT don't use display:none (which breaks React events) */
 [data-testid="stSidebarHeader"] button *,
 [data-testid="stSidebarCollapseButton"] *,
 [data-testid="collapsedControl"] * {{
-    display: none !important;
-    visibility: hidden !important;
     opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important; /* Clicks will 'fall through' to the button */
     width: 0 !important;
     height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }}
 
 /* 3. Inject the LEFT arrow (Collapse) */
@@ -729,7 +727,7 @@ section[data-testid="stMain"] > div:first-child {{
 
 /* 4. Inject the RIGHT arrow (Expand) */
 [data-testid="collapsedControl"] {{
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='{("%2300E6F0" if is_dark else "%23000000")}'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E") !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/xml' viewBox='0 0 24 24' fill='{("%2300E6F0" if is_dark else "%23000000")}'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E") !important;
 }}
 
 /* Hover effect */
