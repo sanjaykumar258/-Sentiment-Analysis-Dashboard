@@ -37,11 +37,13 @@ PLOTLY_LAYOUT_LIGHT = dict(
     template="plotly_white",
     paper_bgcolor="rgba(255,255,255,0)",
     plot_bgcolor="rgba(255,255,255,0)",
-    font=dict(family="Inter, sans-serif", color="#64748B", size=12),
+    font=dict(family="Inter, sans-serif", color="#1E293B", size=12),
     title_font=dict(family="Inter, sans-serif", color="#1E293B", size=15),
-    xaxis=dict(gridcolor="rgba(0,0,0,0.06)", linecolor="rgba(0,0,0,0.08)", tickfont=dict(size=11, color="#64748B")),
-    yaxis=dict(gridcolor="rgba(0,0,0,0.06)", linecolor="rgba(0,0,0,0.08)", tickfont=dict(size=11, color="#64748B")),
-    legend=dict(bgcolor="rgba(255,255,255,0)", bordercolor="rgba(0,0,0,0.08)", borderwidth=1, font=dict(size=11, color="#475569")),
+    xaxis=dict(gridcolor="rgba(0,0,0,0.06)", linecolor="rgba(0,0,0,0.1)", 
+               tickfont=dict(size=11, color="#1E293B"), title=dict(font=dict(color="#1E293B"))),
+    yaxis=dict(gridcolor="rgba(0,0,0,0.06)", linecolor="rgba(0,0,0,0.1)", 
+               tickfont=dict(size=11, color="#1E293B"), title=dict(font=dict(color="#1E293B"))),
+    legend=dict(bgcolor="rgba(255,255,255,0.8)", bordercolor="rgba(0,0,0,0.08)", borderwidth=1, font=dict(size=11, color="#1E293B")),
     hoverlabel=dict(bgcolor="#FFFFFF", bordercolor="rgba(0,0,0,0.1)", font=dict(family="Inter", size=12, color="#1E293B")),
 )
 

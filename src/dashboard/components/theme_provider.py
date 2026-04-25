@@ -381,9 +381,15 @@ div[data-baseweb="select"] > div {{
 [data-baseweb="popover"] [data-baseweb="menu"] li {{
   color: var(--text-primary) !important;
   background: var(--bg-card-solid) !important;
+  font-family: var(--font-sans) !important;
 }}
 [data-baseweb="popover"] [data-baseweb="menu"] li:hover {{
   background: var(--bg-card-hover) !important;
+}}
+[data-baseweb="popover"] [data-baseweb="menu"] {{
+  background: var(--bg-card-solid) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
 }}
 
 /* Number Input Step Buttons (+ / -) */
