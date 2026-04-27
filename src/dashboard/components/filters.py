@@ -4,7 +4,8 @@ import pandas as pd
 
 def render_filters(df: pd.DataFrame) -> pd.DataFrame:
     if "Timestamp" in df.columns:
-        df["Timestamp"] = pd.to_datetime(df["Timestamp"], errors="coerce")
+        if not pd.api.types.is_datetime64_any_dtype(df["Timestamp"]):
+            df["Timestamp"] = pd.to_datetime(df["Timestamp"], errors="coerce")
         min_date = df["Timestamp"].min().date() if not df["Timestamp"].empty and pd.notna(df["Timestamp"].min()) else None
         max_date = df["Timestamp"].max().date() if not df["Timestamp"].empty and pd.notna(df["Timestamp"].max()) else None
     else:
@@ -50,7 +51,12 @@ def render_filters(df: pd.DataFrame) -> pd.DataFrame:
                 eng_threshold = 0.0
 
             st.markdown("<br>", unsafe_allow_html=True)
-            st.button("✨ Apply filters", use_container_width=True, type="primary")
+            apply_col, clear_col = st.columns(2)
+            with apply_col:
+                st.button("✨ Apply", use_container_width=True, type="primary")
+            with clear_col:
+                if st.button("🗑️ Clear", use_container_width=True):
+                    st.rerun()
 
     # ── Count active filters ──
     active = 0

@@ -25,6 +25,9 @@ from src.dashboard.components.theme_provider import inject_global_theme
 inject_global_theme()
 
 # ─── GLOBAL STATE (IDE STABILITY) ───
+if "live_post_text" not in st.session_state:
+    st.session_state["live_post_text"] = ""
+
 platform, category, content_type, tier = "Instagram", "Tech", "Video", "Macro"
 followers, hashtags, length, engagement = 0, 0, 0, 0.0
 post_text = ""
@@ -76,15 +79,17 @@ with st.container():
                 found_text = ""
                 for col in df_raw.columns:
                     if col.strip().lower() in [c.lower() for c in text_candidates]:
-                        found_text = str(row[col])
-                        break
+                        val = row[col]
+                        if pd.notna(val) and str(val).strip().lower() != "nan":
+                            found_text = str(val)
+                            break
                 
                 # If still empty, try to find any column with long text content
                 if not found_text:
                     for col in df_raw.columns:
-                        val = str(row[col])
-                        if len(val) > 15 and col not in ["Post_ID", "Timestamp", "Platform", "Category", "Sentiment"]:
-                            found_text = val
+                        val = row[col]
+                        if pd.notna(val) and len(str(val)) > 15 and col not in ["Post_ID", "Timestamp", "Platform", "Category", "Sentiment"]:
+                            found_text = str(val)
                             break
                 
                 st.session_state["live_post_text"] = found_text
@@ -162,17 +167,17 @@ if run:
                 animated_confidence_bar(probs[label], label, delay_ms=delay)
                 delay += 200
 
-        if "ex_label" in st.session_state:
-            actual = st.session_state["ex_label"]
-            match = actual == result["sentiment"]
-            bg = 'rgba(16,185,129,0.08)' if match else 'rgba(239,68,68,0.08)'
-            bdr = 'rgba(16,185,129,0.2)' if match else 'rgba(239,68,68,0.2)'
-            clr = '#10B981' if match else '#EF4444'
-            ico = '✓ Correct: ' if match else '✗ Incorrect: '
-            st.markdown(f"""
+            if "ex_label" in st.session_state:
+                actual = st.session_state["ex_label"]
+                match = actual.strip().lower() == result["sentiment"].strip().lower()
+                bg = 'rgba(16,185,129,0.08)' if match else 'rgba(239,68,68,0.08)'
+                bdr = 'rgba(16,185,129,0.2)' if match else 'rgba(239,68,68,0.2)'
+                clr = '#10B981' if match else '#EF4444'
+                status_text = '✓ MATCH' if match else '✗ MISMATCH'
+                st.markdown(f"""
 <div style="margin-top:1rem;padding:12px 16px;background:{bg};border:1px solid {bdr};border-radius:12px;backdrop-filter:blur(10px);">
-<p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-family:var(--font-sans);margin:0 0 6px;font-weight:700;">Actual label</p>
-<p style="font-size:15px;font-weight:700;color:{clr};font-family:var(--font-sans);margin:0;letter-spacing:-0.02em;">{ico}{actual}</p>
+<p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-family:var(--font-sans);margin:0 0 6px;font-weight:700;">Ground Truth vs Prediction</p>
+<p style="font-size:14px;font-weight:700;color:{clr};font-family:var(--font-sans);margin:0;letter-spacing:-0.01em;">{status_text}: Actual is {actual}</p>
 </div>
 """, unsafe_allow_html=True)
 
