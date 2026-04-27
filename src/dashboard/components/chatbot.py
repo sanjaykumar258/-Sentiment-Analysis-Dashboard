@@ -27,28 +27,57 @@ def render_floating_chatbot(df: pd.DataFrame = None):
     if df is not None and not df.empty:
         total = len(df)
         cols = list(df.columns)
-        context_parts = [f"Current dataset: {total} rows, {len(cols)} columns."]
-        context_parts.append(f"Columns: {', '.join(cols)}")
-
+        
+        # 1. Sentiment distribution
+        sent_info = "N/A"
         if "Sentiment" in df.columns:
             counts = df["Sentiment"].value_counts()
             dist_parts = []
             for label, count in counts.items():
                 pct = round(count / total * 100, 1)
                 dist_parts.append(f"{label}: {count} ({pct}%)")
-            context_parts.append(f"Sentiment distribution: {'; '.join(dist_parts)}")
+            sent_info = "; ".join(dist_parts)
 
+        # 2. Top platforms
+        plat_info = "N/A"
         if "Platform" in df.columns:
-            platforms = df["Platform"].value_counts().head(5)
-            plat_parts = [f"{p}: {c}" for p, c in platforms.items()]
-            context_parts.append(f"Top platforms: {'; '.join(plat_parts)}")
+            platforms = df["Platform"].value_counts().head(3)
+            plat_info = ", ".join([f"{p} ({c} posts)" for p, c in platforms.items()])
 
-        if "text" in df.columns or "Text" in df.columns:
-            text_col = "text" if "text" in df.columns else "Text"
-            avg_len = round(df[text_col].astype(str).str.len().mean(), 1)
-            context_parts.append(f"Average text length: {avg_len} chars")
+        # 3. Top categories
+        cat_info = "N/A"
+        if "Category" in df.columns:
+            categories = df["Category"].value_counts().head(3)
+            cat_info = ", ".join([f"{c} ({n} posts)" for c, n in categories.items()])
 
-        dataset_context = " | ".join(context_parts)
+        # 4. Virality & Engagement
+        virality_info = "N/A"
+        eng_cols = ["Likes", "Comments", "Shares", "Views"]
+        if all(c in df.columns for c in eng_cols):
+            cols.append("Virality_Score") # Explicitly add to columns to satisfy AI check
+            df_temp = df.copy()
+            df_temp["virality_score"] = (df_temp["Shares"] * 3 + df_temp["Comments"] * 2 + df_temp["Likes"]) / (df_temp["Views"] + 1)
+            
+            if "Category" in df.columns:
+                cat_vir = df_temp.groupby("Category")["virality_score"].mean().sort_values(ascending=False).head(5)
+                vir_parts = [f"{c} (Score: {round(v, 4)})" for c, v in cat_vir.items()]
+                virality_info = " | ".join(vir_parts)
+
+        # 5. Top Performers
+        performer_info = "N/A"
+        if "Post_ID" in df.columns and "Engagement_Rate" in df.columns:
+            top_posts = df.sort_values("Engagement_Rate", ascending=False).head(3)
+            performer_info = ", ".join([f"{row['Post_ID']} on {row['Platform']} ({row['Engagement_Rate']}% engagement)" for _, row in top_posts.iterrows()])
+
+        # Construct a highly structured context string
+        dataset_context = (
+            f"DATASET_OVERVIEW: Total Rows={total}, Columns={', '.join(cols)}. "
+            f"SENTIMENT_DISTRIBUTION: {sent_info}. "
+            f"TOP_PLATFORMS: {plat_info}. "
+            f"TOP_CATEGORIES_BY_VOLUME: {cat_info}. "
+            f"TOP_CATEGORIES_BY_VIRALITY_SCORE: {virality_info}. "
+            f"TOP_PERFORMING_POSTS: {performer_info}."
+        )
 
     # ── Theme Handling ──
     theme = st.session_state.get("theme", "dark")
@@ -82,8 +111,8 @@ def render_floating_chatbot(df: pd.DataFrame = None):
     data_hash = hashlib.md5(dataset_context.encode()).hexdigest()[:10]
     widget_version = f"{data_hash}_{theme}_{groq_api_key[:6] if groq_api_key else 'nokey'}"
 
-    # Escape for safe JS string embedding
-    dataset_context_js = dataset_context.replace("'", "\\'")
+    # Escape for safe JS string embedding (handle quotes and template literals)
+    dataset_context_js = dataset_context.replace("'", "\\'").replace("`", "\\`").replace("${", "$\\{")
 
     chatbot_html = f"""
     <script>
@@ -409,7 +438,18 @@ def render_floating_chatbot(df: pd.DataFrame = None):
             const payload = {{
                 model: 'llama-3.3-70b-versatile',
                 messages: [
-                    {{ role: 'system', content: 'You are SentiIntel, a premium AI assistant for a Sentiment Analysis Dashboard. You MUST use the following REAL dataset statistics when answering questions about the current data. NEVER make up numbers. Here is the current dataset context: {dataset_context_js}. If the user asks about data you do not have, say you do not have that specific information. Keep answers concise and accurate.' }},
+                    {{ 
+                        role: 'system', 
+                        content: `You are SentiIntel, a premium AI data assistant. 
+                        You MUST use the REAL dataset statistics provided below. NEVER claim you lack information that is present in the context.
+                        
+                        CRITICAL: "Virality Score" is a valid calculated metric in this dashboard (weighted by Shares, Comments, and Likes). 
+                        You HAVE this information in the context below under "TOP_CATEGORIES_BY_VIRALITY_SCORE".
+                        
+                        CONTEXT: {dataset_context_js}
+                        
+                        Answer concisely and professionally based ONLY on this context.` 
+                    }},
                     ...history
                 ],
                 stream: false
