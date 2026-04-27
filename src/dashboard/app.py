@@ -335,7 +335,12 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                 neutral_aliases  = {"neutral", "neu", "0", "0.0", "mixed", "none", "other", "surprise"}
 
                 def normalize_sentiment(val):
+                    if pd.isna(val):
+                        return "Neutral"
                     v = str(val).lower().strip()
+                    if v in neutral_aliases or v == "nan":
+                        return "Neutral"
+
                     if v in positive_aliases:
                         return "Positive"
                     elif v in negative_aliases:
@@ -343,9 +348,10 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                     elif v in neutral_aliases:
                         return "Neutral"
                     else:
-                        return val.title()  # Keep original but title-case
+                        return v.title()  # Use v (string) instead of val (original object)
 
                 new_df["Sentiment"] = new_df["Sentiment"].apply(normalize_sentiment)
+
 
                 # ── Step 4: Ensure required columns exist ──
                 status_text.caption("Preparing dataset structure...")

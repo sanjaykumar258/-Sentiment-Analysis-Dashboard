@@ -69,7 +69,7 @@ To achieve maximum convergence on a 4GB VRAM GPU, we implemented:
 - **What-If Analysis**: Interactive sliders to simulate "what if my engagement was higher?" and see instant model predictions.
 
 ### 📊 Professional Analytics
-- **6 Integrated Pages**: Overview, Platform Analysis, Live Predictor, Benchmarking, Model Insights, and Export.
+- **6 Integrated Pages**: Dashboard, Platform Analysis, Live Predictor, Benchmarking, Model Insights, and Export.
 - **Dynamic Dataset Support**: Automatically handles arbitrary CSV uploads with intelligent column mapping and normalization.
 - **Interactive Visuals**: Plotly-powered charts with customized layouts for Dark and Light modes.
 
