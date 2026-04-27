@@ -109,8 +109,9 @@ def render_sidebar(df: pd.DataFrame) -> pd.DataFrame:
             """, height=0)
 
         # --- Push to bottom ---
-        st.markdown('<div style="margin-top: auto; height: 100px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="height: 20px;"></div>', unsafe_allow_html=True)
         st.divider()
+
 
         # ── Theme Toggle (Custom UI) ──
         st.markdown(f'<p style="font-size:10px; color:{_nav_label_color}; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; padding-left:4px;">Appearance</p>', unsafe_allow_html=True)
