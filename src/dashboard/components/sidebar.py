@@ -4,12 +4,7 @@ import pandas as pd
 
 
 def render_sidebar(df: pd.DataFrame) -> pd.DataFrame:
-    # Ensure Timestamp is datetime for downstream components like the chatbot, 
-    # but don't overwrite if it already exists and is valid.
-    if "Timestamp" in df.columns and not pd.api.types.is_datetime64_any_dtype(df["Timestamp"]):
-        df["Timestamp"] = pd.to_datetime(df["Timestamp"], errors="ignore")
-
-
+    # Sidebar state initialization
     if "theme" not in st.session_state:
         st.session_state["theme"] = "dark"
 
