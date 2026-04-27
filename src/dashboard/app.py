@@ -387,6 +387,13 @@ Real-time sentiment analysis across Instagram, TikTok, Twitter, YouTube, LinkedI
                         else:
                             new_df[col_name] = gen_fn()
                             generated_cols.append(col_name)
+                    
+                    # Fill missing values if they exist in required columns
+                    if new_df[col_name].isnull().any():
+                        filler = pd.Series(gen_fn(), index=new_df.index)
+                        new_df[col_name] = new_df[col_name].fillna(filler)
+                        if col_name not in generated_cols:
+                            generated_cols.append(f"{col_name} (filled)")
 
                 # Ensure numeric engagement columns exist
                 if "Engagement_Rate" not in new_df.columns:
