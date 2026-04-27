@@ -126,6 +126,17 @@ class DataLoader:
 
         logger.info("Running data quality report...")
         self.run_quality_report(df)
+
+        # Fill missing values for required columns before saving
+        required_defaults = {
+            "Timestamp": lambda n: pd.date_range("2024-01-01", periods=n, freq="h").astype(str),
+            "Platform": lambda n: ["Instagram"] * n,
+            "Content_Type": lambda n: ["Text"] * n,
+            "Sentiment": lambda n: ["Neutral"] * n
+        }
+        for col, gen in required_defaults.items():
+            if col in df.columns and df[col].isnull().any():
+                df[col] = df[col].fillna(pd.Series(gen(len(df)), index=df.index))
         
         logger.info("Saving to Parquet...")
         self.save_parquet(df)
