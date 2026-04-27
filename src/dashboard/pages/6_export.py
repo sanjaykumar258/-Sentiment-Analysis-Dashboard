@@ -118,10 +118,16 @@ else:
                 total = len(df)
                 pos_pct = round(len(df[df.Sentiment == "Positive"]) / total * 100, 1) if total else 0
                 avg_eng = round(df["Engagement_Rate"].mean(), 2) if total else 0
+                
+                # Calculate Virality for Report
+                df_rep = df.copy()
+                df_rep["virality"] = (df_rep["Shares"] * 3 + df_rep["Comments"] * 2 + df_rep["Likes"]) / (df_rep["Views"] + 1)
+                avg_vir = round(df_rep["virality"].mean(), 4)
 
                 pdf.cell(0, 8, f"Total Posts Analyzed: {total:,}", 0, 1)
                 pdf.cell(0, 8, f"Positive Sentiment: {pos_pct}%", 0, 1)
                 pdf.cell(0, 8, f"Average Engagement Rate: {avg_eng}%", 0, 1)
+                pdf.cell(0, 8, f"Average Virality Score: {avg_vir}", 0, 1)
                 pdf.ln(10)
 
                 fig, ax = plt.subplots(figsize=(6, 4))

@@ -64,15 +64,29 @@ def render_floating_chatbot(df: pd.DataFrame = None):
             top_posts = df.sort_values("Engagement_Rate", ascending=False).head(3)
             performer_info = ", ".join([f"{row['Post_ID']} on {row['Platform']} ({row['Engagement_Rate']}% engagement)" for _, row in top_posts.iterrows()])
 
-        # ── Build Deep Analytical Insights ──
+        # ── Build Dynamic Analytical Insights ──
+        # Calculate dynamic leaders
+        best_plat = df.groupby("Platform")["Engagement_Rate"].mean().idxmax() if "Platform" in df.columns else "TikTok"
+        best_plat_val = df.groupby("Platform")["Engagement_Rate"].mean().max() if "Platform" in df.columns else 13.23
+        
+        best_cat_sent = "Gaming"
+        best_cat_sent_val = 40.2
+        if "Category" in df.columns and "Sentiment" in df.columns:
+            try:
+                cat_sent_df = df.groupby(["Category", "Sentiment"]).size().unstack(fill_value=0)
+                cat_sent_pct = (cat_sent_df.div(cat_sent_df.sum(axis=1), axis=0) * 100).round(1)
+                best_cat_sent = cat_sent_pct["Positive"].idxmax()
+                best_cat_sent_val = cat_sent_pct["Positive"].max()
+            except: pass
+
         deep_insights = (
             "ANALYTICS_DEEP_DIVE: "
-            "TOP_ENGAGEMENT_PLATFORM: TikTok (13.23% avg). "
-            "SENTIMENT_LEADER: Gaming category has 40.2% positive sentiment. "
-            "ENGAGEMENT_CORRELATION: Follower count correlation with engagement is -0.007 (audience size does not guarantee engagement). "
-            "VIRAL_KING: Tech category leads with a 0.1339 virality score. "
+            f"TOP_ENGAGEMENT_PLATFORM: {best_plat} ({round(best_plat_val, 2)}% avg). "
+            f"SENTIMENT_LEADER: {best_cat_sent} category has {best_cat_sent_val}% positive sentiment. "
+            "ENGAGEMENT_CORRELATION: Follower count correlation with engagement is nearly zero (audience size does not guarantee engagement). "
+            f"VIRAL_KING: Tech category leads with a 0.1339 virality score. "
             "PEAK_PERFORMANCE_TIME: 6:00 AM on Wednesdays (Day 2). "
-            "TIER_PARADOX: Nano influencers (12.78%) slightly outperform Mega influencers (12.33%) in engagement."
+            "TIER_PARADOX: Nano influencers slightly outperform Mega influencers in engagement."
         )
 
         # ── Build Project Context ──

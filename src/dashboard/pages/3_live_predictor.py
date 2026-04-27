@@ -224,15 +224,15 @@ if run:
 
         if st.button("🔄 Re-run with new values"):
             wi_eng_label = "High" if wi_eng > 15 else "Low" if wi_eng < 5 else "Medium"
-            wi_text = f"Engagement: {{wi_eng_label}}. Text: {{post_text}}"
+            wi_text = f"Engagement: {wi_eng_label}. Text: {post_text}"
             with st.spinner("Re-running..."):
                 wi_result = predict(wi_text)
             sc = '#10B981' if wi_result['sentiment'] == 'Positive' else '#EF4444' if wi_result['sentiment'] == 'Negative' else '#6B7280'
             st.markdown(f"""
 <div style="padding:14px 18px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;margin-top:1rem;backdrop-filter:blur(10px);">
 <span style="font-size:13px;color:#818CF8;font-weight:700;font-family:var(--font-sans);">What-if result: </span>
-<span style="font-size:15px;font-weight:700;font-family:var(--font-sans);color:{{sc}};letter-spacing:-0.02em;">
-{{wi_result['sentiment']}} ({{wi_result['confidence']*100:.1f}}% confidence)
+<span style="font-size:15px;font-weight:700;font-family:var(--font-sans);color:{sc};letter-spacing:-0.02em;">
+{wi_result['sentiment']} ({wi_result['confidence']*100:.1f}% confidence)
 </span>
 </div>
 """, unsafe_allow_html=True)
