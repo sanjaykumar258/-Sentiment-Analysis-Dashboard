@@ -116,7 +116,15 @@ with st.container():
                 st.session_state["live_post_text"] = random.choice(mock_posts)
             st.rerun()
 
-    post_text = st.text_area("Post content", key="live_post_text", placeholder="e.g. Amazing results on this new tech post!", height=100)
+    # Ensure we use the value from session_state explicitly
+    post_text = st.text_area(
+        "Post content", 
+        value=st.session_state.get("live_post_text", ""), 
+        placeholder="e.g. Amazing results on this new tech post!", 
+        height=100
+    )
+    # Update state immediately to capture any manual user typing
+    st.session_state["live_post_text"] = post_text
     
     platforms_list = sorted([str(x) for x in df_raw["Platform"].dropna().unique()]) if not df_raw.empty else ["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"]
     categories_list = sorted([str(x) for x in df_raw["Category"].dropna().unique()]) if not df_raw.empty else ["Tech", "Fashion", "Finance", "Gaming", "Education"]
