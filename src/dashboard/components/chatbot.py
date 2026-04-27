@@ -58,45 +58,46 @@ def render_floating_chatbot(df: pd.DataFrame = None):
             df_temp = df.copy()
             df_temp["virality_score"] = (df_temp["Shares"] * 3 + df_temp["Comments"] * 2 + df_temp["Likes"]) / (df_temp["Views"] + 1)
             
-            if "Category" in df.columns:
-                cat_vir = df_temp.groupby("Category")["virality_score"].mean().sort_values(ascending=False).head(5)
-                vir_parts = [f"{c} (Score: {round(v, 4)})" for c, v in cat_vir.items()]
-                virality_info = " | ".join(vir_parts)
+        # 5. Top Performers
+        performer_info = "N/A"
+        if "Post_ID" in df.columns and "Engagement_Rate" in df.columns:
+            top_posts = df.sort_values("Engagement_Rate", ascending=False).head(3)
+            performer_info = ", ".join([f"{row['Post_ID']} on {row['Platform']} ({row['Engagement_Rate']}% engagement)" for _, row in top_posts.iterrows()])
 
-    # ── Build Deep Analytical Insights ──
-    deep_insights = (
-        "ANALYTICS_DEEP_DIVE: "
-        "TOP_ENGAGEMENT_PLATFORM: TikTok (13.23% avg). "
-        "SENTIMENT_LEADER: Gaming category has 40.2% positive sentiment. "
-        "ENGAGEMENT_CORRELATION: Follower count correlation with engagement is -0.007 (audience size does not guarantee engagement). "
-        "VIRAL_KING: Tech category leads with a 0.1339 virality score. "
-        "PEAK_PERFORMANCE_TIME: 6:00 AM on Wednesdays (Day 2). "
-        "TIER_PARADOX: Nano influencers (12.78%) slightly outperform Mega influencers (12.33%) in engagement."
-    )
+        # ── Build Deep Analytical Insights ──
+        deep_insights = (
+            "ANALYTICS_DEEP_DIVE: "
+            "TOP_ENGAGEMENT_PLATFORM: TikTok (13.23% avg). "
+            "SENTIMENT_LEADER: Gaming category has 40.2% positive sentiment. "
+            "ENGAGEMENT_CORRELATION: Follower count correlation with engagement is -0.007 (audience size does not guarantee engagement). "
+            "VIRAL_KING: Tech category leads with a 0.1339 virality score. "
+            "PEAK_PERFORMANCE_TIME: 6:00 AM on Wednesdays (Day 2). "
+            "TIER_PARADOX: Nano influencers (12.78%) slightly outperform Mega influencers (12.33%) in engagement."
+        )
 
-    # ── Build Project Context ──
-    project_info = (
-        "PROJECT_TECH: DistilBERT-base-uncased, Streamlit, PyTorch, SHAP, PSI Drift Detection. "
-        "ARCHITECTURE: Decoupled Brain (Hugging Face) and Interface (GitHub/Streamlit). "
-        "HARDWARE_OPTIMIZATION: Optimized for RTX 2050 with Gradient Accumulation (4 steps) and Micro-batching (batch size 4). "
-        "METRICS: 100% Accuracy (F1=1.0) achieved on 2026-04-25. "
-        "FEATURES: SHAP keywords explainability, What-If simulations, PDF reporting, drift monitoring. "
-        "MONITORING: PSI threshold 0.2, Retrain trigger at F1 < 0.75."
-    )
+        # ── Build Project Context ──
+        project_info = (
+            "PROJECT_TECH: DistilBERT-base-uncased, Streamlit, PyTorch, SHAP, PSI Drift Detection. "
+            "ARCHITECTURE: Decoupled Brain (Hugging Face) and Interface (GitHub/Streamlit). "
+            "HARDWARE_OPTIMIZATION: Optimized for RTX 2050 with Gradient Accumulation (4 steps) and Micro-batching (batch size 4). "
+            "METRICS: 100% Accuracy (F1=1.0) achieved on 2026-04-25. "
+            "FEATURES: SHAP keywords explainability, What-If simulations, PDF reporting, drift monitoring. "
+            "MONITORING: PSI threshold 0.2, Retrain trigger at F1 < 0.75."
+        )
 
-    # Construct a highly structured context string
-    dataset_context = (
-        f"{deep_insights} | "
-        f"PROJECT_CONTEXT: {project_info} | "
-        f"DATASET_OVERVIEW: Total Rows={total}, Columns={', '.join(cols)}. "
-        f"SENTIMENT_DISTRIBUTION: {sent_info}. "
-        f"TOP_PLATFORMS: {plat_info}. "
-        f"TOP_CATEGORIES_BY_VOLUME: {cat_info}. "
-        f"TOP_CATEGORIES_BY_VIRALITY_SCORE: {virality_info}. "
-        f"TOP_PERFORMING_POSTS: {performer_info}."
-    )
+        # Construct a highly structured context string
+        dataset_context = (
+            f"{deep_insights} | "
+            f"PROJECT_CONTEXT: {project_info} | "
+            f"DATASET_OVERVIEW: Total Rows={total}, Columns={', '.join(cols)}. "
+            f"SENTIMENT_DISTRIBUTION: {sent_info}. "
+            f"TOP_PLATFORMS: {plat_info}. "
+            f"TOP_CATEGORIES_BY_VOLUME: {cat_info}. "
+            f"TOP_CATEGORIES_BY_VIRALITY_SCORE: {virality_info}. "
+            f"TOP_PERFORMING_POSTS: {performer_info}."
+        )
 
-    # ... (Theme Handling remains same) ...
+    # ── Theme Handling ──
     # ... (widget_version remains same) ...
 
     # Escape for safe JS string embedding (handle quotes and template literals)
