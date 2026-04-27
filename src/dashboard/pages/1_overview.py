@@ -122,7 +122,7 @@ else:
             
         # ── Trend line ────────────────────────────────────────────────────────
         section_title("Sentiment over time", "7-day rolling average of positive sentiment %")
-        df["Date"] = pd.to_datetime(df["Timestamp"]).dt.date
+        df["Date"] = pd.to_datetime(df["Timestamp"], errors="coerce").dt.date
         daily = df.groupby(["Date", "Sentiment"]).size().unstack(fill_value=0)
         daily["total"] = daily.sum(axis=1)
         daily["pos_pct"] = (daily.get("Positive", 0) / daily["total"] * 100).round(2)

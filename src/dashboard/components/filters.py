@@ -4,9 +4,9 @@ import pandas as pd
 
 def render_filters(df: pd.DataFrame) -> pd.DataFrame:
     if "Timestamp" in df.columns:
-        df["Timestamp"] = pd.to_datetime(df["Timestamp"])
-        min_date = df["Timestamp"].min().date()
-        max_date = df["Timestamp"].max().date()
+        df["Timestamp"] = pd.to_datetime(df["Timestamp"], errors="coerce")
+        min_date = df["Timestamp"].min().date() if not df["Timestamp"].empty and pd.notna(df["Timestamp"].min()) else None
+        max_date = df["Timestamp"].max().date() if not df["Timestamp"].empty and pd.notna(df["Timestamp"].max()) else None
     else:
         min_date, max_date = None, None
 
@@ -28,18 +28,19 @@ def render_filters(df: pd.DataFrame) -> pd.DataFrame:
             selected_sentiments = st.multiselect("🎯 Sentiment", sentiments, default=sentiments)
 
         with c2:
-            platforms = sorted(df["Platform"].unique()) if "Platform" in df.columns else []
+            platforms = sorted([str(x) for x in df["Platform"].dropna().unique()]) if "Platform" in df.columns else []
             selected_platforms = st.multiselect("📱 Platform", platforms, default=platforms)
 
-            categories = sorted(df["Category"].unique()) if "Category" in df.columns else []
+            categories = sorted([str(x) for x in df["Category"].dropna().unique()]) if "Category" in df.columns else []
             selected_categories = st.multiselect("📂 Category", categories, default=categories)
 
         with c3:
-            content_types = sorted(df["Content_Type"].unique()) if "Content_Type" in df.columns else []
+            content_types = sorted([str(x) for x in df["Content_Type"].dropna().unique()]) if "Content_Type" in df.columns else []
             selected_content = st.multiselect("📝 Content type", content_types, default=content_types)
 
-            tiers = sorted(df["Influencer_Tier"].unique()) if "Influencer_Tier" in df.columns else []
+            tiers = sorted([str(x) for x in df["Influencer_Tier"].dropna().unique()]) if "Influencer_Tier" in df.columns else []
             selected_tiers = st.multiselect("👤 Influencer tier", tiers, default=tiers)
+
 
         with c4:
             if "Engagement_Rate" in df.columns:

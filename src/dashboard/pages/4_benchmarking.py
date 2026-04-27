@@ -50,7 +50,8 @@ else:
 
         # ── Radar chart ───────────────────────────────────────────────────────
         section_title("Platform radar", "Select 2–3 platforms to compare across 5 dimensions")
-        platforms = sorted(df["Platform"].unique())
+        platforms = sorted([str(x) for x in df["Platform"].dropna().unique()])
+
         selected = st.multiselect("Compare platforms", platforms,
                                    default=platforms[:min(3, len(platforms))], max_selections=4)
 
