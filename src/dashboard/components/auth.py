@@ -1,11 +1,15 @@
 # components/auth.py — Simple local user authentication
 # Users are stored in data/users.json with SHA-256 hashed passwords
 
+import pathlib
 import json
 import hashlib
 import os
 
-USERS_FILE = "data/users.json"
+# Absolute path to ensure consistency regardless of how the app is started
+BASE_DIR = pathlib.Path(__file__).parent.resolve()
+ROOT_DIR = BASE_DIR.parents[2]
+USERS_FILE = ROOT_DIR / "data" / "users.json"
 
 
 def _hash_password(password: str) -> str:
@@ -55,8 +59,12 @@ def signup(email: str, password: str, name: str = "", prehashed: bool = False) -
         "name": name.strip() or email.split("@")[0],
         "password": hashed,
     }
-    _save_users(users)
-    return {"ok": True, "msg": "Account created!", "name": users[email]["name"]}
+    
+    try:
+        _save_users(users)
+        return {"ok": True, "msg": "Account created!", "name": users[email]["name"]}
+    except Exception as e:
+        return {"ok": False, "msg": f"Failed to save user: {str(e)}"}
 
 
 def signin(email: str, password: str, prehashed: bool = False) -> dict:
