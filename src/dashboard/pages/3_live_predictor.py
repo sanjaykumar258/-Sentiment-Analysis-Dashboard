@@ -74,44 +74,48 @@ with st.container():
                 st.session_state["ex_eng"]       = float(row["Engagement_Rate"])
                 st.session_state["ex_label"]     = row["Sentiment"]
                 
-                # Robust text detection - prioritizing actual sentences
-                text_candidates = ["Text_Content", "Content", "Body", "Message", "Comment", "Tweet", "Description"]
+                # ── Robust text detection (Aggressive & Case-Insensitive) ──
+                text_candidates = ["Text_Content", "Content", "Body", "Message", "Comment", "Tweet", "Description", "Post"]
                 found_text = ""
                 
-                # First pass: Exact match for the preferred column
-                if "Text_Content" in df_raw.columns:
-                    val = row["Text_Content"]
-                    if pd.notna(val) and len(str(val).strip()) > 5:
-                        found_text = str(val)
-
-                # Second pass: Look for other content-like columns, excluding IDs
+                # Normalize column names for searching
+                cols_map = {c.strip().lower(): c for c in df_raw.columns}
+                
+                # Pass 1: Direct matches
+                for cand in text_candidates:
+                    if cand.lower() in cols_map:
+                        val = row[cols_map[cand.lower()]]
+                        if pd.notna(val) and len(str(val).strip()) > 3:
+                            found_text = str(val)
+                            break
+                
+                # Pass 2: Fuzzy matches (if any candidate is INSIDE a column name)
                 if not found_text:
-                    for col in df_raw.columns:
-                        c_clean = col.strip().lower()
-                        # Exclude IDs, timestamps, and metadata
-                        if any(x in c_clean for x in ["_id", "timestamp", "platform", "category", "sentiment"]):
-                            continue
-                        
-                        if any(cand.lower() in c_clean for cand in text_candidates):
-                            val = row[col]
-                            if pd.notna(val) and len(str(val).strip()) > 5:
+                    for col_lower, col_orig in cols_map.items():
+                        if any(cand.lower() in col_lower for cand in text_candidates):
+                            if "_id" in col_lower or "timestamp" in col_lower: continue
+                            val = row[col_orig]
+                            if pd.notna(val) and len(str(val).strip()) > 3:
+                                found_text = str(val)
+                                break
+
+                # Pass 3: Fallback to any long object/string column
+                if not found_text:
+                    for col_orig in df_raw.columns:
+                        if df_raw[col_orig].dtype == 'object' or isinstance(row[col_orig], str):
+                            c_low = col_orig.lower()
+                            if any(x in c_low for x in ["_id", "timestamp", "platform", "category", "sentiment"]):
+                                continue
+                            val = row[col_orig]
+                            if pd.notna(val) and len(str(val)) > 10:
                                 found_text = str(val)
                                 break
                 
-                # Third pass: fallback to any long string column (>25 chars)
+                # Pass 4: Absolute Fallback (Never return empty)
                 if not found_text:
-                    for col in df_raw.columns:
-                        if df_raw[col].dtype == 'object':
-                            c_clean = col.strip().lower()
-                            if "_id" in c_clean or "timestamp" in c_clean: continue
-                            val = row[col]
-                            if pd.notna(val) and len(str(val)) > 25:
-                                found_text = str(val)
-                                break
+                    found_text = f"Exploring the latest trends in {row.get('Category', 'Social Media')} on {row.get('Platform', 'this platform')}!"
                 
                 st.session_state["live_post_text"] = found_text
-                # Force widget reset by changing its key
-                import random
                 st.session_state["text_area_version"] = st.session_state.get("text_area_version", 0) + 1
 
             else:
