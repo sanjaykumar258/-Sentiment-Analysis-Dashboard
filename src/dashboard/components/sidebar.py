@@ -5,7 +5,8 @@ import pandas as pd
 
 def render_sidebar(df: pd.DataFrame) -> pd.DataFrame:
     if "Timestamp" in df.columns:
-        df["Timestamp"] = pd.to_datetime(df["Timestamp"])
+        df["Timestamp"] = pd.to_datetime(df["Timestamp"], errors="coerce")
+
 
     if "theme" not in st.session_state:
         st.session_state["theme"] = "dark"
