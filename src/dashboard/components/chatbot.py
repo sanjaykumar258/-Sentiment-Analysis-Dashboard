@@ -98,7 +98,36 @@ def render_floating_chatbot(df: pd.DataFrame = None):
         )
 
     # ── Theme Handling ──
-    # ... (widget_version remains same) ...
+    theme = st.session_state.get("theme", "dark")
+    is_dark = theme == "dark"
+    
+    if is_dark:
+        panel_bg = "#1a1d2e"
+        panel_border = "rgba(255,255,255,0.08)"
+        msg_bot_bg = "rgba(85, 66, 246, 0.12)"
+        msg_bot_color = "#d4d4f7"
+        text_primary = "#e0e0e0"
+        input_bg = "rgba(255,255,255,0.06)"
+        input_border = "rgba(255,255,255,0.1)"
+        header_p_color = "rgba(255,255,255,0.65)"
+        close_btn_color = "rgba(255,255,255,0.6)"
+        input_placeholder = "rgba(255,255,255,0.3)"
+    else:
+        panel_bg = "#ffffff"
+        panel_border = "#E5E7EB"
+        msg_bot_bg = "rgba(85, 66, 246, 0.08)"
+        msg_bot_color = "#374151"
+        text_primary = "#111827"
+        input_bg = "#F9FAFB"
+        input_border = "#E5E7EB"
+        header_p_color = "rgba(255,255,255,0.85)"
+        close_btn_color = "rgba(255,255,255,0.8)"
+        input_placeholder = "rgba(0,0,0,0.4)"
+
+    # Create a version stamp based on dataset content so widget refreshes only when data or theme changes
+    import hashlib
+    data_hash = hashlib.md5(dataset_context.encode()).hexdigest()[:10]
+    widget_version = f"{data_hash}_{theme}_{groq_api_key[:6] if groq_api_key else 'nokey'}"
 
     # Escape for safe JS string embedding (handle quotes and template literals)
     dataset_context_js = dataset_context.replace("'", "\\'").replace("`", "\\`").replace("${", "$\\{")
