@@ -74,24 +74,38 @@ with st.container():
                 st.session_state["ex_eng"]       = float(row["Engagement_Rate"])
                 st.session_state["ex_label"]     = row["Sentiment"]
                 
-                # Robust text detection
-                text_candidates = ["Text_Content", "Content", "Text", "Body", "Message", "Comment", "Tweet", "Post", "Description"]
+                # Robust text detection - prioritizing actual sentences
+                text_candidates = ["Text_Content", "Content", "Body", "Message", "Comment", "Tweet", "Description"]
                 found_text = ""
-                # First pass: look for exact/close matches
-                for col in df_raw.columns:
-                    c_clean = col.strip().lower()
-                    if any(cand.lower() in c_clean for cand in text_candidates):
-                        val = row[col]
-                        if pd.notna(val) and len(str(val).strip()) > 5:
-                            found_text = str(val)
-                            break
                 
-                # Second pass: fallback to any string column with length > 20
+                # First pass: Exact match for the preferred column
+                if "Text_Content" in df_raw.columns:
+                    val = row["Text_Content"]
+                    if pd.notna(val) and len(str(val).strip()) > 5:
+                        found_text = str(val)
+
+                # Second pass: Look for other content-like columns, excluding IDs
+                if not found_text:
+                    for col in df_raw.columns:
+                        c_clean = col.strip().lower()
+                        # Exclude IDs, timestamps, and metadata
+                        if any(x in c_clean for x in ["_id", "timestamp", "platform", "category", "sentiment"]):
+                            continue
+                        
+                        if any(cand.lower() in c_clean for cand in text_candidates):
+                            val = row[col]
+                            if pd.notna(val) and len(str(val).strip()) > 5:
+                                found_text = str(val)
+                                break
+                
+                # Third pass: fallback to any long string column (>25 chars)
                 if not found_text:
                     for col in df_raw.columns:
                         if df_raw[col].dtype == 'object':
+                            c_clean = col.strip().lower()
+                            if "_id" in c_clean or "timestamp" in c_clean: continue
                             val = row[col]
-                            if pd.notna(val) and len(str(val)) > 20:
+                            if pd.notna(val) and len(str(val)) > 25:
                                 found_text = str(val)
                                 break
                 
