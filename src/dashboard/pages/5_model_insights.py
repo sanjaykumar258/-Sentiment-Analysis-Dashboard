@@ -307,9 +307,9 @@ else:
         with q3:
             animated_metric("Outlier rows", f'{outlier_count:,}', "", "neutral", "#EF4444", outlier_count, "")
 
-        # Missing values computed dynamically
+        # Missing values computed dynamically (filtering out negligible noise < 0.1%)
         miss_pct = (df_raw.isnull().sum() / max(total_rows, 1) * 100).round(2)
-        miss_pct = miss_pct[miss_pct > 0]
+        miss_pct = miss_pct[miss_pct > 0.1]
         if len(miss_pct):
             miss_df = miss_pct.reset_index()
             miss_df.columns = ["Column", "Missing %"]
