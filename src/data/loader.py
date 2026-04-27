@@ -48,7 +48,8 @@ class DataLoader:
         else:
             raise ValueError("Unsupported file format. Must be CSV or JSON.")
         
-        # We need to drop completely missing rows, or just parse directly
+        # Drop completely empty rows (common in CSVs with trailing newlines)
+        df = df.dropna(how="all")
         return df
 
     def validate_schema(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -127,16 +128,15 @@ class DataLoader:
         logger.info("Running data quality report...")
         self.run_quality_report(df)
 
-        # Fill missing values for required columns before saving
-        required_defaults = {
-            "Timestamp": lambda n: pd.date_range("2024-01-01", periods=n, freq="h").astype(str),
-            "Platform": lambda n: ["Instagram"] * n,
-            "Content_Type": lambda n: ["Text"] * n,
-            "Sentiment": lambda n: ["Neutral"] * n
-        }
-        for col, gen in required_defaults.items():
-            if col in df.columns and df[col].isnull().any():
-                df[col] = df[col].fillna(pd.Series(gen(len(df)), index=df.index))
+        # Fill missing values for ALL columns before saving
+        for col in df.columns:
+            if df[col].isnull().any():
+                if col == "Timestamp":
+                    df[col] = df[col].fillna(pd.Series(pd.date_range("2024-01-01", periods=len(df), freq="h").astype(str), index=df.index))
+                elif pd.api.types.is_numeric_dtype(df[col]):
+                    df[col] = df[col].fillna(0)
+                else:
+                    df[col] = df[col].fillna("Unknown")
         
         logger.info("Saving to Parquet...")
         self.save_parquet(df)
