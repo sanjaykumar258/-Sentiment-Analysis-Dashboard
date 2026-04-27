@@ -74,28 +74,34 @@ with st.container():
                 st.session_state["ex_eng"]       = float(row["Engagement_Rate"])
                 st.session_state["ex_label"]     = row["Sentiment"]
                 
-                # Smarter text detection
+                # Robust text detection
                 text_candidates = ["Text_Content", "Content", "Text", "Body", "Message", "Comment", "Tweet", "Post", "Description"]
                 found_text = ""
+                # First pass: look for exact/close matches
                 for col in df_raw.columns:
-                    if col.strip().lower() in [c.lower() for c in text_candidates]:
+                    c_clean = col.strip().lower()
+                    if any(cand.lower() in c_clean for cand in text_candidates):
                         val = row[col]
-                        if pd.notna(val) and str(val).strip().lower() != "nan":
+                        if pd.notna(val) and len(str(val).strip()) > 5:
                             found_text = str(val)
                             break
                 
-                # If still empty, try to find any column with long text content
+                # Second pass: fallback to any string column with length > 20
                 if not found_text:
                     for col in df_raw.columns:
-                        val = row[col]
-                        if pd.notna(val) and len(str(val)) > 15 and col not in ["Post_ID", "Timestamp", "Platform", "Category", "Sentiment"]:
-                            found_text = str(val)
-                            break
+                        if df_raw[col].dtype == 'object':
+                            val = row[col]
+                            if pd.notna(val) and len(str(val)) > 20:
+                                found_text = str(val)
+                                break
                 
                 st.session_state["live_post_text"] = found_text
+                # Force widget reset by changing its key
+                import random
+                st.session_state["text_area_version"] = st.session_state.get("text_area_version", 0) + 1
 
             else:
-                # Mock fallback if no data is loaded
+                # Mock fallback
                 import random
                 mock_posts = [
                     "Just tried the new AI features and they are absolutely game-changing! 🚀 #Tech #Innovation",
@@ -114,16 +120,19 @@ with st.container():
                 st.session_state["ex_length"]    = random.randint(50, 1000)
                 st.session_state["ex_eng"]       = round(random.uniform(0.5, 15.0), 2)
                 st.session_state["live_post_text"] = random.choice(mock_posts)
+                st.session_state["text_area_version"] = st.session_state.get("text_area_version", 0) + 1
             st.rerun()
 
-    # Ensure we use the value from session_state explicitly
+    # Use a versioned key to force-update the widget when 'Generate' is clicked
+    v = st.session_state.get("text_area_version", 0)
     post_text = st.text_area(
         "Post content", 
         value=st.session_state.get("live_post_text", ""), 
         placeholder="e.g. Amazing results on this new tech post!", 
-        height=100
+        height=100,
+        key=f"text_area_v{v}"
     )
-    # Update state immediately to capture any manual user typing
+    # Sync back to a stable key for other parts of the app
     st.session_state["live_post_text"] = post_text
     
     platforms_list = sorted([str(x) for x in df_raw["Platform"].dropna().unique()]) if not df_raw.empty else ["Instagram", "TikTok", "Twitter", "YouTube", "LinkedIn", "Facebook"]
