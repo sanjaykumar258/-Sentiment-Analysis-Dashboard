@@ -70,7 +70,25 @@ with st.container():
                 st.session_state["ex_length"]    = int(row.get("Content_Length", 300) if pd.notna(row.get("Content_Length")) else 300)
                 st.session_state["ex_eng"]       = float(row["Engagement_Rate"])
                 st.session_state["ex_label"]     = row["Sentiment"]
-                st.session_state["live_post_text"] = row.get("Text_Content", row.get("Content", ""))
+                
+                # Smarter text detection
+                text_candidates = ["Text_Content", "Content", "Text", "Body", "Message", "Comment", "Tweet", "Post", "Description"]
+                found_text = ""
+                for col in df_raw.columns:
+                    if col.strip().lower() in [c.lower() for c in text_candidates]:
+                        found_text = str(row[col])
+                        break
+                
+                # If still empty, try to find any column with long text content
+                if not found_text:
+                    for col in df_raw.columns:
+                        val = str(row[col])
+                        if len(val) > 15 and col not in ["Post_ID", "Timestamp", "Platform", "Category", "Sentiment"]:
+                            found_text = val
+                            break
+                
+                st.session_state["live_post_text"] = found_text
+
             else:
                 # Mock fallback if no data is loaded
                 import random
