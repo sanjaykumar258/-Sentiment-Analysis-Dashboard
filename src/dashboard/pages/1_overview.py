@@ -10,7 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 from src.dashboard.components.styles import (get_plotly_layout, COLOR_MAP, page_header,
-                                              section_title, insight_caption, ACCENT)
+                                              section_title, insight_caption, ACCENT, is_dark)
 from src.dashboard.components.sidebar import render_sidebar
 from src.dashboard.components.particles import inject_particle_background
 from src.dashboard.components.metrics_cards import animated_metric
