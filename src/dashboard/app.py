@@ -213,11 +213,13 @@ else:
     # ─── Load data and sidebar ─────────────────────────────────────────
     total_posts = 0
     pos_pct, neu_pct, neg_pct = 0, 0, 0
+    df_raw = pd.DataFrame()
     try:
         df_raw = load_data()
         render_sidebar(df_raw)
-        total_posts = len(df_raw)
-        if total_posts > 0 and "Sentiment" in df_raw.columns:
+        # Only show real metrics if user has explicitly uploaded a file this session
+        if st.session_state.get("processed_file") and not df_raw.empty and "Sentiment" in df_raw.columns:
+            total_posts = len(df_raw)
             sent_counts = df_raw["Sentiment"].value_counts()
             pos_pct = round(sent_counts.get("Positive", 0) / total_posts * 100)
             neu_pct = round(sent_counts.get("Neutral", 0) / total_posts * 100)
