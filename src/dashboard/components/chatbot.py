@@ -263,7 +263,11 @@ def render_floating_chatbot(df: pd.DataFrame = None):
 
         clearBtn.addEventListener('click', () => {{
             localStorage.removeItem(STORAGE_KEY);
-            messagesDiv.innerHTML = '<div class="si-msg bot">Hi! I\'m SentiIntel. I know everything about this project\'s architecture, ML models, and data. How can I help you?</div>';
+            messagesDiv.innerHTML = '';
+            const welcomeMsg = parentDoc.createElement('div');
+            welcomeMsg.className = 'si-msg bot';
+            welcomeMsg.textContent = 'Hi! I\u2019m SentiIntel. I know everything about this project\u2019s architecture, ML models, and data. How can I help you?';
+            messagesDiv.appendChild(welcomeMsg);
         }});
 
         function addMsg(text, cls) {{
