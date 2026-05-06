@@ -275,7 +275,7 @@ The dashboard utilizes a custom-built **Theme Provider** that manages:
 
 ## 📄 License
 
-This project is licensed under the **Sanjaykumar M**.
+This project is licensed under the **MIT License © 2026 Sanjaykumar M**.
 
 ---
 
