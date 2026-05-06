@@ -17,24 +17,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# --- NUCLEAR DEBUG TEST ---
-st.markdown("""
-<style>
-/* if you see a red box, the button exists */
-[data-testid="collapsedControl"] {
-    background: red !important;
-    width: 50px !important;
-    height: 50px !important;
-    z-index: 1000000 !important;
-}
-[data-testid="collapsedControl"] button {
-    background: blue !important;
-    width: 50px !important;
-    height: 50px !important;
-    z-index: 1000001 !important;
-}
-</style>
-""", unsafe_allow_html=True)
+
+
 
 # ─── Theme initialisation ─────────────────────────────────────────────
 if "theme" not in st.session_state:

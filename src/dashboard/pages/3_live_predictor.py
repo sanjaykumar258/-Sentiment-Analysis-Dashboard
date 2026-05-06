@@ -56,10 +56,15 @@ render_sidebar(df_raw)
 
 if not st.session_state.get("processed_file"):
     st.markdown("""
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;">
-        <div style="font-size:3rem;margin-bottom:1rem;">📂</div>
-        <h3 style="font-family:var(--font-sans);color:var(--text-primary);margin-bottom:0.5rem;">No Dataset Uploaded</h3>
-        <p style="font-family:var(--font-sans);color:var(--text-muted);max-width:420px;">Please go to the <b>Home page</b> and upload a CSV dataset to unlock this page.</p>
+    <div style='display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;'>
+        <div style='font-size:3.5rem;margin-bottom:1.2rem;'>📂</div>
+        <h3 style='font-family:Inter,sans-serif;font-size:1.4rem;font-weight:700;color:#E2E8F0;margin-bottom:0.6rem;'>No Dataset Uploaded Yet</h3>
+        <p style='font-family:Inter,sans-serif;font-size:0.95rem;color:#94A3B8;max-width:440px;line-height:1.6;'>
+            Go to the <b style='color:#6EE7B7;'>Home page</b> and upload a CSV dataset to unlock this page's analytics.
+        </p>
+        <div style='margin-top:1.5rem;padding:10px 28px;background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.2);border-radius:100px;font-size:12px;font-weight:600;color:#6EE7B7;font-family:Inter,sans-serif;'>
+            ← Upload a dataset on the Home page
+        </div>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
