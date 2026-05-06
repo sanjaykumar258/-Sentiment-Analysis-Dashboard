@@ -115,8 +115,8 @@ else:
             with c2:
                 animated_metric("Training date", mc.get("training_date", "—"), "", "neutral", "#818CF8", None, "")
             with c3:
-                f1_val = mc.get("metrics", {}).get("eval_f1_macro", 0) * 100
-                animated_metric("F1 macro", "", "", "neutral", "#10B981", f1_val, "%")
+                f1_val = mc.get("metrics", {}).get("eval_f1_macro", 0)
+                animated_metric("F1 macro", f"{f1_val:.2f}", "", "neutral", "#10B981", None, "")
             with c4:
                 acc_val = mc.get("metrics", {}).get("eval_accuracy", 0) * 100
                 animated_metric("Accuracy", "", "", "neutral", "#10B981", acc_val, "%")
@@ -128,7 +128,7 @@ else:
             with c2:
                 animated_metric("Host", "Hugging Face Hub", "", "neutral", "#818CF8", None, "")
             with c3:
-                animated_metric("F1 macro", "", "", "neutral", "#10B981", 100.0, "%")
+                animated_metric("F1 macro", "1.00", "", "neutral", "#10B981", None, "")
             with c4:
                 animated_metric("Accuracy", "", "", "neutral", "#10B981", 100.0, "%")
             st.success("🧠 **Verified Cloud Brain**: Running inference via Hugging Face Inference API (100% Accuracy Milestone achieved).")
