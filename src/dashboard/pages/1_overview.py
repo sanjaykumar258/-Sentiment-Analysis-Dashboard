@@ -105,7 +105,7 @@ else:
                 hovertemplate="<b>%{label}</b><br>%{value:,} posts (%{percent})<extra></extra>",
             ))
             fig_donut.add_annotation(text=f"<b>{total:,}</b>", x=0.5, y=0.55,
-                                      font=dict(size=24, family="Inter", color=layout.get("title_font", {}).get("color", "#FFF")),
+                                      font=dict(size=24, family="Inter", color="#FFFFFF" if is_dark() else "#000000"),
                                       showarrow=False)
             fig_donut.add_annotation(text="posts", x=0.5, y=0.42,
                                       font=dict(size=12, family="Inter", color=layout.get("font", {}).get("color", "#64748B")),
