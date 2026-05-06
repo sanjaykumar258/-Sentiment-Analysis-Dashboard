@@ -109,6 +109,7 @@ else:
 
             fig_radar.update_layout(**layout)
             fig_radar.update_layout(
+                title="Platform Performance Radar",
                 polar=dict(
                     bgcolor="rgba(0,0,0,0)",
                     radialaxis=dict(visible=True, range=[0, 10], gridcolor=get_polar_grid_color(),

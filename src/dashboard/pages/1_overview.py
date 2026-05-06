@@ -111,7 +111,7 @@ else:
                                       font=dict(size=12, family="Inter", color=layout.get("font", {}).get("color", "#64748B")),
                                       showarrow=False)
             fig_donut.update_layout(**layout)
-            fig_donut.update_layout(showlegend=True,
+            fig_donut.update_layout(title="Sentiment Distribution", showlegend=True,
                                      legend=dict(orientation="h", y=-0.1, x=0.5, xanchor="center"))
             st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
             insight_caption(f"{pos_pct}% of all posts carry positive sentiment — {'above' if pos_pct > 50 else 'below'} the majority threshold.")
@@ -156,7 +156,7 @@ else:
             hovertemplate="7-day avg %{x}: <b>%{y:.1f}%</b><extra></extra>"
         ))
         fig_trend.update_layout(**layout)
-        fig_trend.update_layout(yaxis_title="Positive %", yaxis_range=[0, 100], hovermode="x unified",
+        fig_trend.update_layout(title="Sentiment Over Time (7-Day Rolling)", yaxis_title="Positive %", yaxis_range=[0, 100], hovermode="x unified",
                                 legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"))
         st.plotly_chart(fig_trend, use_container_width=True, config={"displayModeBar": False})
         insight_caption("Monitor the rolling average to detect macro shifts in public perception.")
