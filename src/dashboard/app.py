@@ -211,8 +211,8 @@ if not st.session_state["logged_in"]:
 
 else:
     # ─── Load data and sidebar ─────────────────────────────────────────
-    total_posts = 5000
-    pos_pct, neu_pct, neg_pct = 62, 23, 15
+    total_posts = 0
+    pos_pct, neu_pct, neg_pct = 0, 0, 0
     try:
         df_raw = load_data()
         render_sidebar(df_raw)
