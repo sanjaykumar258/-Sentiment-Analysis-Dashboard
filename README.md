@@ -131,10 +131,12 @@ The platform features a custom **Theme Propagation System** that ensures a consi
 ---
 
 ## 🤖 Persistent AI Chatbot
-The dashboard includes an **Integrated AI Support Assistant** accessible from any page:
-- **Global Lifecycle**: The chatbot maintains its state and interactive listeners even when you navigate between pages.
-- **Instant Insights**: Ask about model metrics, platform trends, or technical assistance 24/7.
-- **Minimalist Design**: A floating action button that opens a clean, modern chat interface.
+The dashboard includes an **Integrated AI Support Assistant** (SentiIntel Data Scientist) accessible from any page. It acts as your personal data scientist:
+- **Dynamic Dataset Intelligence**: The chatbot instantly reads and analyzes your uploaded dataset. Ask it about your "Virality Score", "Top Engagement Platforms", or "Sentiment Leaders", and it will calculate and respond with exact numbers dynamically.
+- **Deep Project Architecture Knowledge**: The bot is fully aware of its own tech stack. It can answer detailed questions about the underlying DistilBERT model, RTX 2050 optimizations, or the decoupled Hugging Face "Brain" architecture.
+- **Cross-Page Persistence**: Powered by `localStorage`, the chat history and UI panel state travel seamlessly with you across all dashboard pages—you will never lose your conversation when switching views.
+- **Zero-Refusal Policy**: Programmed with a strict data-driven persona, the chatbot is designed to provide actionable answers based on deep project context rather than defaulting to "I don't know".
+- **Minimalist Design**: A floating action button opens a clean, modern chat interface with syntax highlighting and markdown support.
 
 ---
 
