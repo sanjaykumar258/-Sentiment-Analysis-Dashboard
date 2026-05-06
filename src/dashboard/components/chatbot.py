@@ -183,6 +183,8 @@ def render_floating_chatbot(df: pd.DataFrame = None):
             }}
             #si-panel.open {{ display: flex; }}
             #si-header {{ background: linear-gradient(135deg, #2D3748, #5542F6); padding: 16px 20px; display: flex; align-items: center; gap: 12px; }}
+            #si-clear {{ background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; cursor: pointer; letter-spacing: 0.4px; transition: background 0.2s; }}
+            #si-clear:hover {{ background: rgba(255,80,80,0.4); border-color: rgba(255,80,80,0.6); }}
             #si-messages {{ flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }}
             .si-msg {{ max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }}
             .si-msg.bot {{ align-self: flex-start; background: {msg_bot_bg}; color: {msg_bot_color}; border-bottom-left-radius: 4px; }}
@@ -205,7 +207,10 @@ def render_floating_chatbot(df: pd.DataFrame = None):
                     <div style="font-size:15px;font-weight:700;">SentiIntel</div>
                     <div style="font-size:11px;opacity:0.8;">Premium AI Assistant</div>
                 </div>
-                <button id="si-close" style="margin-left:auto;background:none;border:none;color:white;font-size:20px;cursor:pointer;">&times;</button>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+                    <button id="si-clear">Clear</button>
+                    <button id="si-close" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;">&times;</button>
+                </div>
             </div>
             <div id="si-messages">
                 <div class="si-msg bot">Hi! I'm SentiIntel. I know everything about this project's architecture, ML models, and data. How can I help you?</div>
@@ -224,6 +229,7 @@ def render_floating_chatbot(df: pd.DataFrame = None):
         const fab = parentDoc.getElementById('si-fab');
         const panel = parentDoc.getElementById('si-panel');
         const closeBtn = parentDoc.getElementById('si-close');
+        const clearBtn = parentDoc.getElementById('si-clear');
         const input = parentDoc.getElementById('si-input');
         const sendBtn = parentDoc.getElementById('si-send');
         const messagesDiv = parentDoc.getElementById('si-messages');
@@ -253,6 +259,11 @@ def render_floating_chatbot(df: pd.DataFrame = None):
         closeBtn.addEventListener('click', () => {{
             panel.classList.remove('open');
             localStorage.setItem(STATE_KEY, 'false');
+        }});
+
+        clearBtn.addEventListener('click', () => {{
+            localStorage.removeItem(STORAGE_KEY);
+            messagesDiv.innerHTML = '<div class="si-msg bot">Hi! I\'m SentiIntel. I know everything about this project\'s architecture, ML models, and data. How can I help you?</div>';
         }});
 
         function addMsg(text, cls) {{
