@@ -42,13 +42,27 @@ fig_shap = None
 def load_data():
     return pd.read_parquet("data/processed/processed_data.parquet")
 
-try:
-    df_raw = load_data()
-except FileNotFoundError:
+# Only load data if user has uploaded a file in this session
+if st.session_state.get("processed_file"):
+    try:
+        df_raw = load_data()
+    except FileNotFoundError:
+        df_raw = pd.DataFrame()
+else:
     df_raw = pd.DataFrame()
 
 from src.dashboard.components.sidebar import render_sidebar
 render_sidebar(df_raw)
+
+if not st.session_state.get("processed_file"):
+    st.markdown("""
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📂</div>
+        <h3 style="font-family:var(--font-sans);color:var(--text-primary);margin-bottom:0.5rem;">No Dataset Uploaded</h3>
+        <p style="font-family:var(--font-sans);color:var(--text-muted);max-width:420px;">Please go to the <b>Home page</b> and upload a CSV dataset to unlock this page.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.stop()
 
 # ─── HEADER ───
 page_header("🤖", "Live predictor", "Run real-time sentiment inference powered by fine-tuned DistilBERT.")

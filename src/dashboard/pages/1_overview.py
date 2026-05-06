@@ -29,16 +29,24 @@ def load_data():
 
 
 df_raw = None
-try:
-    df_raw = load_data()
-except FileNotFoundError:
-    pass
+# Only load data if user has uploaded a file in this session
+if st.session_state.get("processed_file"):
+    try:
+        df_raw = load_data()
+    except FileNotFoundError:
+        pass
 
 # Always render sidebar first so chatbot persists
 render_sidebar(df_raw if df_raw is not None else pd.DataFrame())
 
 if df_raw is None:
-    st.error("⚠️ Processed data not found. Please go to the Home page to upload a dataset.")
+    st.markdown("""
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📂</div>
+        <h3 style="font-family:var(--font-sans);color:var(--text-primary);margin-bottom:0.5rem;">No Dataset Uploaded</h3>
+        <p style="font-family:var(--font-sans);color:var(--text-muted);max-width:420px;">Please go to the <b>Home page</b> and upload a CSV dataset to unlock this page.</p>
+    </div>
+    """, unsafe_allow_html=True)
 else:
     def main_page(df_raw):
         from src.dashboard.components.filters import render_filters
