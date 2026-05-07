@@ -13,6 +13,7 @@ __pycache__/
 
 # ML Model (Hosted on Hugging Face)
 saved_model/
+!saved_model/model_card.json
 *.bin
 *.safetensors
 *.pt
