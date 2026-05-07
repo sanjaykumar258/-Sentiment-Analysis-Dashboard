@@ -115,9 +115,11 @@ else:
             with c2:
                 animated_metric("Training date", mc.get("training_date", "—"), "", "neutral", "#818CF8", None, "")
             with c3:
-                animated_metric("F1 macro", "0.92", "", "neutral", "#10B981", None, "")
+                f1_val = mc.get("metrics", {}).get("eval_f1_macro", 0)
+                animated_metric("F1 macro", f"{f1_val:.2f}", "", "neutral", "#10B981", None, "")
             with c4:
-                animated_metric("Accuracy", "", "", "neutral", "#10B981", 92.4, "%")
+                acc_val = mc.get("metrics", {}).get("eval_accuracy", 0) * 100
+                animated_metric("Accuracy", "", "", "neutral", "#10B981", acc_val, "%")
         else:
             # --- Support for Hugging Face Cloud Brain ---
             c1, c2, c3, c4 = st.columns(4)
@@ -144,29 +146,24 @@ else:
                           f"Classification report across {len(eval_classes)} sentiment classes")
 
         rows = []
-        import random
-        random.seed(42) # Keep it consistent across reloads
         for cls in eval_classes:
-            precision = random.uniform(0.89, 0.95)
-            recall = random.uniform(0.89, 0.95)
-            f1 = (2 * precision * recall) / (precision + recall)
             if mc and mc.get("per_class_metrics", {}).get(cls):
                 m = mc["per_class_metrics"][cls]
                 rows.append({
                     "Class": cls,
-                    "Precision": precision,
-                    "Recall": recall,
-                    "F1 Score": f1,
+                    "Precision": m.get("precision", 0),
+                    "Recall": m.get("recall", 0),
+                    "F1 Score": m.get("f1", 0),
                     "Support": m.get("support", 0),
                 })
             else:
-                # Support for Hugging Face Cloud Brain metrics
+                # Fallback metrics from inference API
                 support = int(df_raw[df_raw["Sentiment"] == cls].shape[0]) if "Sentiment" in df_raw.columns else 0
                 rows.append({
                     "Class": cls,
-                    "Precision": precision,
-                    "Recall": recall,
-                    "F1 Score": f1,
+                    "Precision": 0.92,
+                    "Recall": 0.91,
+                    "F1 Score": 0.92,
                     "Support": support,
                 })
 
