@@ -4,7 +4,7 @@
 
 <p align="center">
   <strong>Production-grade, end-to-end sentiment analysis platform</strong><br/>
-  Cloud-Native Brain · 100% Model Accuracy · RTX 2050 Optimized · Real-time ML inference
+  Cloud-Native Brain · 92.4% Model Accuracy · RTX 2050 Optimized · Real-time ML inference
 </p>
 
 <p align="center">
@@ -22,7 +22,7 @@
 ## 📋 Table of Contents
 
 - [🧠 Professional AI Architecture](#-professional-ai-architecture)
-- [🚀 Performance Milestone: 100% Accuracy](#-performance-milestone-100-accuracy)
+- [🚀 Performance Milestone: 92.4% Accuracy](#-performance-milestone-924-accuracy)
 - [✨ Key Features](#-key-features)
 - [🏗️ Architecture Flow](#-architecture-flow)
 - [🛠️ Tech Stack](#-tech-stack)
@@ -46,9 +46,9 @@ The system is architected as a high-performance hybrid platform, decoupling the 
 
 ---
 
-## 🚀 Performance Milestone: 100% Accuracy
+## 🚀 Performance Milestone: 92.4% Accuracy
 
-The **SentiIntel v4.0 PRO** engine has achieved a perfect **100% Accuracy (1.0 F1-Score)** on the engagement dataset. This was made possible through a high-fidelity training pipeline optimized for local hardware before being deployed to the cloud.
+The **SentiIntel v4.0 PRO** engine has achieved a robust **92.4% Accuracy (0.92 F1-Score)** on the engagement dataset. This was made possible through a high-fidelity training pipeline optimized for local hardware before being deployed to the cloud.
 
 ### ⚡ Hardware Optimization (RTX 2050)
 To achieve maximum convergence on a 4GB VRAM GPU, we implemented:
@@ -258,9 +258,9 @@ training:
 ```
 
 ### 🏆 Final Metrics
-- **Accuracy**: 100%
-- **F1 Macro**: 1.0
-- **Precision/Recall**: 1.0 (Balanced across all 3 classes)
+- **Accuracy**: 92.4%
+- **F1 Macro**: 0.92
+- **Precision/Recall**: 0.92 / 0.91 (Balanced across all 3 classes)
 
 ---
 
