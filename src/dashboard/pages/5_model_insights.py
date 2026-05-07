@@ -274,7 +274,7 @@ else:
                 title="Confusion matrix (counts)",
                 xaxis_title="Predicted", yaxis_title="Actual",
                 xaxis=dict(side="bottom", tickangle=-30 if n_cm > 5 else 0, tickfont=dict(size=10)),
-                yaxis=dict(tickfont=dict(size=10)),
+                yaxis=dict(autorange="reversed", tickfont=dict(size=10)),
                 height=400,
             )
             st.plotly_chart(fig_cm, use_container_width=True, config={"displayModeBar": False})
