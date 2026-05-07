@@ -147,6 +147,9 @@ else:
 
         rows = []
         for cls in eval_classes:
+            # Use dynamic support from current dataset to match the confusion matrix counts
+            support = int(df_raw[df_raw["Sentiment"] == cls].shape[0]) if "Sentiment" in df_raw.columns else 0
+            
             if mc and mc.get("per_class_metrics", {}).get(cls):
                 m = mc["per_class_metrics"][cls]
                 rows.append({
@@ -154,11 +157,10 @@ else:
                     "Precision": m.get("precision", 0),
                     "Recall": m.get("recall", 0),
                     "F1 Score": m.get("f1", 0),
-                    "Support": m.get("support", 0),
+                    "Support": support,
                 })
             else:
                 # Fallback metrics from inference API
-                support = int(df_raw[df_raw["Sentiment"] == cls].shape[0]) if "Sentiment" in df_raw.columns else 0
                 rows.append({
                     "Class": cls,
                     "Precision": 0.92,
