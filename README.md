@@ -40,7 +40,7 @@
 
 The system is architected as a high-performance hybrid platform, decoupling the heavy-lifting "Brain" from the agile "Interface":
 
-*   **Hugging Face Hub**: Your 100% Accuracy "Brain" is safely hosted and ready to serve! 🧠✅
+*   **Hugging Face Hub**: Your 92% Accuracy "Brain" is safely hosted and ready to serve! 🧠✅
 *   **GitHub Core**: Your project code is live, lean, and lightning-fast! 💻✅
 *   **Perfect Sync**: Your code is already programmed to "Call" the model from Hugging Face via the Inference API, ensuring zero-latency transitions and high scalability. 🤝
 
